@@ -10,7 +10,7 @@ var i = result.length - 1;
 while (i >= 0)
 {
   console.log(result[i]);
-  i = i - 1;
+  i -= 1;
 }
 
 
