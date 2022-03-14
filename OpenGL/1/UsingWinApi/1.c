@@ -5,6 +5,7 @@
 #include "LinePro.c"
 #include "WinMain.c"
 #include "Elements.c"
+#include "Menu.c"
 
 #define SizeElement 500
 #define shapeLine 1
