@@ -5,7 +5,11 @@
 #include "LinePro.c"
 #include "WinMain.c"
 #include "Elements.c"
+
 #define SizeElement 500
+#define shapeLine 1
+#define shapeRectangle 2
+#define shapeEllipse 3
 BOOL drawing; 
 
 TypeElement currentElement;
@@ -59,14 +63,14 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 
 			for (int i = 0; i < countElement+1; i++)
 			{
-				if (elem[i].typeElement.shape == 5)
+				if (elem[i].typeElement.shape == shapeLine)
 				{
 					HPEN hPen = CreatePen(PS_SOLID, elem[i].typeElement.size, elem[i].typeElement.colour);
 					SelectObject(memDc, hPen);
 					Line(memDc, elem[i].coords.point1.x, elem[i].coords.point1.y, elem[i].coords.point2.x, elem[i].coords.point2.y);
 					DeleteObject(hPen);
 				}
-				if (elem[i].typeElement.shape == 10)
+				if (elem[i].typeElement.shape == shapeRectangle)
 				{
 					HPEN hPen = CreatePen(PS_DASH, elem[i].typeElement.size, elem[i].typeElement.colour);
 					SelectObject(memDc, hPen);
@@ -76,7 +80,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 					DeleteObject(hBrush);
 					DeleteObject(hPen);
 				}
-				if (elem[i].typeElement.shape == 15)
+				if (elem[i].typeElement.shape == shapeEllipse)
 				{
 					HBRUSH hBrush = CreateSolidBrush(elem[i].typeElement.colour);
 					SelectObject(memDc, hBrush);
@@ -124,17 +128,17 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		{
 		case 0x51:
 		{
-			currentElement.shape = 5;
+			currentElement.shape = shapeLine;
 			break;
 		}
 		case 0x57:
 		{
-			currentElement.shape = 10;
+			currentElement.shape = shapeRectangle;
 			break;
 		}
 		case 0x45:
 		{
-			currentElement.shape = 15;
+			currentElement.shape = shapeEllipse
 			break;
 		}
 		case 0x53:
