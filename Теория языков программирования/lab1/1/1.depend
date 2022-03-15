@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1647368426 source:c:\users\nikita\desktop\6_semester\Теория языков программирования\lab1\1\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"Lexer.c"
+
+1647368456 c:\users\nikita\desktop\6_semester\Теория языков программирования\lab1\1\lexer.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
+1647368456 source:c:\users\nikita\desktop\6_semester\Теория языков программирования\lab1\1\lexer.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+
