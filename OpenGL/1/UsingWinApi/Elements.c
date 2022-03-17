@@ -1,7 +1,13 @@
+typedef struct POINTD
+{
+	double x;
+	double y;
+}POINTD;
+
 typedef struct COORDINATESS
 {
-	POINT point1;
-	POINT point2;
+	POINTD point1;
+	POINTD point2;
 }Coords;
 
 
