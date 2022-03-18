@@ -34,10 +34,15 @@ POINTD ZoomReverce(double x,double y,RECT rect)
 		coordInZoom.x=w/2 + (w/2 - x)/(zoom);//x=w/2 - (w/2 - x)/(-zoom);
 		coordInZoom.y=h/2 + (h/2 - y)/(zoom);//y=h/2 - (h/2 - y)/(-zoom);
 	}
-	else
+	else if(zoom>=1)
 	{
 		coordInZoom.x=w/2 - (w/2 - x)*(zoom);
 		coordInZoom.y=h/2 - (h/2 - y)*(zoom);
+	}
+	else
+	{
+		coordInZoom.x = x;
+		coordInZoom.y = y;
 	}
 	return coordInZoom;
 }
@@ -57,6 +62,11 @@ POINTD Zoom(double x,double y,RECT rect)
 		coordInZoom.x=w/2 + (w/2 - x)*zoom;//x=w/2 - (w/2 - x)*(-zoom);
 		coordInZoom.y=h/2 + (h/2 - y)*zoom;//y=w/2 - (w/2 - y)*(-zoom);
 	} 
+	else
+	{
+		coordInZoom.x = x;
+		coordInZoom.y = y;
+	}
 	return coordInZoom;
 }
 
@@ -239,11 +249,14 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			}
 			case VK_LEFT:
 			{
-				zoom-=0.1*abs(zoom);
+				zoom-=0.1*fabs(zoom);
 				if(zoom<1&&zoom>-1)
 				{
 					zoom=-1.1;
 				}
+				char str[4];
+				sprintf(str,"%lf",zoom);
+				SetWindowText(hwnd,str);
 				RECT rcClientRect;
 				GetClientRect(hwnd, &rcClientRect);
 				rcClientRect.left = 250;
@@ -252,11 +265,14 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			}
 			case VK_RIGHT:
 			{
-				zoom+=0.1*abs(zoom);
+				zoom+=0.1*fabs(zoom);
 				if(zoom>-1&&zoom<1)
 				{
 					zoom=1.1;
 				}
+				char str[4];
+				sprintf(str,"%lf",zoom);
+				SetWindowText(hwnd,str);
 				RECT rcClientRect;
 				GetClientRect(hwnd, &rcClientRect);
 				rcClientRect.left = 250;
