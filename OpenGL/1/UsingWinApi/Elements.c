@@ -2,12 +2,18 @@ typedef struct POINTD
 {
 	double x;
 	double y;
-}POINTD;
+}PointD;
+
+typedef struct DISPLAY
+{
+	double zoom;
+	PointD center;
+}Display;
 
 typedef struct COORDINATESS
 {
-	POINTD point1;
-	POINTD point2;
+	PointD point1;
+	PointD point2;
 }Coords;
 
 

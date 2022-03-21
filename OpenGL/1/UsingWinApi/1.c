@@ -16,7 +16,8 @@ BOOL drawing;
 TypeElement currentElement;
 Element elem[SizeElement];
 int countElement;
-double zoom;
+Display display; 
+
 
 BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
 {
@@ -24,43 +25,23 @@ BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
 	return LineTo(hdc, x2, y2);
 }
 
-POINTD ZoomReverce(double x,double y,RECT rect)
+PointD Zoom(double x,double y,RECT window)
 {
-	double w = (rect.right-rect.left);
-	double h = (rect.bottom-rect.top);
-	POINTD coordInZoom;
-	if(zoom<=-1)
+	double w = window.right-window.left;
+	double h = window.bottom-window.top;
+	PointD center;
+	center.x = w/2+display.center.x;
+	center.y = h/2+display.center.y;
+	PointD coordInZoom;
+	if(display.zoom>=1)
 	{
-		coordInZoom.x=w/2 + (w/2 - x)/(zoom);//x=w/2 - (w/2 - x)/(-zoom);
-		coordInZoom.y=h/2 + (h/2 - y)/(zoom);//y=h/2 - (h/2 - y)/(-zoom);
+		coordInZoom.x=w/2 - (center.x - x)/display.zoom;// (+coordInZoom.x-w/2)*display.zoom+center.x= x
+		coordInZoom.y=h/2 - (center.y - y)/display.zoom;
 	}
-	else if(zoom>=1)
+	else if(display.zoom<=-1) 
 	{
-		coordInZoom.x=w/2 - (w/2 - x)*(zoom);
-		coordInZoom.y=h/2 - (h/2 - y)*(zoom);
-	}
-	else
-	{
-		coordInZoom.x = x;
-		coordInZoom.y = y;
-	}
-	return coordInZoom;
-}
-
-POINTD Zoom(double x,double y,RECT rect)
-{
-	double w = rect.right-rect.left;
-	double h = rect.bottom-rect.top;
-	POINTD coordInZoom;
-	if(zoom>=1)
-	{
-		coordInZoom.x=w/2 - (w/2 - x)/zoom;
-		coordInZoom.y=h/2 - (h/2 - y)/zoom;
-	}
-	else if(zoom<=-1)
-	{
-		coordInZoom.x=w/2 + (w/2 - x)*zoom;//x=w/2 - (w/2 - x)*(-zoom);
-		coordInZoom.y=h/2 + (h/2 - y)*zoom;//y=w/2 - (w/2 - y)*(-zoom);
+		coordInZoom.x=w/2 + (center.x - x)*display.zoom;
+		coordInZoom.y=h/2 + (center.y - y)*display.zoom;
 	} 
 	else
 	{
@@ -70,121 +51,111 @@ POINTD Zoom(double x,double y,RECT rect)
 	return coordInZoom;
 }
 
+PointD ZoomReverce(double x,double y,RECT window)
+{
+	double w = (window.right-window.left);
+	double h = (window.bottom-window.top);
+	PointD center;
+	center.x = w/2- display.center.x;
+	center.y = h/2- display.center.y;
+	PointD coordInZoom;
+	if(display.zoom>=1)
+	{
+		coordInZoom.x=w/2 - (center.x - x)*(display.zoom);
+		coordInZoom.y=h/2 - (center.y - y)*(display.zoom);
+	}
+	else if(display.zoom<=-1)
+	{
+		coordInZoom.x=w/2 + (center.x - x)/(display.zoom);
+		coordInZoom.y=h/2 + (center.y - y)/(display.zoom);
+	}
+	else
+	{
+		coordInZoom.x = x;
+		coordInZoom.y = y;
+	}
+	return coordInZoom;
+}
 
+VOID UpdateWin(HWND hwnd)
+{
+	RECT window;  
+	GetClientRect(hwnd, &window);
+	window.left = 250;
+	InvalidateRect(hwnd, &window, 1);
+}
+
+VOID UpdateWin1(HWND hwnd,RECT window)
+{
+	window.left = 250;
+	InvalidateRect(hwnd, &window, 1);
+}
+
+VOID DrawAxes(HDC memDc,RECT window)
+{
+	FillRect(memDc, &window, (HBRUSH)(RGB(255,255,255)));
+	double w = window.right-window.left;
+	double h = window.bottom-window.top;
+	PointD point = Zoom(w/2,0,window);
+	Line(memDc, point.x, 0, point.x, h);
+	point = Zoom(0,h/2,window);
+	Line(memDc,0, point.y, w, point.y);
+}
 
 LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
 	switch (Message) {
 	case WM_CREATE: 
 	{
-		currentElement.shape = shapeLine;
-		zoom=1;
-		countElement = 0;
 		ShowWindow(hwnd, SW_SHOWMAXIMIZED);
-		RECT window;  
-		GetClientRect(hwnd, &window);
+		RECT window;
+		GetClientRect(hwnd,&window);
 		HWND hw = CreateWindow("static", "Use keys to change tools:\nQ - Line\nW - Rectangle\nE -  Circle\n\nUse keys to change color:\nS - Red\nD - Green\nF - Blue\nR - White\n\nUse keys to change thickness:\n'I' - Thicker\n'O' - Thinner", WS_VISIBLE | WS_CHILDWINDOW , 0, 0, 250, window.bottom, hwnd, (HMENU)NULL, NULL, NULL);
-		ShowWindow(hw, SW_SHOW);
-		window.left = 250;
-		InvalidateRect(hwnd, &window, 1);
+		currentElement.shape = shapeLine;
+		display.zoom=1;
+		display.center.x = 0;
+		display.center.y = 0;
+		countElement = 0;
+		UpdateWin1(hwnd,window);
 		break;
 	}
 	case WM_LBUTTONDOWN:
 	{
-		RECT rect;
-		GetWindowRect(hwnd,&rect);
-		POINTD f1 = ZoomReverce(LOWORD(lParam), HIWORD(lParam), rect);
-		elem[countElement].coords.point1.x = f1.x;
-		elem[countElement].coords.point1.y = f1.y;
+		RECT window;
+		GetClientRect(hwnd,&window);
+		PointD firstPoint = ZoomReverce(LOWORD(lParam), HIWORD(lParam), window);
+		elem[countElement].coords.point1 = firstPoint;
 		elem[countElement].typeElement.shape = currentElement.shape;
 		elem[countElement].typeElement.colour = currentElement.colour;
 		elem[countElement].typeElement.size = currentElement.size;
 		drawing = TRUE;
 		break;
 	}
-	case WM_PAINT:
-	{
-
-		PAINTSTRUCT ps;
-		HDC hdc = BeginPaint(hwnd, &ps);
-		HDC memDc = CreateCompatibleDC(hdc);
-		RECT rcClientRect;
-		GetClientRect(hwnd, &rcClientRect);
-		HBITMAP bmp = CreateCompatibleBitmap(hdc, rcClientRect.right, rcClientRect.bottom);
-		SelectObject(memDc, bmp);
-		FillRect(memDc, &ps.rcPaint, (HBRUSH)(RGB(255,255,255)));
-
-		Line(memDc,(rcClientRect.right-rcClientRect.left)/2+10,0,(rcClientRect.right-rcClientRect.left)/2+10,(rcClientRect.bottom-rcClientRect.top));
-
-		Line(memDc,0,(rcClientRect.bottom-rcClientRect.top)/2+20,(rcClientRect.right-rcClientRect.left),(rcClientRect.bottom-rcClientRect.top)/2+20);
-
-		for (int i = 0; i < countElement+1; i++)
-		{
-			RECT rect;
-			GetWindowRect(hwnd,&rect);
-			if (elem[i].typeElement.shape == shapeLine)
-			{
-				HPEN hPen = CreatePen(PS_SOLID, elem[i].typeElement.colour, elem[i].typeElement.colour);
-				SelectObject(memDc, hPen);
-				double x1 = elem[i].coords.point1.x;
-				double y1 = elem[i].coords.point1.y;
-				double x2 =  elem[i].coords.point2.x;
-				double y2 =  elem[i].coords.point2.y;
-				POINTD f1 = Zoom(x1,y1,rect);
-				POINTD f2 = Zoom(x2,y2,rect);
-				Line(memDc, f1.x, f1.y, f2.x, f2.y);
-				DeleteObject(hPen);
-			}
-			else if (elem[i].typeElement.shape == shapeRectangle)
-			{
-				HPEN hPen = CreatePen(PS_DASH, elem[i].typeElement.size, elem[i].typeElement.colour);
-				SelectObject(memDc, hPen);
-				HBRUSH hBrush = CreateHatchBrush(HS_BDIAGONAL, elem[i].typeElement.colour);
-				SelectObject(memDc, hBrush);
-				double x1 = elem[i].coords.point1.x;
-				double y1 = elem[i].coords.point1.y;
-				double x2 =  elem[i].coords.point2.x;
-				double y2 =  elem[i].coords.point2.y;
-				POINTD f1 = Zoom(x1,y1,rect);
-				POINTD f2 = Zoom(x2,y2,rect);
-				Rectangle(memDc, f1.x, f1.y, f2.x, f2.y);
-				DeleteObject(hBrush);
-				DeleteObject(hPen);
-			}
-			else if (elem[i].typeElement.shape == shapeEllipse)
-			{
-				HBRUSH hBrush = CreateSolidBrush(elem[i].typeElement.colour);
-				SelectObject(memDc, hBrush);
-				double x1 = elem[i].coords.point1.x;
-				double y1 = elem[i].coords.point1.y;
-				double x2 =  elem[i].coords.point2.x;
-				double y2 =  elem[i].coords.point2.y;
-				POINTD f1 = Zoom(x1,y1,rect);
-				POINTD f2 = Zoom(x2,y2,rect);
-				Ellipse(memDc,  f1.x, f1.y, f2.x, f2.y);
-				DeleteObject(hBrush);
-			}
-		}
-		BitBlt(hdc, 0, 0, rcClientRect.right, rcClientRect.bottom, memDc, 0, 0, SRCCOPY);
-		DeleteDC(memDc);
-		DeleteObject(bmp);
-
-		EndPaint(hwnd, &ps);
-		
-		break;
-	}
-	case WM_ERASEBKGND:
-	{
-		return 0;
-	}
 	case WM_MOUSEMOVE:
 	{
-		RECT rect;
-		GetWindowRect(hwnd,&rect);
-		POINTD f1 = ZoomReverce(LOWORD(lParam), HIWORD(lParam), rect);
-		elem[countElement].coords.point2.x = f1.x;
-		elem[countElement].coords.point2.y = f1.y;
-		rect.left = 250;
-		InvalidateRect(hwnd, &rect, 1);
+		RECT window;
+		GetClientRect(hwnd,&window);
+		PointD secondPoint = ZoomReverce(LOWORD(lParam), HIWORD(lParam), window);
+		elem[countElement].coords.point2 = secondPoint;
+		UpdateWin1(hwnd,window);
+
+		double w = window.right-window.left;
+		double h = window.bottom-window.top;
+		PointD point = Zoom(w/2,0,window);
+		char str[100],str1[100],str2[100],str3[100];
+		
+		sprintf(str2,"%lf",point.x);
+		point = Zoom(0,h/2,window);
+		sprintf(str3,"%lf",point.y);				
+
+		sprintf(str,"%lf",secondPoint.x);
+		sprintf(str1,"%lf",secondPoint.y);
+		strcat(str," : ");
+		strcat(str,str1);
+		strcat(str," ; ");
+		strcat(str,str2);
+		strcat(str," : ");
+		strcat(str,str3);
+		SetWindowText(hwnd,str);
 		break;
 	}
 	case WM_LBUTTONUP:
@@ -195,6 +166,61 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			countElement++;
 		}
 		break;
+	}
+	case WM_PAINT:
+	{
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hwnd, &ps);
+		HDC memDc = CreateCompatibleDC(hdc);
+		RECT window;
+		GetClientRect(hwnd, &window);
+		HBITMAP bmp = CreateCompatibleBitmap(hdc, window.right, window.bottom);
+		SelectObject(memDc, bmp);
+		DrawAxes(memDc, window);
+
+		for (int i = 0; i < countElement+1; i++)
+		{
+			double x1 = elem[i].coords.point1.x;
+			double y1 = elem[i].coords.point1.y;
+			double x2 = elem[i].coords.point2.x;
+			double y2 = elem[i].coords.point2.y;
+			PointD f1 = Zoom(x1,y1,window);
+			PointD f2 = Zoom(x2,y2,window);
+			if (elem[i].typeElement.shape == shapeLine)
+			{
+				HPEN hPen = CreatePen(PS_SOLID, elem[i].typeElement.size, elem[i].typeElement.colour);
+				SelectObject(memDc, hPen);
+				Line(memDc, f1.x, f1.y, f2.x, f2.y);
+				DeleteObject(hPen);
+			}
+			else if (elem[i].typeElement.shape == shapeRectangle)
+			{
+				HPEN hPen = CreatePen(PS_DASH, elem[i].typeElement.size, elem[i].typeElement.colour);
+				SelectObject(memDc, hPen);
+				HBRUSH hBrush = CreateHatchBrush(HS_BDIAGONAL, elem[i].typeElement.colour);
+				SelectObject(memDc, hBrush);
+				Rectangle(memDc, f1.x, f1.y, f2.x, f2.y);
+				DeleteObject(hBrush);
+				DeleteObject(hPen);
+			}
+			else if (elem[i].typeElement.shape == shapeEllipse)
+			{
+				HBRUSH hBrush = CreateSolidBrush(elem[i].typeElement.colour);
+				SelectObject(memDc, hBrush);
+				Ellipse(memDc,  f1.x, f1.y, f2.x, f2.y);
+				DeleteObject(hBrush);
+			}
+		}
+		
+		BitBlt(hdc, 0, 0, window.right, window.bottom, memDc, 0, 0, SRCCOPY);
+		DeleteDC(memDc);
+		DeleteObject(bmp);
+		EndPaint(hwnd, &ps);
+		break;
+	}
+	case WM_ERASEBKGND:
+	{
+		return 0;
 	}
 	case WM_KEYDOWN:
 	{
@@ -247,36 +273,54 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 				currentElement.size--;
 				break;
 			}
-			case VK_LEFT:
+			case VK_OEM_PLUS:
 			{
-				zoom-=0.1*fabs(zoom);
-				if(zoom<1&&zoom>-1)
+				display.zoom-=0.1*fabs(display.zoom);
+				if(display.zoom<1&&display.zoom>-1)
 				{
-					zoom=-1.1;
+					display.zoom=-1.1;
 				}
 				char str[4];
-				sprintf(str,"%lf",zoom);
+				sprintf(str,"%lf",display.zoom);
 				SetWindowText(hwnd,str);
-				RECT rcClientRect;
-				GetClientRect(hwnd, &rcClientRect);
-				rcClientRect.left = 250;
-				InvalidateRect(hwnd, &rcClientRect, 1);
+				UpdateWin(hwnd);
+				break;
+			}
+			case VK_OEM_MINUS:
+			{
+				display.zoom+=0.1*fabs(display.zoom);
+				if(display.zoom>-1&&display.zoom<1)
+				{
+					display.zoom=1;
+				}
+				char str[4];
+				sprintf(str,"%lf",display.zoom);
+				SetWindowText(hwnd,str);
+				UpdateWin(hwnd);
+				break;
+			}
+			case VK_LEFT:
+			{
+				display.center.x-=1;
+				UpdateWin(hwnd);
 				break;
 			}
 			case VK_RIGHT:
 			{
-				zoom+=0.1*fabs(zoom);
-				if(zoom>-1&&zoom<1)
-				{
-					zoom=1.1;
-				}
-				char str[4];
-				sprintf(str,"%lf",zoom);
-				SetWindowText(hwnd,str);
-				RECT rcClientRect;
-				GetClientRect(hwnd, &rcClientRect);
-				rcClientRect.left = 250;
-				InvalidateRect(hwnd, &rcClientRect, 1);
+				display.center.x+=1;
+				UpdateWin(hwnd);
+				break;
+			}
+			case VK_UP:
+			{
+				display.center.y+=1;
+				UpdateWin(hwnd);
+				break;
+			}
+			case VK_DOWN:
+			{
+				display.center.y-=1;
+				UpdateWin(hwnd);
 				break;
 			}
 		}
