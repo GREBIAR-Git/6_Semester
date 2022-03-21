@@ -20,6 +20,26 @@ int IsNumber(char *str)
     return (dotCount < 2);
 }
 
+int IsNumber(char *str)
+{
+    int dotCount = 0;
+    for (int i =0; i < strlen(str); i++)
+    {
+        if(!isdigit(str[i]))
+        {
+            if (str[i] == '.')
+            {
+                dotCount++;
+            } 
+            if( dotCount == 1) 
+            {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 int IsComparison(char *str)
 {
     return (strcmp (str, "==")==0 || strcmp (str, "!=")==0);

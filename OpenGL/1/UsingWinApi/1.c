@@ -30,18 +30,18 @@ PointD Zoom(double x,double y,RECT window)
 	double w = window.right-window.left;
 	double h = window.bottom-window.top;
 	PointD center;
-	center.x = w/2+display.center.x;
-	center.y = h/2+display.center.y;
+	center.x = w/2;
+	center.y = h/2;
 	PointD coordInZoom;
 	if(display.zoom>=1)
 	{
-		coordInZoom.x=w/2 - (center.x - x)/display.zoom;// (+coordInZoom.x-w/2)*display.zoom+center.x= x
-		coordInZoom.y=h/2 - (center.y - y)/display.zoom;
+		coordInZoom.x=center.x - (center.x + display.center.x - x)/display.zoom;
+		coordInZoom.y=center.y - (center.y + display.center.y - y)/display.zoom;
 	}
 	else if(display.zoom<=-1) 
 	{
-		coordInZoom.x=w/2 + (center.x - x)*display.zoom;
-		coordInZoom.y=h/2 + (center.y - y)*display.zoom;
+		coordInZoom.x=center.x + (center.x + display.center.x - x)*display.zoom;
+		coordInZoom.y=center.y + (center.y + display.center.y - y)*display.zoom;
 	} 
 	else
 	{
@@ -56,18 +56,18 @@ PointD ZoomReverce(double x,double y,RECT window)
 	double w = (window.right-window.left);
 	double h = (window.bottom-window.top);
 	PointD center;
-	center.x = w/2- display.center.x;
-	center.y = h/2- display.center.y;
+	center.x = w/2;
+	center.y = h/2;
 	PointD coordInZoom;
 	if(display.zoom>=1)
 	{
-		coordInZoom.x=w/2 - (center.x - x)*(display.zoom);
-		coordInZoom.y=h/2 - (center.y - y)*(display.zoom);
+		coordInZoom.x=center.x - (center.x - display.center.x/display.zoom - x)*(display.zoom);
+		coordInZoom.y=center.y - (center.y - display.center.y/display.zoom - y)*(display.zoom);
 	}
 	else if(display.zoom<=-1)
 	{
-		coordInZoom.x=w/2 + (center.x - x)/(display.zoom);
-		coordInZoom.y=h/2 + (center.y - y)/(display.zoom);
+		coordInZoom.x=center.x + (center.x + display.center.x*display.zoom - x)/(display.zoom);
+		coordInZoom.y=center.y + (center.y + display.center.y*display.zoom - y)/(display.zoom);
 	}
 	else
 	{
