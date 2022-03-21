@@ -23,9 +23,9 @@ struct menu
 struct menu menu;
 
 int CursorInside(RECT area, POINT cursorCoords);
-int DrawArea(HWND hwnd, RECT area);
-int DrawMenu(HWND hwnd, RECT menuArea, BOOL vertical, int buttonSize, char title[100]);
-int DrawMenuButton(HWND hwnd, char title[100]);
+int DrawArea(HDC hdc, RECT area);
+int DrawMenu(HDC hdc, RECT menuArea, BOOL vertical, int buttonSize, char title[100]);
+int DrawMenuButton(HDC hdc, char title[100]);
 
 struct area RectToArea(RECT rect);
 
@@ -38,31 +38,31 @@ int CursorInside(RECT area, POINT cursorCoords)
 	return FALSE;
 }
 
-int DrawArea(HWND hwnd, RECT area)
+int DrawArea(HDC hdc, RECT area)
 {
 	COLORREF colorBorder = RGB(0,0,0);
 	COLORREF colorFill = RGB(100,100,100);
 
 	HPEN hPen = CreatePen(PS_SOLID, 1, colorBorder);
-	SelectObject(hwnd, hPen);
+	SelectObject(hdc, hPen);
 	HBRUSH hBrush = CreateSolidBrush(colorFill);
-	SelectObject(hwnd, hBrush);
-	Rectangle(hwnd, area.left, area.top, area.right, area.bottom);
+	SelectObject(hdc, hBrush);
+	Rectangle(hdc, area.left, area.top, area.right, area.bottom);
 	DeleteObject(hBrush);
 	DeleteObject(hPen);
 }
 
-int DrawMenu(HWND hwnd, RECT menuArea, BOOL vertical, int buttonSize, char title[100])
+int DrawMenu(HDC hdc, RECT menuArea, BOOL vertical, int buttonSize, char title[100])
 {
 	strcpy(menu.title, title);
 	
-	DrawArea(hwnd, menuArea);
+	DrawArea(hdc, menuArea);
 	menu.area = RectToArea(menuArea);
 	menu.vertical = vertical;
 	menu.buttonSize = buttonSize;
 }
 
-int DrawMenuButton(HWND hwnd, char title[100])
+int DrawMenuButton(HDC hdc, char title[100])
 {
 	strcpy(menu.buttons[menu.buttonsLength].title,title);
 
@@ -83,7 +83,7 @@ int DrawMenuButton(HWND hwnd, char title[100])
 		buttonArea.left = menu.buttonsLength * (menu.buttonSize + 2 * margin) + margin;
 		buttonArea.right = buttonArea.left + menu.buttonSize;
 	}
-	DrawArea(hwnd, buttonArea);
+	DrawArea(hdc, buttonArea);
 	menu.buttons[menu.buttonsLength].area = RectToArea(buttonArea);
 	menu.buttonsLength ++;
 }
