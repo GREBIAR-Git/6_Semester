@@ -176,7 +176,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		GetClientRect(hwnd, &window);
 		HBITMAP bmp = CreateCompatibleBitmap(hdc, window.right, window.bottom);
 		SelectObject(memDc, bmp);
-
+		DrawAxes(memDc, window);
 		for (int i = 0; i < countElement+1; i++)
 		{
 			double x1 = elem[i].coords.point1.x;
@@ -211,8 +211,8 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			}
 		}
 		
-		DrawAxes(memDc, window);
-		DrawUI(memDc, window);
+		
+		DrawUI(memDc);
 
 		BitBlt(hdc, 0, 0, window.right, window.bottom, memDc, 0, 0, SRCCOPY);
 		DeleteDC(memDc);

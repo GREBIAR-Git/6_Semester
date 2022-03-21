@@ -101,8 +101,8 @@ int DrawUI(HDC hdc)
 {
 	RECT menuArea;
 	menuArea.left = 500;
-	meunArea.right = 700;
+	menuArea.right = 700;
 	menuArea.top = 10;
 	menuArea.bottom = 900;
-	DrawMenu(memDc, menuArea, TRUE, 35, "Menu");
+	DrawMenu(hdc, menuArea, TRUE, 35, "Menu");
 }
