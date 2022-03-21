@@ -45,7 +45,7 @@ int DrawArea(HWND hwnd, RECT area)
 
 	HPEN hPen = CreatePen(PS_SOLID, 1, colorBorder);
 	SelectObject(hwnd, hPen);
-	HBRUSH hBrush = CreateHatchBrush(HS_BDIAGONAL, colorFill);
+	HBRUSH hBrush = CreateSolidBrush(colorFill);
 	SelectObject(hwnd, hBrush);
 	Rectangle(hwnd, area.left, area.top, area.right, area.bottom);
 	DeleteObject(hBrush);
@@ -95,4 +95,14 @@ struct area RectToArea(RECT rect)
 	area.topLeft.y = rect.top;
 	area.botRight.x = rect.right;
 	area.botRight.y = rect.bottom;
+}
+
+int DrawUI(HDC hdc)
+{
+	RECT menuArea;
+	menuArea.left = 500;
+	meunArea.right = 700;
+	menuArea.top = 10;
+	menuArea.bottom = 900;
+	DrawMenu(memDc, menuArea, TRUE, 35, "Menu");
 }
