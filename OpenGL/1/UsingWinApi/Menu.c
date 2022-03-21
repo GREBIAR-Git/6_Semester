@@ -26,8 +26,10 @@ int CursorInside(RECT area, POINT cursorCoords);
 int DrawArea(HDC hdc, RECT area);
 int DrawMenu(HDC hdc, RECT menuArea, BOOL vertical, int buttonSize, char title[100]);
 int DrawMenuButton(HDC hdc, char title[100]);
-
 struct area RectToArea(RECT rect);
+int DrawLabel(HDC hdc, RECT area, char* text);
+int DrawUI(HDC hdc, RECT menuArea);
+
 
 int CursorInside(RECT area, POINT cursorCoords)
 {
@@ -60,6 +62,8 @@ int DrawMenu(HDC hdc, RECT menuArea, BOOL vertical, int buttonSize, char title[1
 	menu.area = RectToArea(menuArea);
 	menu.vertical = vertical;
 	menu.buttonSize = buttonSize;
+
+	DrawLabel(hdc, menuArea, title);
 }
 
 int DrawMenuButton(HDC hdc, char title[100])
@@ -86,6 +90,8 @@ int DrawMenuButton(HDC hdc, char title[100])
 	DrawArea(hdc, buttonArea);
 	menu.buttons[menu.buttonsLength].area = RectToArea(buttonArea);
 	menu.buttonsLength ++;
+
+	DrawLabel(hdc, buttonArea, title);
 }
 
 struct area RectToArea(RECT rect)
@@ -97,12 +103,19 @@ struct area RectToArea(RECT rect)
 	area.botRight.y = rect.bottom;
 }
 
-int DrawUI(HDC hdc)
+int DrawUI(HDC hdc, RECT menuArea)
 {
-	RECT menuArea;
-	menuArea.left = 500;
-	menuArea.right = 700;
-	menuArea.top = 10;
-	menuArea.bottom = 900;
+	menuArea.left = 0;
+	menuArea.right = 200;
+	menuArea.top = 0;
 	DrawMenu(hdc, menuArea, TRUE, 35, "Menu");
+}
+
+int DrawLabel(HDC hdc, RECT area, char* text)
+{
+	HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0,0,0));
+	SelectObject(hdc, hPen);
+	TCHAR text1[ ] = "gdttdh";
+	TextOut(hdc, area.left, area.top, text1, 100);
+	DeleteObject(hPen);
 }
