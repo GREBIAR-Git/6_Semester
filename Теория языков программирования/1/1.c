@@ -14,11 +14,13 @@ int IsIdentifier(char *str)
 
 int IsNumber(char *str)
 {
+    int dotCount = 0;
     for (int i =0; i < strlen(str); i++)
     {
-        if (!isdigit(str[i])) return 0;
+        if (str[i] == '.') dotCount++;
+        if (!isdigit(str[i]) && str[i] != '.') return 0;
     }
-    return 1;
+    return (dotCount < 2);
 }
 
 int IsComparison(char *str)

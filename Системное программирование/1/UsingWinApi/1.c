@@ -231,6 +231,98 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 				//DeleteObject(hBrush);
 			}
 		}
+
+
+
+
+
+
+
+		// хорошо бы разбить на функции эту жесть (я про весь PAINT ивент)
+		if (automove)
+		{
+			RECT window;
+			GetWindowRect(hwnd, &window);
+			char str[4];
+			sprintf(str,"%d", direction);
+			SetWindowText(hwnd,str);			
+			margin = 100;
+			int step = 20;
+			if (direction == 0)
+			{
+				elem[countElement-1].coords.point1.y-=step;
+				elem[countElement-1].coords.point2.y-=step;
+				if (elem[countElement-1].coords.point1.y < margin || elem[countElement-1].coords.point2.y < margin)
+				{
+					direction = 1;
+				}
+			}
+			else if (direction == 1)
+			{
+				elem[countElement-1].coords.point1.x+=step;
+				elem[countElement-1].coords.point2.x+=step;
+				if (elem[countElement-1].coords.point1.x > window.right - margin || elem[countElement-1].coords.point2.x > window.right - margin)
+				{
+					direction = 2;
+				}
+			}
+			else if (direction == 2)
+			{
+				elem[countElement-1].coords.point1.y+=step;
+				elem[countElement-1].coords.point2.y+=step;
+				elem[countElement-1].coords.point1.x-=step;
+				elem[countElement-1].coords.point2.x-=step;
+				if (elem[countElement-1].coords.point1.y > window.bottom/2 || elem[countElement-1].coords.point2.y > window.bottom /2)
+				{
+					direction = 3;
+				}
+			}
+			else if (direction == 3)
+			{
+				elem[countElement-1].coords.point1.y+=step;
+				elem[countElement-1].coords.point2.y+=step;
+				elem[countElement-1].coords.point1.x+=step;
+				elem[countElement-1].coords.point2.x+=step;
+				if (elem[countElement-1].coords.point1.y > window.bottom - margin || elem[countElement-1].coords.point2.y > window.bottom - margin|| elem[countElement-1].coords.point1.x > window.right - margin || elem[countElement-1].coords.point2.x > window.right - margin)
+				{
+					direction = 4;
+				}
+			}
+			else if (direction == 4)
+			{
+				elem[countElement-1].coords.point1.x-=step;
+				elem[countElement-1].coords.point2.x-=step;
+				if (elem[countElement-1].coords.point1.x < margin || elem[countElement-1].coords.point2.x < margin)
+				{
+					direction = 5;
+				}
+			}
+			else if (direction == 5)
+			{
+				int width = abs(elem[countElement-1].coords.point2.x-elem[countElement-1].coords.point1.x);
+				int height = abs(elem[countElement-1].coords.point2.y-elem[countElement-1].coords.point1.y);
+				elem[countElement-1].coords.point1.x = margin+1;
+				elem[countElement-1].coords.point2.x = margin+1 + width;
+				elem[countElement-1].coords.point2.y = window.bottom - margin-1;
+				elem[countElement-1].coords.point1.y = elem[countElement-1].coords.point2.y - height;
+				
+				direction = 0;
+			}
+			UpdateWin(hwnd);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 		
 		
 		//DrawUI(memDc, window);
@@ -354,74 +446,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			case VK_CONTROL:
 			{
 				automove = 1;
-				RECT window;
-				GetWindowRect(hwnd, &window);
-				char str[4];
-				sprintf(str,"%d", direction);
-				SetWindowText(hwnd,str);			
-				margin = 100;
-				int step = 20;
-				if (direction == 0)
-				{
-					elem[countElement-1].coords.point1.y-=step;
-					elem[countElement-1].coords.point2.y-=step;
-					if (elem[countElement-1].coords.point1.y < margin || elem[countElement-1].coords.point2.y < margin)
-					{
-						direction = 1;
-					}
-				}
-				else if (direction == 1)
-				{
-					elem[countElement-1].coords.point1.x+=step;
-					elem[countElement-1].coords.point2.x+=step;
-					if (elem[countElement-1].coords.point1.x > window.right - margin || elem[countElement-1].coords.point2.x > window.right - margin)
-					{
-						direction = 2;
-					}
-				}
-				else if (direction == 2)
-				{
-					elem[countElement-1].coords.point1.y+=step;
-					elem[countElement-1].coords.point2.y+=step;
-					elem[countElement-1].coords.point1.x-=step;
-					elem[countElement-1].coords.point2.x-=step;
-					if (elem[countElement-1].coords.point1.y > window.bottom/2 || elem[countElement-1].coords.point2.y > window.bottom /2)
-					{
-						direction = 3;
-					}
-				}
-				else if (direction == 3)
-				{
-					elem[countElement-1].coords.point1.y+=step;
-					elem[countElement-1].coords.point2.y+=step;
-					elem[countElement-1].coords.point1.x+=step;
-					elem[countElement-1].coords.point2.x+=step;
-					if (elem[countElement-1].coords.point1.y > window.bottom - margin || elem[countElement-1].coords.point2.y > window.bottom - margin|| elem[countElement-1].coords.point1.x > window.right - margin || elem[countElement-1].coords.point2.x > window.right - margin)
-					{
-						direction = 4;
-					}
-				}
-				else if (direction == 4)
-				{
-					elem[countElement-1].coords.point1.x-=step;
-					elem[countElement-1].coords.point2.x-=step;
-					if (elem[countElement-1].coords.point1.x < margin || elem[countElement-1].coords.point2.x < margin)
-					{
-						direction = 5;
-					}
-				}
-				else if (direction == 5)
-				{
-					int width = abs(elem[countElement-1].coords.point2.x-elem[countElement-1].coords.point1.x);
-					int height = abs(elem[countElement-1].coords.point2.y-elem[countElement-1].coords.point1.y);
-					elem[countElement-1].coords.point1.x = margin+1;
-					elem[countElement-1].coords.point2.x = margin+1 + width;
-					elem[countElement-1].coords.point2.y = window.bottom - margin-1;
-					elem[countElement-1].coords.point1.y = elem[countElement-1].coords.point2.y - height;
-					
-					direction = 0;
-				}
-				UpdateWin(hwnd);	
+				UpdateWin(hwnd);
 				
 				break;
 			}
@@ -432,9 +457,10 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	{
 		switch(wParam)
 		{
-			case VK_SHIFT:
+			case VK_CONTROL:
 			{
 				automove = 0;
+				UpdateWin(hwnd);
 				break;
 			}
 		}
