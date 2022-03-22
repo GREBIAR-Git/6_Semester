@@ -13,7 +13,7 @@ void RegClass(WNDPROC Proc,LPCTSTR szName)
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	RegClass(FrameWndProc,"MainWin");
-	HWND hwnd = CreateWindow("MainWin", "Main Window", WS_OVERLAPPEDWINDOW, 40, 40, 1100, 720, NULL, NULL, NULL, NULL);
+	HWND hwnd = CreateWindow("MainWin", "Main Window", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 40, 40, 720, 745, NULL, NULL, NULL, NULL);
 	ShowWindow(hwnd, SW_SHOWNORMAL);
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))
