@@ -81,13 +81,13 @@ VOID UpdateWin(HWND hwnd)
 {
 	RECT window;  
 	GetClientRect(hwnd, &window);
-	window.left = 250;
+	window.left = 0;
 	InvalidateRect(hwnd, &window, 1);
 }
 
 VOID UpdateWin1(HWND hwnd,RECT window)
 {
-	window.left = 250;
+	window.left = 0;
 	InvalidateRect(hwnd, &window, 1);
 }
 
@@ -109,7 +109,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 		RECT window;
 		GetClientRect(hwnd,&window);
-		HWND hw = CreateWindow("static", "Use keys to change tools:\nQ - Line\nW - Rectangle\nE -  Circle\n\nUse keys to change color:\nS - Red\nD - Green\nF - Blue\nR - White\n\nUse keys to change thickness:\n'I' - Thicker\n'O' - Thinner", WS_VISIBLE | WS_CHILDWINDOW , 0, 0, 250, window.bottom, hwnd, (HMENU)NULL, NULL, NULL);
+		//HWND hw = CreateWindow("static", "Use keys to change tools:\nQ - Line\nW - Rectangle\nE -  Circle\n\nUse keys to change color:\nS - Red\nD - Green\nF - Blue\nR - White\n\nUse keys to change thickness:\n'I' - Thicker\n'O' - Thinner", WS_VISIBLE | WS_CHILDWINDOW , 0, 0, 250, window.bottom, hwnd, (HMENU)NULL, NULL, NULL);
 		currentElement.shape = shapeLine;
 		display.zoom=1;
 		display.center.x = 0;
@@ -212,7 +212,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		}
 		
 		
-		DrawUI(memDc);
+		DrawUI(memDc, window);
 
 		BitBlt(hdc, 0, 0, window.right, window.bottom, memDc, 0, 0, SRCCOPY);
 		DeleteDC(memDc);
