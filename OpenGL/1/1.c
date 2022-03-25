@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include "LinePro.c"
+
 #include "WinMain.c"
 #include "Elements.c"
 #include "Menu.c"
@@ -17,10 +17,7 @@ TypeElement currentElement;
 Element elem[SizeElement];
 int countElement;
 Display display; 
-BOOL move;
-BOOL automove;
-int margin;
-int direction;
+
 
 BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
 {
@@ -159,17 +156,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		strcat(str," : ");
 		strcat(str,str3);
 		SetWindowText(hwnd,str);
-		if(move && countElement>0)
-		{
-			int size1,size2;
-			size1 = abs(elem[countElement-1].coords.point2.x-elem[countElement-1].coords.point1.x);
-			size2 = abs(elem[countElement-1].coords.point2.y-elem[countElement-1].coords.point1.y);
-			elem[countElement-1].coords.point1.x = LOWORD(lParam);
-			elem[countElement-1].coords.point1.y = HIWORD(lParam);
-			elem[countElement-1].coords.point2.x = LOWORD(lParam) + size1;
-			elem[countElement-1].coords.point2.y = HIWORD(lParam) + size2;
-
-		}
 		break;
 	}
 	case WM_LBUTTONUP:
@@ -218,114 +204,15 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			}
 			else if (elem[i].typeElement.shape == shapeEllipse)
 			{
-				HPEN hPen = CreatePen(PS_DASH, elem[i].typeElement.size,  RGB(0, 0, 255));
-				SelectObject(memDc, hPen);
-				
+				HBRUSH hBrush = CreateSolidBrush(elem[i].typeElement.colour);
+				SelectObject(memDc, hBrush);
 				Ellipse(memDc,  f1.x, f1.y, f2.x, f2.y);
-				DeleteObject(hPen);
-				HPEN hPen1 = CreatePen(PS_SOLID, elem[i].typeElement.size,  RGB(255, 0, 0));
-				SelectObject(memDc, hPen1);
-				Line(memDc, f1.x, f1.y, f2.x, f2.y);
-				Line(memDc, f1.x, f2.y, f2.x, f1.y);
-				DeleteObject(hPen1);
-				//DeleteObject(hBrush);
+				DeleteObject(hBrush);
 			}
 		}
-
-
-
-
-
-
-
-		// хорошо бы разбить на функции эту жесть (я про весь PAINT ивент)
-		if (automove)
-		{
-			RECT window;
-			GetWindowRect(hwnd, &window);
-			char str[4];
-			sprintf(str,"%d", direction);
-			SetWindowText(hwnd,str);			
-			margin = 100;
-			int step = 20;
-			if (direction == 0)
-			{
-				elem[countElement-1].coords.point1.y-=step;
-				elem[countElement-1].coords.point2.y-=step;
-				if (elem[countElement-1].coords.point1.y < margin || elem[countElement-1].coords.point2.y < margin)
-				{
-					direction = 1;
-				}
-			}
-			else if (direction == 1)
-			{
-				elem[countElement-1].coords.point1.x+=step;
-				elem[countElement-1].coords.point2.x+=step;
-				if (elem[countElement-1].coords.point1.x > window.right - margin || elem[countElement-1].coords.point2.x > window.right - margin)
-				{
-					direction = 2;
-				}
-			}
-			else if (direction == 2)
-			{
-				elem[countElement-1].coords.point1.y+=step;
-				elem[countElement-1].coords.point2.y+=step;
-				elem[countElement-1].coords.point1.x-=step;
-				elem[countElement-1].coords.point2.x-=step;
-				if (elem[countElement-1].coords.point1.y > window.bottom/2 || elem[countElement-1].coords.point2.y > window.bottom /2)
-				{
-					direction = 3;
-				}
-			}
-			else if (direction == 3)
-			{
-				elem[countElement-1].coords.point1.y+=step;
-				elem[countElement-1].coords.point2.y+=step;
-				elem[countElement-1].coords.point1.x+=step;
-				elem[countElement-1].coords.point2.x+=step;
-				if (elem[countElement-1].coords.point1.y > window.bottom - margin || elem[countElement-1].coords.point2.y > window.bottom - margin|| elem[countElement-1].coords.point1.x > window.right - margin || elem[countElement-1].coords.point2.x > window.right - margin)
-				{
-					direction = 4;
-				}
-			}
-			else if (direction == 4)
-			{
-				elem[countElement-1].coords.point1.x-=step;
-				elem[countElement-1].coords.point2.x-=step;
-				if (elem[countElement-1].coords.point1.x < margin || elem[countElement-1].coords.point2.x < margin)
-				{
-					direction = 5;
-				}
-			}
-			else if (direction == 5)
-			{
-				int width = abs(elem[countElement-1].coords.point2.x-elem[countElement-1].coords.point1.x);
-				int height = abs(elem[countElement-1].coords.point2.y-elem[countElement-1].coords.point1.y);
-				elem[countElement-1].coords.point1.x = margin+1;
-				elem[countElement-1].coords.point2.x = margin+1 + width;
-				elem[countElement-1].coords.point2.y = window.bottom - margin-1;
-				elem[countElement-1].coords.point1.y = elem[countElement-1].coords.point2.y - height;
-				
-				direction = 0;
-			}
-			UpdateWin(hwnd);
-		}
-
-
-
-
-
-
-
-
-
-
-
-
-
 		
 		
-		//DrawUI(memDc, window);
+		DrawUI(memDc, window);
 
 		BitBlt(hdc, 0, 0, window.right, window.bottom, memDc, 0, 0, SRCCOPY);
 		DeleteDC(memDc);
@@ -435,31 +322,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			case VK_DOWN:
 			{
 				display.center.y-=1;
-				UpdateWin(hwnd);
-				break;
-			}
-			case VK_SPACE:
-			{
-				move=!move;
-				break;
-			}
-			case VK_CONTROL:
-			{
-				automove = 1;
-				UpdateWin(hwnd);
-				
-				break;
-			}
-		}
-		break;
-	}
-	case WM_KEYUP:
-	{
-		switch(wParam)
-		{
-			case VK_CONTROL:
-			{
-				automove = 0;
 				UpdateWin(hwnd);
 				break;
 			}
