@@ -115,7 +115,6 @@ int DrawLabel(HDC hdc, RECT area, char* text)
 {
 	HPEN hPen = CreatePen(PS_SOLID, 1, RGB(0,0,0));
 	SelectObject(hdc, hPen);
-	TCHAR text1[ ] = "gdttdh";
-	TextOut(hdc, area.left, area.top, text1, 100);
+	TextOut(hdc, area.left, area.top, text, strlen(text));
 	DeleteObject(hPen);
 }

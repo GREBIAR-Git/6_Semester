@@ -2,6 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <gl/gl.h>
+
 #include "LinePro.c"
 #include "WinMain.c"
 #include "Elements.c"

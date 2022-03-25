@@ -80,7 +80,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             //DrawRentagle();
-            DrawRentagle1();
+//            DrawRentagle1();
             DrawRentagle();
 
             SwapBuffers(hDC);
@@ -114,45 +114,9 @@ void DrawRentagle()
         glColor3f(1.0f, 0.0f, 0.0f);   glVertex2f(0.6f, -0.5f);
 
     glEnd();
+    glRotatef(90, 1, 0, 0);
     glDisable(GL_LINE_STIPPLE);
     glPopMatrix();
-}
-
-void DrawRentagle1()
-{
-    glPushMatrix();
-    glLineWidth(5);
-    glBegin(GL_LINES);
-
-    glLineStipple(1, 0xffff);
-    float byfX = -0.6f;
-    float byfY = 0.5f;
-//рекурсия нужна
-    for(float i=-0.6f;i<0.6f;i+=0.1f)
-    {
-
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(i,   0.5f);
-
-        glVertex2f(byfX,  byfY);
-        if(byfY<-0.5f)
-        {
-
-        //    byfX=
-        }
-        byfY=-0.1;
-
-        //glVertex2f(-i,   -0.5f);
-        //glVertex2f(0.5f,  i);
-    }
-    glEnd();
-    glPopMatrix();
-       // glColor3f(1.0f, 0.0f, 0.0f);   glVertex2f(-0.5f,   -0.5f);
-        //glColor3f(1.0f, 0.0f, 0.0f);   glVertex2f(-0.5f,  0.5f);
-        //glColor3f(1.0f, 0.0f, 0.0f);   glVertex2f(0.5f, 0.5f);
-        //glColor3f(1.0f, 0.0f, 0.0f);   glVertex2f(0.5f, -0.5f);
-
-
 }
 
 
