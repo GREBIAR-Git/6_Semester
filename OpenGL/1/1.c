@@ -8,7 +8,7 @@
 #include "MenuTools.c"
 #include "MenuSettings.c"
 
-#define SizeElement 500
+#define SizeElement 10
 #define shapeLine 1
 #define shapeRectangle 2
 #define shapeEllipse 3
@@ -156,13 +156,13 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		strcat(str,str2);
 		strcat(str," : ");
 		strcat(str,str3);
-		SetWindowText(hwnd,str);
+		//SetWindowText(hwnd,str);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
 		drawing = FALSE;
-		if (countElement < SizeElement)
+		if (countElement < SizeElement - 1)
 		{
 			countElement++;
 		}
@@ -211,7 +211,10 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 				DeleteObject(hBrush);
 			}
 		}
-		
+
+		char str[4];
+		sprintf(str,"%d",countElement);
+		SetWindowText(hwnd, str);
 		
 		DrawUI(memDc, window);
 
