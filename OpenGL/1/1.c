@@ -5,7 +5,8 @@
 
 #include "WinMain.c"
 #include "Elements.c"
-#include "Menu.c"
+#include "MenuTools.c"
+#include "MenuSettings.c"
 
 #define SizeElement 500
 #define shapeLine 1
