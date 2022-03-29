@@ -10,7 +10,7 @@ enum number{
 int IsNumber(char *str)
 {
     int count_str = strlen(str);
-    enum number stage;
+    enum number stage = numbers;
     while(1)
     {
         switch (stage)
