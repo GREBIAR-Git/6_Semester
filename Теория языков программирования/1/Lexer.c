@@ -1,24 +1,14 @@
 #include <ctype.h>
 
-int IsIdentifier(char *str)
-{
-    for (int i = 0; i < strlen(str); i++)
-    {
-        if (!isalnum(str[i])) return 0;
-    }
-    return (isalpha(str[0]) == 2);
-}
-
 enum number{
-numbers,
-one_dot_numbers,
-finish_number,
-no_number
+    numbers,
+    one_dot_numbers,
+    finish_number,
+    no_number
 };
 
 int IsNumber(char *str)
 {
-    int i=0;
     int count_str = strlen(str);
     enum number stage;
     while(1)
@@ -27,20 +17,22 @@ int IsNumber(char *str)
         {
         case numbers:
         {
-            if(count_str>i)
+            if(str[idx] != ' ')
             {
-                if(isdigit(str[i]))
+                if(isdigit(str[idx]))
                 {
-                    i++;
+                    currentTokenLength++;
+                    idx++;
                 }
-                else if (str[i] == '.')
+                else if (str[idx] == '.')
                 {
-                    i++;
-                    stage=one_dot_numbers;
+                    currentTokenLength++;
+                    idx++;
+                    stage = one_dot_numbers;
                 }
                 else
                 {
-                    stage =no_number;
+                    stage = no_number;
                 }
             }
             else
@@ -51,11 +43,12 @@ int IsNumber(char *str)
         }
         case one_dot_numbers:
         {
-            if(count_str>i)
+            if(str[idx] != ' ')
             {
-                if(isdigit(str[i]))
+                if(isdigit(str[idx]))
                 {
-                    i++;
+                    currentTokenLength++;
+                    idx++;
                 }
                 else
                 {
@@ -76,23 +69,6 @@ int IsNumber(char *str)
         {
             return 1;
         }
-        default:
-            break;
         }
     }
-}
-
-int IsComparison(char *str)
-{
-    return (strcmp (str, "==")==0 || strcmp (str, "!=")==0);
-}
-
-int IsSign(char *str)
-{
-    return (strcmp (str, "+")==0 || strcmp (str, "-")==0);
-}
-
-int IsKeyWords(char *str)
-{
-    return (strcmp (str, "if")==0 || strcmp (str, "switch")==0);
 }

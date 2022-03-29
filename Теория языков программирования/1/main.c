@@ -9,58 +9,139 @@ struct Token
     char *value;
 };
 
-char *strsep(char **stringp, const char *delim) {
-    char *rv = *stringp;
-    if (rv) {
-        *stringp += strcspn(*stringp, delim);
-        if (**stringp)
-            *(*stringp)++ = '\0';
-        else
-            *stringp = 0; }
-    return rv;
+enum State
+{
+    Default,
+    Identificator,
+    Number,
+    Comparison,
+    Sign,
+    KeyWord
+};
+
+char *str = "21323 54.43 54. 54 fdsfsd + == hghghg         f";
+int currentToken = -1; int currentTokenLength = 0;
+int identificatorFirst = 1;
+struct Token tokens[100];
+enum State state = Default;
+int idx = 0;
+
+
+struct Token finishToken(char* stateName)
+{
+    char buffer[currentTokenLength + 1];
+    memcpy(buffer, &str[idx - currentTokenLength + 1], currentTokenLength);
+    buffer[currentTokenLength] = '\0';
+    struct Token newToken;
+    strcpy(newToken.name, stateName);
+    strcpy(newToken.value, buffer);
+    currentToken++;
+    currentTokenLength++;
+    return newToken;
 }
 
 int main()
 {
-    struct Token tokens[100];
-    int currentToken;
-    char *str = "21323 54.43 54. 54 fdsfsd + == hghghg         f";
-    char *token, *str1, *tofree;
-    tofree = str1 = strdup(str);
-    while ((token = strsep(&str1, " ")))
+    while(idx < strlen(str))
     {
-        if(strlen(token)>0)
+        switch(state)
         {
-            if(IsComparison(token))
+            case Default:
             {
-                tokens[currentToken].name = "comparison";
+                state = KeyWord;
+                break;
             }
-            else if (IsSign(token))
+            case Identificator:
             {
-                tokens[currentToken].name = "isSign";
+                if(isalpha(str[idx]) || (!identificatorFirst && isdigit(str[idx])))
+                {
+                    currentTokenLength++;
+                    idx++;
+                }
+                else if (str[idx] == ' ' || str[idx] == '\n')
+                {
+                    tokens[currentToken] = finishToken("comparison");
+                    idx++;
+                    state = Default;
+                }
+                else
+                {
+                    state = Number;
+                }
+                break;
             }
-            else if (IsKeyWords(token))
+            case Number:
             {
-                tokens[currentToken].name = "keyword";
+                if (IsNumber(str))
+                {
+                    tokens[currentToken] = finishToken("comparison");
+                    state = Default;
+                }
+                else
+                {
+                    state = Sign;
+                }
+                break;
             }
-            else if (IsNumber(token))
+            case Comparison:
             {
-                tokens[currentToken].name = "diget";
+                if (idx + 1 < strlen(str)
+                && (str[idx] == '!' && str[idx] == '='
+                || str[idx] == '=' && str[idx+1] == '='))
+                {
+                    idx+=2;
+                    currentTokenLength+=2;
+                    tokens[currentToken] = finishToken("comparison");
+                    state = Default;
+                }
+                else
+                {
+                    state = Sign;
+                }
+                break;
             }
-            else if (IsIdentifier(token))
+            case Sign:
             {
-                tokens[currentToken].name = "ident";
+                if (str[idx] == '+' || str[idx] == '-')
+                {
+                    idx++;
+                    currentTokenLength++;
+                    tokens[currentToken] = finishToken("sign");
+                    state = Default;
+                }
+                else
+                {
+                    state = Identificator;
+                }
+                break;
             }
-            else
+            case KeyWord:
             {
-                tokens[currentToken].name = "undefined";
+                if (idx + 1 < strlen(str)
+                && str[idx] == 'i' && str[idx+1] == 'f')
+                {
+                    idx+=2;
+                    currentTokenLength += 2;
+                    tokens[currentToken] = finishToken("keyword");
+                    state = Default;
+                }
+                else if (idx + 5 < strlen(str)
+                && str[idx] == 's' && str[idx+1] == 'w' && str[idx+2] == 'i'
+                && str[idx+3] == 't' && str[idx+4] == 'c' && str[idx+5] == 'h')
+                {
+                    idx+=6;
+                    currentTokenLength+=2;
+                    tokens[currentToken] = finishToken("keyword");
+                    state = Default;
+                }
+                else
+                {
+                    state = Comparison;
+                }
+                break;
             }
-            tokens[currentToken].value = (char*) malloc(strlen(token)+1);
-            strcpy(tokens[currentToken].value, token);
-            currentToken++;
         }
     }
-    free(tofree);
     for (int i=0;i<currentToken;i++)
     {
         printf("%s:%s\n",tokens[i].name,tokens[i].value);
