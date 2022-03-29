@@ -9,35 +9,77 @@ int IsIdentifier(char *str)
     return (isalpha(str[0]) == 2);
 }
 
-int IsNumber(char *str)
-{
-    int dotCount = 0;
-    for (int i =0; i < strlen(str); i++)
-    {
-        if (str[i] == '.') dotCount++;
-        if (!isdigit(str[i]) && str[i] != '.') return 0;
-    }
-    return (dotCount < 2);
-}
+enum number{
+numbers,
+one_dot_numbers,
+finish_number,
+no_number
+};
 
 int IsNumber(char *str)
 {
-    int dotCount = 0;
-    for (int i =0; i < strlen(str); i++)
+    int i=0;
+    int count_str = strlen(str);
+    enum number stage;
+    while(1)
     {
-        if(!isdigit(str[i]))
+        switch (stage)
         {
-            if (str[i] == '.')
+        case numbers:
+        {
+            if(count_str>i)
             {
-                dotCount++;
-            } 
-            if( dotCount == 1) 
-            {
-                return 0;
+                if(isdigit(str[i]))
+                {
+                    i++;
+                }
+                else if (str[i] == '.')
+                {
+                    i++;
+                    stage=one_dot_numbers;
+                }
+                else
+                {
+                    stage =no_number;
+                }
             }
+            else
+            {
+                stage = finish_number;
+            }
+            break;
+        }
+        case one_dot_numbers:
+        {
+            if(count_str>i)
+            {
+                if(isdigit(str[i]))
+                {
+                    i++;
+                }
+                else
+                {
+                    stage = no_number;
+                }
+            } 
+            else
+            {
+                stage = finish_number;
+            }
+            break;
+        }
+        case no_number:
+        {
+            return 0;
+        }
+        case finish_number:
+        {
+            return 1;
+        }
+        default:
+            break;
         }
     }
-    return 1;
 }
 
 int IsComparison(char *str)

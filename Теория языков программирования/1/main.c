@@ -24,12 +24,11 @@ int main()
 {
     struct Token tokens[100];
     int currentToken;
-    char *str = "21323 fdsfsd + == hghghg         f";
+    char *str = "21323 54.43 54. 54 fdsfsd + == hghghg         f";
     char *token, *str1, *tofree;
     tofree = str1 = strdup(str);
     while ((token = strsep(&str1, " ")))
     {
-        printf("token:%s\n",token);
         if(strlen(token)>0)
         {
             if(IsComparison(token))
@@ -50,7 +49,7 @@ int main()
             }
             else if (IsIdentifier(token))
             {
-                tokens[currentToken].name = "INDen";
+                tokens[currentToken].name = "ident";
             }
             else
             {

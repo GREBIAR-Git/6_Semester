@@ -1,1 +1,3 @@
-if ($?) { gcc main.c -o main } ; if ($?) { .\main }
+gcc main.c -o main 
+.\main
+PAUSE
