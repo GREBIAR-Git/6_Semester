@@ -18,7 +18,7 @@ enum State
     KeyWord
 };
 
-char *str = "21323 54.43 54. 54 fdsfsd + == hghghg         f";
+char *str = "21323 54.43 54. 54 fdsfsd + == hghghg  fsd";
 int currentToken = 0; int currentTokenLength = 0;
 int identificatorFirst = 1;
 struct Token tokens[100];
@@ -27,21 +27,33 @@ int idx = 0;
 
 #include "Lexer.c"
 
-struct Token finishToken(char* stateName)
+void finishToken(char* stateName)
 {
     char buffer[currentTokenLength + 1];
-    memcpy(buffer, &str[idx - currentTokenLength + 1], currentTokenLength);
+    memcpy(buffer, &str[idx - currentTokenLength], currentTokenLength); // <- krasava
     buffer[currentTokenLength] = '\0';
-    struct Token newToken;
-    strcpy(newToken.name, stateName);
-    strcpy(newToken.value, buffer);
+    //strcpy(tokens[currentToken].name, stateName);
+    //strcpy(tokens[currentToken].value, buffer);
+    printf("\n\n%s - %s\n", stateName, buffer);
+    //printf("%s - %s\n\n", tokens[currentToken].name, tokens[currentToken].value);
     currentToken++;
-    currentTokenLength++;
-    return newToken;
+    currentTokenLength=0;
 }
 
 int main()
 {
+    // Подготавливаем буфер для вывода результата
+    char buffer[strlen(str)+1];
+    strcpy(buffer, str);
+    strcat(buffer, " ");
+    str = buffer;
+
+
+    //
+    //  Начало программы
+    //
+
+
     while(idx < strlen(str))
     {
         switch(state)
@@ -55,13 +67,15 @@ int main()
             {
                 if(isalpha(str[idx]) || (!identificatorFirst && isdigit(str[idx])))
                 {
-                    printf(" Identificator");
                     currentTokenLength++;
                     idx++;
                 }
                 else if (str[idx] == ' ' || str[idx] == '\n')
                 {
-                    tokens[currentToken] = finishToken("identificator");
+                    if (currentTokenLength)
+                    {
+                        finishToken("identificator");
+                    }
                     idx++;
                     state = Default;
                 }
@@ -75,8 +89,7 @@ int main()
             {
                 if (IsNumber(str))
                 {
-                    printf("number");
-                    tokens[currentToken] = finishToken("number");
+                    finishToken("number");
                     state = Default;
                 }
                 else
@@ -92,10 +105,9 @@ int main()
                 && (str[idx] == '!' && str[idx] == '='
                 || str[idx] == '=' && str[idx+1] == '='))
                 {
-                    printf("comparison");
                     idx+=2;
                     currentTokenLength+=2;
-                    tokens[currentToken] = finishToken("comparison");
+                    finishToken("comparison");
                     state = Default;
                 }
                 else
@@ -108,10 +120,9 @@ int main()
             {
                 if (str[idx] == '+' || str[idx] == '-')
                 {
-                    printf("sign");
                     idx++;
                     currentTokenLength++;
-                    tokens[currentToken] = finishToken("sign");
+                    finishToken("sign");
                     state = Default;
                 }
                 else
@@ -125,10 +136,9 @@ int main()
                 if (idx + 1 < strlen(str)
                 && str[idx] == 'i' && str[idx+1] == 'f')
                 {
-                    printf("keyword");
                     idx+=2;
                     currentTokenLength += 2;
-                    tokens[currentToken] = finishToken("keyword");
+                    finishToken("keyword");
                     state = Default;
                 }
                 else if (idx + 5 < strlen(str)
@@ -137,7 +147,7 @@ int main()
                 {
                     idx+=6;
                     currentTokenLength+=2;
-                    tokens[currentToken] = finishToken("keyword");
+                    finishToken("keyword");
                     state = Default;
                 }
                 else
@@ -150,7 +160,7 @@ int main()
     }
     for (int i=0;i<currentToken;i++)
     {
-        printf("%s:%s\n",tokens[i].name,tokens[i].value);
+        //printf("%s:%s\n",tokens[i].name,tokens[i].value);
     }
     return 0;
 }

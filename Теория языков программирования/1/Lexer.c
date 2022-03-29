@@ -17,7 +17,7 @@ int IsNumber(char *str)
         {
         case numbers:
         {
-            if(str[idx] != ' ')
+            if(idx < strlen(str) && str[idx] != ' ')
             {
                 if(isdigit(str[idx]))
                 {
@@ -43,7 +43,7 @@ int IsNumber(char *str)
         }
         case one_dot_numbers:
         {
-            if(str[idx] != ' ')
+            if(idx < strlen(str) && str[idx] != ' ')
             {
                 if(isdigit(str[idx]))
                 {
