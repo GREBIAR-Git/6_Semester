@@ -21,7 +21,7 @@ enum State
 char *str = "21323 54.43 54. 54 fdsfsd + == hghghg  fsd";
 int currentToken = 0; int currentTokenLength = 0;
 int identificatorFirst = 1;
-struct Token tokens[100];
+struct Token tokens[300];
 enum State state = Default;
 int idx = 0;
 
