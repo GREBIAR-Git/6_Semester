@@ -54,7 +54,7 @@ DWORD WINAPI ThreadFunc(LPVOID lpParam)
 			directionTop = FALSE;
 		}
 		UpdateWin(main1);
-		Sleep(20);
+		Sleep(3);
 	}
     return 0;
 }
