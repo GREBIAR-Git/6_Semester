@@ -8,11 +8,11 @@ Ggfdg
 4.4.4.
 .4.
 44t4
--
+-_
 +
 *
 :=
-else
+e:lse
 begin
 bagshin
 <>
