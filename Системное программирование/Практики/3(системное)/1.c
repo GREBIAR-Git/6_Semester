@@ -113,7 +113,7 @@ int main()
 	wprintf (L"%lu Мбайт dwTotalVirtual \n",state.ullAvailVirtual/DIV);
 	wprintf (L"%lu Мбайт dwAvailVirtual \n",state.ullAvailVirtual/DIV);
 	
-	
+	system("PAUSE");
 	return 0;
 
 }
