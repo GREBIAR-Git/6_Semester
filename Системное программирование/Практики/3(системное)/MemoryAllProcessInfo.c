@@ -78,6 +78,10 @@ char * GetProtect(DWORD protect)
 
 void PrintAllProcess()
 {
+    MEMORY_BASIC_INFORMATION mbi;
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+    LPCVOID offset=0;
     unsigned short columnWidth = 20;
 
     printf("%*s\t", columnWidth, "Base Address (0x)");
@@ -86,13 +90,9 @@ void PrintAllProcess()
     printf("%*s\t", columnWidth, "Protect");
     printf("\n");
 
-    MEMORY_BASIC_INFORMATION mbi;
-    SYSTEM_INFO si;
-    GetSystemInfo(&si);
-    LPCVOID offset=0;
     while(offset< si.lpMaximumApplicationAddress)
     {
-        VirtualQuery((LPCVOID)(0 + offset), &mbi, sizeof(MEMORY_BASIC_INFORMATION));
+        VirtualQuery((LPCVOID)(offset), &mbi, sizeof(MEMORY_BASIC_INFORMATION));
         printf("%*lx\t", columnWidth, mbi.BaseAddress);
         printf("%*s\t", columnWidth, GetType(mbi.Type));
         printf("%*s\t", columnWidth, GetState(mbi.State));

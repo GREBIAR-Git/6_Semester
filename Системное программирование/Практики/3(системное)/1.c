@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <psapi.h>
 #include <locale.h>
-#include <tchar.h>
 #include "MemoryAllProcessInfo.c"
 #include "MemoryGeneralInfo.c"
 
