@@ -116,10 +116,27 @@ int main()
     SYSTEM_INFO si;
     GetSystemInfo(&si);
     LPCVOID offset=0;
+
+    unsigned short columnWidth = 20;
+
+    printf("%*s\t", columnWidth, "Base Address (0x)");
+    printf("%*s\t", columnWidth, "Type");
+    printf("%*s\t", columnWidth, "State");
+    printf("%*s\t", columnWidth, "Protect");
+    printf("\n\n");
+
     while(offset< si.lpMaximumApplicationAddress)
     {
         VirtualQuery((LPCVOID)(0 + offset), &mbi, sizeof(MEMORY_BASIC_INFORMATION));
-        printf("Base Address - 0x%lx;\n Type - %s;\n State - %s;\n Protect - %s;\n\n",mbi.BaseAddress,GetType(mbi.Type),GetState(mbi.State),GetProtect(mbi.Protect));
+
+        //printf("Base Address - 0x%lx;\n Type - %s;\n State - %s;\n Protect - %s;\n\n",mbi.BaseAddress,GetType(mbi.Type),GetState(mbi.State),GetProtect(mbi.Protect));
+        printf("%*lx\t", columnWidth, mbi.BaseAddress);
+        printf("%*s\t", columnWidth, GetType(mbi.Type));
+        printf("%*s\t", columnWidth, GetState(mbi.State));
+        printf("%*s\t", columnWidth, GetProtect(mbi.Protect));
+
+        printf("\n");
+        
         offset+=mbi.RegionSize;
     }
 	system("PAUSE");
