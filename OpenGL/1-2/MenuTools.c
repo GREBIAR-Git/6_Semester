@@ -21,16 +21,38 @@ struct menu
 };
 
 struct menu menu;
+char debugLine[500];
 
-int CursorInside(RECT area, POINT cursorCoords);
+int CursorInsideArea(struct area area, POINT cursorCoords);
+int CursorInsideRect(RECT area, POINT cursorCoords);
 int DrawArea(HDC hdc, RECT area);
 int DrawMenu(HDC hdc, RECT menuArea, BOOL vertical, int buttonSize, char title[100]);
 int DrawMenuButton(HDC hdc, char title[100]);
 struct area RectToArea(RECT rect);
 int DrawLabel(HDC hdc, RECT area, char* text);
+int DrawDebug(HDC hdc, RECT window);
+
+int DrawDebug(HDC hdc, RECT window)
+{
+	RECT debugArea;
+    debugArea.left = 300;
+    debugArea.right = 1000;
+    debugArea.bottom = 500;
+    debugArea.top = debugArea.bottom - 50;
+	DrawLabel(hdc, window, debugLine);
+}
 
 
-int CursorInside(RECT area, POINT cursorCoords)
+int CursorInsideArea(struct area area, POINT cursorCoords)
+{
+	if (cursorCoords.x > area.topLeft.x && cursorCoords.x < area.botRight.x && cursorCoords.y > area.topLeft.y && cursorCoords.y < area.botRight.y)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+int CursorInsideRect(RECT area, POINT cursorCoords)
 {
 	if (cursorCoords.x > area.left && cursorCoords.x < area.right && cursorCoords.y < area.bottom && cursorCoords.y > area.top)
 	{
@@ -89,6 +111,7 @@ int DrawMenuButton(HDC hdc, char title[100])
 	}
 	DrawArea(hdc, buttonArea);
 	menu.buttons[menu.buttonsLength].area = RectToArea(buttonArea);
+	//printf("ButtonArea[%15d]: %15d%15d%15d%15d\n", menu.buttonsLength, menu.buttons[menu.buttonsLength].area.topLeft.x, menu.buttons[menu.buttonsLength].area.topLeft.y, menu.buttons[menu.buttonsLength].area.botRight.x, menu.buttons[menu.buttonsLength].area.botRight.y);
 	menu.buttonsLength ++;
 
 	DrawLabel(hdc, buttonArea, title);

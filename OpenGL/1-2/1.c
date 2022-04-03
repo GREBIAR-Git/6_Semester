@@ -8,16 +8,19 @@
 #include "MenuTools.c"
 #include "MenuSettings.c"
 
-#define SizeElement 10
+#define SizeElement 500
 #define shapeLine 1
 #define shapeRectangle 2
 #define shapeEllipse 3
+
 
 BOOL drawing; 
 TypeElement currentElement;
 Element elem[SizeElement];
 int countElement;
-Display display; 
+Display display;
+
+#include "ButtonEvents.c"
 
 void RotateElements()
 {
@@ -59,6 +62,93 @@ PointD Zoom(double x,double y,RECT window)
 		coordInZoom.y = y;
 	}
 	return coordInZoom;
+}
+
+int MenuButtonPressed(HWND hwnd)
+{
+	POINT cursorCoords;
+	GetCursorPos(&cursorCoords);
+	ScreenToClient(hwnd, &cursorCoords);
+
+	if (CursorInsideArea(menu.buttons[0].area, cursorCoords))
+	{
+		ButtonLine();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[1].area, cursorCoords))
+	{
+		ButtonRect();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[2].area, cursorCoords))
+	{
+		ButtonEllipse();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[3].area, cursorCoords))
+	{
+		ButtonRed();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[4].area, cursorCoords))
+	{
+		ButtonGreen();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[5].area, cursorCoords))
+	{
+		ButtonBlue();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[6].area, cursorCoords))
+	{
+		ButtonWhite();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[7].area, cursorCoords))
+	{
+		ButtonSizePlus();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[8].area, cursorCoords))
+	{
+		ButtonSizeMinus();
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[9].area, cursorCoords))
+	{
+		ButtonZoomIn(hwnd);
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[10].area, cursorCoords))
+	{
+		ButtonZoomOut(hwnd);
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[11].area, cursorCoords))
+	{
+		ButtonLeft(hwnd);
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[12].area, cursorCoords))
+	{
+		ButtonRight(hwnd);
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[13].area, cursorCoords))
+	{
+		ButtonUp(hwnd);
+		return 1;
+	}
+	else if (CursorInsideArea(menu.buttons[14].area, cursorCoords))
+	{
+		ButtonDown(hwnd);
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 PointD ZoomReverce(double x,double y,RECT window)
@@ -130,20 +220,22 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	}
 	case WM_LBUTTONDOWN:
 	{
-		if (countElement >= SizeElement - 1)
+		if (!MenuButtonPressed(hwnd))
 		{
-			countElement--;
-			RotateElements();
+			if (countElement >= SizeElement - 1)
+			{
+				countElement--;
+				RotateElements();
+			}
+			RECT window;
+			GetClientRect(hwnd,&window);
+			PointD firstPoint = ZoomReverce(LOWORD(lParam), HIWORD(lParam), window);
+			elem[countElement].coords.point1 = firstPoint;
+			elem[countElement].typeElement.shape = currentElement.shape;
+			elem[countElement].typeElement.colour = currentElement.colour;
+			elem[countElement].typeElement.size = currentElement.size;
+			drawing = TRUE;
 		}
-
-		RECT window;
-		GetClientRect(hwnd,&window);
-		PointD firstPoint = ZoomReverce(LOWORD(lParam), HIWORD(lParam), window);
-		elem[countElement].coords.point1 = firstPoint;
-		elem[countElement].typeElement.shape = currentElement.shape;
-		elem[countElement].typeElement.colour = currentElement.colour;
-		elem[countElement].typeElement.size = currentElement.size;
-		drawing = TRUE;
 
 		break;
 	}
@@ -247,101 +339,34 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	{
 		switch (wParam)
 		{
-			case 0x51:
-			{
-				currentElement.shape = shapeLine;
-				break;
-			}
-			case 0x57:
-			{
-				currentElement.shape = shapeRectangle;
-				break;
-			}
-			case 0x45:
-			{
-				currentElement.shape = shapeEllipse;
-				break;
-			}
-			case 0x53:
-			{
-				currentElement.colour = RGB(255, 0, 0);
-				break;
-			}
-			case 0x44:
-			{
-				currentElement.colour = RGB(0, 255, 0);
-				break;
-			}
-			case 0x46:
-			{
-				currentElement.colour = RGB(0, 0, 255);
-				break;
-			}
-			case 0x52:
-			{
-				currentElement.colour = RGB(255, 255, 255);
-				break;
-			}
-			case 0x49:
-			{
-				if (currentElement.size < 228)
-				currentElement.size++;
-				break;
-			}
-			case 0x4F:
-			{
-				if (currentElement.size > 1)
-				currentElement.size--;
-				break;
-			}
 			case VK_OEM_PLUS:
 			{
-				display.zoom-=0.1*fabs(display.zoom);
-				if(display.zoom<1&&display.zoom>-1)
-				{
-					display.zoom=-1.1;
-				}
-				char str[4];
-				sprintf(str,"%lf",display.zoom);
-				SetWindowText(hwnd,str);
-				UpdateWin(hwnd);
+				ButtonZoomIn(hwnd);
 				break;
 			}
 			case VK_OEM_MINUS:
 			{
-				display.zoom+=0.1*fabs(display.zoom);
-				if(display.zoom>-1&&display.zoom<1)
-				{
-					display.zoom=1;
-				}
-				char str[4];
-				sprintf(str,"%lf",display.zoom);
-				SetWindowText(hwnd,str);
-				UpdateWin(hwnd);
+				ButtonZoomOut(hwnd);
 				break;
 			}
 			case VK_LEFT:
 			{
-				display.center.x-=1;
-				UpdateWin(hwnd);
+				ButtonLeft(hwnd);
 				break;
 			}
 			case VK_RIGHT:
 			{
-				display.center.x+=1;
-				UpdateWin(hwnd);
+				ButtonRight(hwnd);
 				break;
 			}
 			case VK_UP:
 			{
-				display.center.y+=1;
-				UpdateWin(hwnd);
+				ButtonUp(hwnd);
 				break;
 			}
 			case VK_DOWN:
 			{
-				display.center.y-=1;
-				UpdateWin(hwnd);
+				ButtonDown(hwnd);
 				break;
 			}
 		}
