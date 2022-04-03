@@ -5,6 +5,7 @@
 #include <locale.h>
 #include "MemoryAllProcessInfo.c"
 #include "MemoryGeneralInfo.c"
+#include "ChangeProcessProtect.c"
 
 int main()
 {
@@ -12,9 +13,13 @@ int main()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
     
-    PrintGeneralInfo();
-    PrintAllProcess();
-    
-	system("PAUSE");
+	while(1)
+	{
+		PrintGeneralInfo();
+		PrintAllProcess();
+		ChangeProcessProtect(InputProtect(),InputIdProcess());//Пока не работает
+		system("PAUSE");
+	}
+	
 	return 0;
 }
