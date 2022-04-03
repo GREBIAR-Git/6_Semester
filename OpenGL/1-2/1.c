@@ -19,6 +19,15 @@ Element elem[SizeElement];
 int countElement;
 Display display; 
 
+void RotateElements()
+{
+	Element first = elem[0];
+	for (int i = 0; i < SizeElement; i++)
+	{
+		elem[i] = elem[i + 1];
+	}
+	elem[0] = first;
+}
 
 BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
 {
@@ -121,6 +130,12 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	}
 	case WM_LBUTTONDOWN:
 	{
+		if (countElement >= SizeElement - 1)
+		{
+			countElement--;
+			RotateElements();
+		}
+
 		RECT window;
 		GetClientRect(hwnd,&window);
 		PointD firstPoint = ZoomReverce(LOWORD(lParam), HIWORD(lParam), window);
@@ -129,6 +144,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		elem[countElement].typeElement.colour = currentElement.colour;
 		elem[countElement].typeElement.size = currentElement.size;
 		drawing = TRUE;
+
 		break;
 	}
 	case WM_MOUSEMOVE:
@@ -162,10 +178,9 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	case WM_LBUTTONUP:
 	{
 		drawing = FALSE;
-		if (countElement < SizeElement - 1)
-		{
-			countElement++;
-		}
+
+		if (countElement < SizeElement - 1) countElement++;
+
 		break;
 	}
 	case WM_PAINT:
