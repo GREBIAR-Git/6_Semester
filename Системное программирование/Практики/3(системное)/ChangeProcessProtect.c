@@ -40,11 +40,13 @@ DWORD InputProtect()
 
 void ChangeProcessProtect(DWORD protect,PVOID id)
 {
-    MEMORY_BASIC_INFORMATION mbi;
-
-    VirtualQuery(id, &mbi, sizeof(MEMORY_BASIC_INFORMATION));
-
-    if(VirtualProtect(id, mbi.RegionSize, protect, NULL))
+    //MEMORY_BASIC_INFORMATION mbi;
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+//    VirtualQuery(id, &mbi, sizeof(MEMORY_BASIC_INFORMATION));
+    //printf("old - %s; new - %s",GetProtect(mbi.Protect),GetProtect(protect));
+    printf("%lx",id);
+    if(VirtualProtect(id, si.dwPageSize, protect, NULL))
     {
         wprintf(L"Удачно;");
     }

@@ -6,6 +6,7 @@
 #include "MemoryAllProcessInfo.c"
 #include "MemoryGeneralInfo.c"
 #include "ChangeProcessProtect.c"
+#include "AllocMemory.c"
 
 int main()
 {
@@ -17,7 +18,10 @@ int main()
 	{
 		PrintGeneralInfo();
 		PrintAllProcess();
-		ChangeProcessProtect(InputProtect(),InputIdProcess());//Пока не работает
+		AllocMemory(InputProtect(),InputState(),NULL);//нужно что-то сделать с адресами 
+		//FreeMemory(InputStateFree(),InputIdProcess());
+		printf("VirtualAlloc failed with status %lu\n", GetLastError());
+		//ChangeProcessProtect(InputProtect(),InputIdProcess());//Пока не работает
 		system("PAUSE");
 	}
 	
