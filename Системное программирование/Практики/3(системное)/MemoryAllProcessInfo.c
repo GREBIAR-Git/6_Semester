@@ -85,6 +85,9 @@ void PrintAllProcess()
     unsigned short columnWidth = 20;
 
     printf("%*s\t", columnWidth, "Base Address (0x)");
+    printf("%*s\t", columnWidth, "PageSize");
+    printf("%*s\t", columnWidth, "all base address");
+    printf("%*s\t", columnWidth, "all protect");
     printf("%*s\t", columnWidth, "Type");
     printf("%*s\t", columnWidth, "State");
     printf("%*s\t", columnWidth, "Protect");
@@ -93,7 +96,10 @@ void PrintAllProcess()
     while(offset< si.lpMaximumApplicationAddress)
     {
         VirtualQuery((LPCVOID)(offset), &mbi, sizeof(MEMORY_BASIC_INFORMATION));
-        printf("%*lx\t", columnWidth, mbi.BaseAddress);
+        printf("%*p\t", columnWidth, mbi.BaseAddress);
+        printf("%*lx\t", columnWidth, mbi.RegionSize);
+        printf("%*p\t", columnWidth, mbi.AllocationBase);
+        printf("%*s\t", columnWidth, GetProtect(mbi.AllocationProtect));
         printf("%*s\t", columnWidth, GetType(mbi.Type));
         printf("%*s\t", columnWidth, GetState(mbi.State));
         printf("%*s\t", columnWidth, GetProtect(mbi.Protect));

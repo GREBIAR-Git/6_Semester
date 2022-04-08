@@ -40,18 +40,46 @@ DWORD InputProtect()
 
 void ChangeProcessProtect(DWORD protect,PVOID id)
 {
-    //MEMORY_BASIC_INFORMATION mbi;
+    /*MEMORY_BASIC_INFORMATION mbi;
     SYSTEM_INFO si;
     GetSystemInfo(&si);
-//    VirtualQuery(id, &mbi, sizeof(MEMORY_BASIC_INFORMATION));
+    LPCVOID offset=0;
+    unsigned short columnWidth = 20;
+    DWORD oldProtect;
+    while(offset< si.lpMaximumApplicationAddress)
+    {
+        printf("address - %p;\n",offset);
+        VirtualQuery((LPCVOID)(offset), &mbi, sizeof(MEMORY_BASIC_INFORMATION));
+        if(VirtualProtect(offset, mbi.RegionSize, protect, &oldProtect))
+        {
+            wprintf(L"Удачно;");
+        }
+        else
+        {
+            wprintf(L"Не удачно;");
+        }        
+        offset+=mbi.RegionSize;
+    }*/
+
+
+    MEMORY_BASIC_INFORMATION mbi;
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+    VirtualQuery(id, &mbi, sizeof(MEMORY_BASIC_INFORMATION));
     //printf("old - %s; new - %s",GetProtect(mbi.Protect),GetProtect(protect));
     printf("%lx",id);
-    if(VirtualProtect(id, si.dwPageSize, protect, NULL))
-    {
-        wprintf(L"Удачно;");
-    }
-    else
-    {
-        wprintf(L"Не удачно;");
-    }
+    printf("rg - %lu;\n",mbi.RegionSize);
+    printf("rs - %lu;\n",si.dwPageSize);
+    DWORD oldProtect;
+    
+        if(VirtualProtect(id, mbi.RegionSize, protect, &oldProtect))
+        {
+            wprintf(L"Удачно;");
+        }
+        else
+        {
+            wprintf(L"Не удачно;");
+        }
+    
+    printf ("\nold-%s\n",GetProtect(oldProtect));
 }

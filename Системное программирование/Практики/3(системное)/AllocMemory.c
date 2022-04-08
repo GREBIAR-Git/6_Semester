@@ -27,10 +27,6 @@ DWORD InputStateFree()
         return MEM_DECOMMIT;
     case 1:
         return MEM_RELEASE;
-    /*case 2:
-        return (MEM_RELEASE|MEM_COALESCE_PLACEHOLDERS);
-    case 3:
-        return (MEM_RELEASE|MEM_PRESERVE_PLACEHOLDER);*/
     }
 }
 
@@ -38,8 +34,11 @@ void AllocMemory(DWORD protect,DWORD state, PVOID id)
 {
     SYSTEM_INFO si;
     GetSystemInfo(&si);
-    if(VirtualAlloc(id,si.dwPageSize,state,protect))
+    printf("%lx",si.dwPageSize);
+    LPVOID newId = VirtualAlloc(id,si.dwPageSize,state,protect);
+    if(newId)
     {
+        printf("new - %lx ; ",newId);
         wprintf(L"Удачно");
     }
     else
@@ -50,9 +49,12 @@ void AllocMemory(DWORD protect,DWORD state, PVOID id)
 
 void FreeMemory(DWORD stateFree,PVOID id)
 {
+    MEMORY_BASIC_INFORMATION mbi;
+    VirtualQuery(id, &mbi, sizeof(MEMORY_BASIC_INFORMATION));
+
     SYSTEM_INFO si;
     GetSystemInfo(&si);
-    if(VirtualFree(id,si.dwPageSize,stateFree))
+    if(VirtualFree(id,mbi.RegionSize,stateFree))
     {
         wprintf(L"Удачно");
     }
