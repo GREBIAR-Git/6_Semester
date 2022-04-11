@@ -13,7 +13,6 @@
 #define shapeRectangle 2
 #define shapeEllipse 3
 
-
 BOOL drawing; 
 TypeElement currentElement;
 Element elem[SizeElement];
@@ -250,21 +249,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		double w = window.right-window.left;
 		double h = window.bottom-window.top;
 		PointD point = Zoom(w/2,0,window);
-		char str[100],str1[100],str2[100],str3[100];
-		
-		sprintf(str2,"%lf",point.x);
-		point = Zoom(0,h/2,window);
-		sprintf(str3,"%lf",point.y);				
-
-		sprintf(str,"%lf",secondPoint.x);
-		sprintf(str1,"%lf",secondPoint.y);
-		strcat(str," : ");
-		strcat(str,str1);
-		strcat(str," ; ");
-		strcat(str,str2);
-		strcat(str," : ");
-		strcat(str,str3);
-		//SetWindowText(hwnd,str);
 		break;
 	}
 	case WM_LBUTTONUP:

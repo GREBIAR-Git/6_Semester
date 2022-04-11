@@ -41,9 +41,6 @@ ButtonZoomIn(HWND hwnd)
     {
         display.zoom=-1.1;
     }
-    char str[4];
-    sprintf(str,"%lf",display.zoom);
-    SetWindowText(hwnd,str);
     UpdateWin(hwnd);
 }
 ButtonZoomOut(HWND hwnd)
@@ -53,9 +50,6 @@ ButtonZoomOut(HWND hwnd)
     {
         display.zoom=1;
     }
-    char str[4];
-    sprintf(str,"%lf",display.zoom);
-    SetWindowText(hwnd,str);
     UpdateWin(hwnd);
 }
 ButtonLeft(HWND hwnd)

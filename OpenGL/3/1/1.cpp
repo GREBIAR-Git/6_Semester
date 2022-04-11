@@ -50,7 +50,7 @@ float DrawPlanet(float orbit, Planet planet)
 	glPushMatrix();
 	glRotatef(alfa * planet.spead, 0, 0, 1);
 	glColor3ub(planet.r,planet.g,planet.b);
-	glTranslated(orbit + offset + planet.radius), 0, 0);
+	glTranslated(orbit + offset + planet.radius, 0, 0);
 	glutSolidSphere(planet.radius, 100, 100);
 	orbit += (offset + planet.radius * 2);
 	glPopMatrix();
@@ -77,25 +77,12 @@ void DrawRing(float orbit)
 	glBegin(GL_LINE_LOOP);
 	for (int ii = 0; ii < 50; ii++)
 	{
-		float theta = 2 * 3.1415926f * float(ii) / float(50);//get the current angle
+		float theta = 2 * 3.1415926f * float(ii) / float(50);
 
-		float x = (planets[5].radius + 0.02) * cosf(theta);//calculate the x component
-		float y = (planets[5].radius + 0.02) * sinf(theta);//calculate the y component
+		float x = (planets[5].radius + 0.02) * cosf(theta);
+		float y = (planets[5].radius + 0.02) * sinf(theta);
 
-		glVertex2f(x + orbit+ planets[5].radius + 0.03, y);//output vertex
-
-	}
-	glEnd();
-	
-	glBegin(GL_LINE_LOOP);
-	for (int ii = 0; ii < 50; ii++)
-	{
-		float theta = 2.0f * 3.1415926f * float(ii) / float(50);//get the current angle
-
-		float x = (planets[5].radius + 0.01) * cosf(theta);//calculate the x component
-		float y = (planets[5].radius + 0.01) * sinf(theta);//calculate the y component
-
-		glVertex2f(x + orbit + planets[5].radius + 0.025, y);//output vertex
+		glVertex2f(x + orbit+ planets[5].radius + 0.03, y);
 
 	}
 	glEnd();
@@ -103,12 +90,25 @@ void DrawRing(float orbit)
 	glBegin(GL_LINE_LOOP);
 	for (int ii = 0; ii < 50; ii++)
 	{
-		float theta = 2.0f * 3.1415926f * float(ii) / float(50);//get the current angle
+		float theta = 2.0f * 3.1415926f * float(ii) / float(50);
 
-		float x = (planets[5].radius + 0.03) * cosf(theta);//calculate the x component
-		float y = (planets[5].radius + 0.03) * sinf(theta);//calculate the y component
+		float x = (planets[5].radius + 0.01) * cosf(theta);
+		float y = (planets[5].radius + 0.01) * sinf(theta);
 
-		glVertex2f(x + orbit + planets[5].radius + 0.03, y);//output vertex
+		glVertex2f(x + orbit + planets[5].radius + 0.025, y);
+
+	}
+	glEnd();
+	
+	glBegin(GL_LINE_LOOP);
+	for (int ii = 0; ii < 50; ii++)
+	{
+		float theta = 2.0f * 3.1415926f * float(ii) / float(50);
+
+		float x = (planets[5].radius + 0.03) * cosf(theta);
+		float y = (planets[5].radius + 0.03) * sinf(theta);
+
+		glVertex2f(x + orbit + planets[5].radius + 0.03, y);
 
 	}
 	glEnd();
