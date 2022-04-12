@@ -36,19 +36,30 @@ ButtonSizeMinus()
 }
 ButtonZoomIn(HWND hwnd)
 {
-    display.zoom-=0.1*fabs(display.zoom);
-    if(display.zoom<1&&display.zoom>-1)
+    display.zoom.x-=0.1*fabs(display.zoom.x);
+    display.zoom.y-=0.1*fabs(display.zoom.y);
+    if(display.zoom.x<1&&display.zoom.x>-1)
     {
-        display.zoom=-1.1;
+        display.zoom.x=-1;
+    }
+    if(display.zoom.y<1&&display.zoom.y>-1)
+    {
+         display.zoom.y=-1;
     }
     UpdateWin(hwnd);
 }
+
 ButtonZoomOut(HWND hwnd)
 {
-    display.zoom+=0.1*fabs(display.zoom);
-    if(display.zoom>-1&&display.zoom<1)
+    display.zoom.x+=0.1*fabs(display.zoom.x);
+    display.zoom.y+=0.1*fabs(display.zoom.y);
+    if(display.zoom.x>-1&&display.zoom.x<1)
     {
-        display.zoom=1;
+        display.zoom.x=1;
+    }
+    if(display.zoom.y>-1&&display.zoom.y<1)
+    {
+        display.zoom.y=1;
     }
     UpdateWin(hwnd);
 }

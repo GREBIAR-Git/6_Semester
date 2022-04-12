@@ -6,7 +6,7 @@ typedef struct POINTD
 
 typedef struct DISPLAY
 {
-	double zoom;
+	PointD zoom;
 	PointD center;
 }Display;
 

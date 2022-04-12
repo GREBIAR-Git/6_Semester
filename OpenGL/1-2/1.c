@@ -18,6 +18,9 @@ TypeElement currentElement;
 Element elem[SizeElement];
 int countElement;
 Display display;
+BOOL zooming;
+
+POINT p1;
 
 #include "ButtonEvents.c"
 
@@ -45,21 +48,24 @@ PointD Zoom(double x,double y,RECT window)
 	center.x = w/2;
 	center.y = h/2;
 	PointD coordInZoom;
-	if(display.zoom>=1)
+	coordInZoom.x = x;
+	coordInZoom.y = y;
+	if(display.zoom.x>=1)
 	{
-		coordInZoom.x=center.x - (center.x + display.center.x - x)/display.zoom;
-		coordInZoom.y=center.y - (center.y + display.center.y - y)/display.zoom;
+		coordInZoom.x=center.x - (center.x + display.center.x - x)/display.zoom.x;
 	}
-	else if(display.zoom<=-1) 
+	else if(display.zoom.x<=-1) 
 	{
-		coordInZoom.x=center.x + (center.x + display.center.x - x)*display.zoom;
-		coordInZoom.y=center.y + (center.y + display.center.y - y)*display.zoom;
+		coordInZoom.x=center.x + (center.x + display.center.x - x)*display.zoom.x;
 	} 
-	else
+	if(display.zoom.y>=1)
 	{
-		coordInZoom.x = x;
-		coordInZoom.y = y;
+		coordInZoom.y=center.y - (center.y + display.center.y - y)/display.zoom.y;
 	}
+	else if(display.zoom.y<=-1) 
+	{
+		coordInZoom.y=center.y + (center.y + display.center.y - y)*display.zoom.y;
+	} 
 	return coordInZoom;
 }
 
@@ -158,20 +164,23 @@ PointD ZoomReverce(double x,double y,RECT window)
 	center.x = w/2;
 	center.y = h/2;
 	PointD coordInZoom;
-	if(display.zoom>=1)
+	coordInZoom.x = x;
+	coordInZoom.y = y;
+	if(display.zoom.x>=1)
 	{
-		coordInZoom.x=center.x - (center.x - display.center.x/display.zoom - x)*(display.zoom);
-		coordInZoom.y=center.y - (center.y - display.center.y/display.zoom - y)*(display.zoom);
+		coordInZoom.x=center.x - (center.x - display.center.x/display.zoom.x - x)*(display.zoom.x);
 	}
-	else if(display.zoom<=-1)
+	else if(display.zoom.x<=-1)
 	{
-		coordInZoom.x=center.x + (center.x + display.center.x*display.zoom - x)/(display.zoom);
-		coordInZoom.y=center.y + (center.y + display.center.y*display.zoom - y)/(display.zoom);
+		coordInZoom.x=center.x + (center.x + display.center.x*display.zoom.x - x)/(display.zoom.x);
 	}
-	else
+	if(display.zoom.y>=1)
 	{
-		coordInZoom.x = x;
-		coordInZoom.y = y;
+		coordInZoom.y=center.y - (center.y - display.center.y/display.zoom.y - y)*(display.zoom.y);
+	}
+	else if(display.zoom.y<=-1)
+	{
+		coordInZoom.y=center.y + (center.y + display.center.y*display.zoom.y - y)/(display.zoom.y);
 	}
 	return coordInZoom;
 }
@@ -190,15 +199,32 @@ VOID UpdateWin1(HWND hwnd,RECT window)
 	InvalidateRect(hwnd, &window, 1);
 }
 
+VOID ZoomRectangle(RECT window,int x1, int y1, int x2, int y2)
+{
+	if(fabs(x1-x2)!=0&&fabs(y1-y2)!=0)
+	{
+		PointD f1 = ZoomReverce(x1,y1,window);
+		PointD f2 = ZoomReverce(x2,y2,window);
+		display.zoom.x = fabs(display.zoom.x)*(-fabs((window.right-window.left)/fabs(x1-x2)));
+		display.zoom.y = fabs(display.zoom.y)*(-fabs((window.bottom-window.top)/fabs(y1-y2)));
+		double min = min(f1.x,f2.x);
+		display.center.x=((min-window.right/2.0)+fabs(f1.x-f2.x)/2);
+		min = min(f1.y,f2.y);
+		display.center.y=(min-window.bottom/2.0)+fabs(f1.y-f2.y)/2;
+	}
+}
+
 VOID DrawAxes(HDC memDc,RECT window)
 {
-	FillRect(memDc, &window, (HBRUSH)(RGB(255,255,255)));
 	double w = window.right-window.left;
 	double h = window.bottom-window.top;
 	PointD point = Zoom(w/2,0,window);
+	HPEN hPen = CreatePen(PS_DASH,3,RGB(0, 0, 0) );
+	SelectObject(memDc, hPen);
 	Line(memDc, point.x, 0, point.x, h);
 	point = Zoom(0,h/2,window);
 	Line(memDc,0, point.y, w, point.y);
+	DeleteObject(hPen);
 }
 
 LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
@@ -208,9 +234,9 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		ShowWindow(hwnd, SW_SHOWMAXIMIZED);
 		RECT window;
 		GetClientRect(hwnd,&window);
-		//HWND hw = CreateWindow("static", "Use keys to change tools:\nQ - Line\nW - Rectangle\nE -  Circle\n\nUse keys to change color:\nS - Red\nD - Green\nF - Blue\nR - White\n\nUse keys to change thickness:\n'I' - Thicker\n'O' - Thinner", WS_VISIBLE | WS_CHILDWINDOW , 0, 0, 250, window.bottom, hwnd, (HMENU)NULL, NULL, NULL);
 		currentElement.shape = shapeLine;
-		display.zoom=1;
+		display.zoom.x=1;
+		display.zoom.y=1;
 		display.center.x = 0;
 		display.center.y = 0;
 		countElement = 0;
@@ -235,7 +261,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			elem[countElement].typeElement.size = currentElement.size;
 			drawing = TRUE;
 		}
-
 		break;
 	}
 	case WM_MOUSEMOVE:
@@ -245,18 +270,34 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		PointD secondPoint = ZoomReverce(LOWORD(lParam), HIWORD(lParam), window);
 		elem[countElement].coords.point2 = secondPoint;
 		UpdateWin1(hwnd,window);
-
-		double w = window.right-window.left;
-		double h = window.bottom-window.top;
-		PointD point = Zoom(w/2,0,window);
 		break;
 	}
 	case WM_LBUTTONUP:
 	{
 		drawing = FALSE;
 
-		if (countElement < SizeElement - 1) countElement++;
+		if (countElement < SizeElement - 1) 
+			countElement++;
 
+		break;
+	}
+	case WM_RBUTTONDOWN:
+	{
+		zooming = TRUE;
+		p1.x = LOWORD(lParam);
+		p1.y = HIWORD(lParam);
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		if (zooming)
+		{
+			zooming = FALSE;
+			RECT window;  
+			GetClientRect(hwnd, &window);
+			ZoomRectangle(window, p1.x, p1.y, LOWORD(lParam), HIWORD(lParam));
+			UpdateWin(hwnd);
+		}
 		break;
 	}
 	case WM_PAINT:
@@ -268,6 +309,17 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		GetClientRect(hwnd, &window);
 		HBITMAP bmp = CreateCompatibleBitmap(hdc, window.right, window.bottom);
 		SelectObject(memDc, bmp);
+		FillRect(memDc, &window, (HBRUSH)(RGB(255,255,255)));
+		if(zooming)
+		{
+			double x1 = elem[countElement].coords.point2.x;
+			double y1 = elem[countElement].coords.point2.y;
+			PointD f1 = Zoom(x1,y1,window);
+			HPEN hPen = CreatePen(PS_DASH,3,RGB(255, 0, 0));
+			SelectObject(memDc, hPen);
+			Rectangle(memDc, p1.x, p1.y, f1.x, f1.y);
+			DeleteObject(hPen);
+		}
 		DrawAxes(memDc, window);
 		for (int i = 0; i < countElement+1; i++)
 		{
@@ -302,11 +354,11 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 				DeleteObject(hBrush);
 			}
 		}
-
+		GetClientRect(hwnd, &window);
 		char str[4];
-		sprintf(str,"%d",countElement);
+		sprintf(str,"Zx-%lf; Zy-%lf; Cx-%lf; Cy-%lf;clientWin; X-%lu;Y-%lu;",display.zoom.x,display.zoom.y,display.center.x,display.center.y,window.right,window.bottom);
 		SetWindowText(hwnd, str);
-		
+
 		DrawUI(memDc, window);
 
 		BitBlt(hdc, 0, 0, window.right, window.bottom, memDc, 0, 0, SRCCOPY);
@@ -351,6 +403,28 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			case VK_DOWN:
 			{
 				ButtonDown(hwnd);
+				break;
+			}
+			case VK_DELETE:
+			{
+				display.zoom.x+=0.1*fabs(display.zoom.x);
+				if(display.zoom.x>-1&&display.zoom.x<1)
+				{
+					display.zoom.x=1;
+					display.zoom.y=1;
+				}
+				UpdateWin(hwnd);
+				break;
+			}
+			case VK_INSERT:
+			{
+				display.zoom.x-=0.1*fabs(display.zoom.x);
+				if(display.zoom.x<1&&display.zoom.x>-1)
+				{
+					display.zoom.x=-1;
+					display.zoom.y=-1;
+				}
+				UpdateWin(hwnd);
 				break;
 			}
 		}
