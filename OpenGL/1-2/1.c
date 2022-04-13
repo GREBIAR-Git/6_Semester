@@ -57,8 +57,8 @@ PointD ZoomReverce(double x,double y,RECT window)
 	center.x = (window.right-window.left)/2.0;
 	center.y = (window.bottom-window.top)/2.0;
 	PointD inZoom;
-	inZoom.x=center.x + (center.x + display.center.x*display.zoom.x - x)/(display.zoom.x);
-	inZoom.y=center.y + (center.y + display.center.y*display.zoom.y - y)/(display.zoom.y);
+	inZoom.x=center.x + display.center.x + (center.x - x)/(display.zoom.x);
+	inZoom.y=center.y + display.center.y + (center.y - y)/(display.zoom.y);
 	return inZoom;
 }
 

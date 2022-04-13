@@ -36,34 +36,34 @@ ButtonSizeMinus()
 }
 ButtonZoomIn(HWND hwnd)
 {
-    display.zoom.x*=1.1;
-    display.zoom.y*=1.1;
+    display.zoom.x*=1.07;
+    display.zoom.y*=1.07;
     UpdateWin(hwnd);
 }
 
 ButtonZoomOut(HWND hwnd)
 {
-    display.zoom.x/=1.1;
-    display.zoom.y/=1.1;
+    display.zoom.x/=1.07;
+    display.zoom.y/=1.07;
     UpdateWin(hwnd);
 }
 ButtonLeft(HWND hwnd)
 {
-    display.center.x-=1;
+    display.center.x+=1;
     UpdateWin(hwnd);
 }
 ButtonRight(HWND hwnd)
 {
-    display.center.x+=1;
+    display.center.x-=1;
     UpdateWin(hwnd);
 }
 ButtonUp(HWND hwnd)
 {
-    display.center.y-=1;
+    display.center.y+=1;
     UpdateWin(hwnd);
 }
 ButtonDown(HWND hwnd)
 {
-    display.center.y+=1;
+    display.center.y-=1;
     UpdateWin(hwnd);
 }
