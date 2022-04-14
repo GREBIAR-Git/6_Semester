@@ -43,7 +43,7 @@ BOOL Line(HDC hdc, int x1, int y1, int x2, int y2)
 PointD Zoom(double x,double y,RECT window)
 {
 	PointD center;
-	center.x = (window.right-window.left)/2.0;
+	center.x = (window.right-window.left - (menu.area.botRight.x - menu.area.topLeft.x))/2.0;
 	center.y = (window.bottom-window.top)/2.0;
 	PointD inZoom;
 	inZoom.x=center.x + (center.x + display.center.x - x)*display.zoom.x;
@@ -54,7 +54,7 @@ PointD Zoom(double x,double y,RECT window)
 PointD ZoomReverce(double x,double y,RECT window)
 {
 	PointD center;
-	center.x = (window.right-window.left)/2.0;
+	center.x = (window.right-window.left - (menu.area.botRight.x - menu.area.topLeft.x))/2.0;
 	center.y = (window.bottom-window.top)/2.0;
 	PointD inZoom;
 	inZoom.x=center.x + display.center.x + (center.x - x)/(display.zoom.x);
@@ -72,7 +72,6 @@ VOID UpdateWin(HWND hwnd)
 
 VOID UpdateWin1(HWND hwnd,RECT window)
 {
-	window.left = 0;
 	InvalidateRect(hwnd, &window, 1);
 }
 
@@ -82,10 +81,10 @@ VOID ZoomRectangle(RECT window,int x1, int y1, int x2, int y2)
 	{
 		PointD f1 = ZoomReverce(x1,y1,window);
 		PointD f2 = ZoomReverce(x2,y2,window);
-		display.zoom.x = fabs(display.zoom.x)*(fabs((window.right-window.left)/fabs(x1-x2)));
+		display.zoom.x = fabs(display.zoom.x)*(fabs((window.right-window.left-(menu.area.botRight.x - menu.area.topLeft.x))/fabs(x1-x2)));
 		display.zoom.y = fabs(display.zoom.y)*(fabs((window.bottom-window.top)/fabs(y1-y2)));
 		double min = min(f1.x,f2.x);
-		display.center.x=((min-window.right/2.0)+fabs(f1.x-f2.x)/2);
+		display.center.x=((min-(window.right-window.left - (menu.area.botRight.x - menu.area.topLeft.x))/2.0)+fabs(f1.x-f2.x)/2);
 		min = min(f1.y,f2.y);
 		display.center.y=(min-window.bottom/2.0)+fabs(f1.y-f2.y)/2;
 	}
@@ -93,13 +92,13 @@ VOID ZoomRectangle(RECT window,int x1, int y1, int x2, int y2)
 
 VOID DrawAxes(HDC memDc,RECT window)
 {
-	double w = window.right-window.left;
+	double w = window.right-window.left - (menu.area.botRight.x - menu.area.topLeft.x);
 	double h = window.bottom-window.top;
-	PointD point = Zoom(w/2,0,window);
+	PointD point = Zoom(w/2.0,0,window);
 	HPEN hPen = CreatePen(PS_DASH,2,RGB(0, 0, 0));
 	SelectObject(memDc, hPen);
 	Line(memDc, point.x, 0, point.x, h);
-	point = Zoom(0,h/2,window);
+	point = Zoom(0,h/2.0,window);
 	Line(memDc,0, point.y, w, point.y);
 	DeleteObject(hPen);
 }
@@ -151,7 +150,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	}
 	case WM_LBUTTONUP:
 	{
-		drawing = FALSE;
+		//drawing = FALSE;
 
 		if (countElement < SizeElement - 1) 
 			countElement++;
@@ -187,16 +186,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		HBITMAP bmp = CreateCompatibleBitmap(hdc, window.right, window.bottom);
 		SelectObject(memDc, bmp);
 		FillRect(memDc, &window, (HBRUSH)(RGB(255,255,255)));
-		if(zooming)
-		{
-			double x1 = elem[countElement].coords.point2.x;
-			double y1 = elem[countElement].coords.point2.y;
-			PointD f1 = Zoom(x1,y1,window);
-			HPEN hPen = CreatePen(PS_DASH,3,RGB(255, 0, 0));
-			SelectObject(memDc, hPen);
-			Rectangle(memDc, p1.x, p1.y, f1.x, f1.y);
-			DeleteObject(hPen);
-		}
 		DrawAxes(memDc, window);
 		for (int i = 0; i < countElement+1; i++)
 		{
@@ -216,27 +205,47 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			else if (elem[i].typeElement.shape == shapeRectangle)
 			{
 				HPEN hPen = CreatePen(PS_DASH, elem[i].typeElement.size, elem[i].typeElement.colour);
-				SelectObject(memDc, hPen);
 				HBRUSH hBrush = CreateHatchBrush(HS_BDIAGONAL, elem[i].typeElement.colour);
+				SelectObject(memDc, hPen);
 				SelectObject(memDc, hBrush);
+
 				Rectangle(memDc, f1.x, f1.y, f2.x, f2.y);
+
 				DeleteObject(hBrush);
 				DeleteObject(hPen);
 			}
 			else if (elem[i].typeElement.shape == shapeEllipse)
 			{
+				HPEN hPen = CreatePen(PS_SOLID, elem[i].typeElement.size, elem[i].typeElement.colour);
 				HBRUSH hBrush = CreateSolidBrush(elem[i].typeElement.colour);
 				SelectObject(memDc, hBrush);
+				SelectObject(memDc, hPen);
+
 				Ellipse(memDc,  f1.x, f1.y, f2.x, f2.y);
+
 				DeleteObject(hBrush);
+				DeleteObject(hPen);
 			}
 		}
-		GetClientRect(hwnd, &window);
+		if(zooming)
+		{
+			double x1 = elem[countElement].coords.point2.x;
+			double y1 = elem[countElement].coords.point2.y;
+			PointD f1 = Zoom(x1,y1,window);
+			HPEN hPen = CreatePen(PS_DASH,3,RGB(255, 0, 0));
+			HBRUSH hBrush = GetStockObject(HOLLOW_BRUSH);
+			SelectObject(memDc, hPen);
+			SelectObject(memDc, hBrush);
+			Rectangle(memDc, p1.x, p1.y, f1.x, f1.y);
+			DeleteObject(hPen);
+			DeleteObject(hBrush);
+		}
+		DrawUI(memDc, window);
+
 		char str[4];
 		sprintf(str,"Zx-%lf; Zy-%lf; Cx-%lf; Cy-%lf;clientWin; X-%lu;Y-%lu;",display.zoom.x,display.zoom.y,display.center.x,display.center.y,window.right,window.bottom);
 		SetWindowText(hwnd, str);
 
-		DrawUI(memDc, window);
 
 		BitBlt(hdc, 0, 0, window.right, window.bottom, memDc, 0, 0, SRCCOPY);
 		DeleteDC(memDc);
