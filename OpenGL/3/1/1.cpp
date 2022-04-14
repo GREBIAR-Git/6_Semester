@@ -1,5 +1,4 @@
 #include "1.h"
-
 const int winWidth = 1400;
 
 using namespace std;
@@ -130,14 +129,324 @@ void SolarSystem()
 	}
 }
 
+
+double DrawSnowMan(float scale) 
+{
+	double bigBall = 0.30*scale;
+	glPushMatrix();
+		glRotatef(alfa, 0, 1, 0);
+		glColor3ub(243, 246, 251);
+		glutSolidSphere(bigBall, 100, 100);
+		glTranslated(0,bigBall + bigBall /3.1, 0);
+		glutSolidSphere(bigBall /3.0, 100, 100);
+		glColor3ub(0, 0, 0);
+		glPushMatrix();
+			glTranslated(bigBall /3.0 * Cos20() * Cos20(), bigBall / 3.0 * Sin20(), bigBall / 3.0 * Sin20());
+			glutSolidSphere(0.02, 100, 100);
+			glTranslated(0, 0,-2* bigBall / 3.0 * 0.342);
+			glutSolidSphere(0.02, 100, 100);
+		glPopMatrix();
+		glColor3ub(237, 145, 33);
+		glPushMatrix();
+			glRotatef(90, 0, 1, 0);
+			glTranslated(0, 0, bigBall / 3.0);
+			glutSolidCone(0.025, 0.2, 100, 100);
+		glPopMatrix();
+	glPopMatrix();
+	return bigBall;
+}
+
+void DrawSnowMan(double bigBall, float scale)
+{
+	glPushMatrix();
+		glColor3ub(243, 246, 251);
+		glutSolidSphere(bigBall, 100, 100);
+		glTranslated(0, bigBall + bigBall / 3.1, 0);
+		glutSolidSphere(bigBall / 3.0, 100, 100);
+		glColor3ub(0, 0, 0);
+		glPushMatrix();
+			glTranslated(bigBall / 3.0 * Cos20() * Cos20(), bigBall / 3.0 * Sin20(), bigBall / 3.0 * Sin20());
+			glutSolidSphere(0.02 * scale, 100, 100);
+			glTranslated(0, 0, -2 * bigBall / 3.0 * 0.342);
+			glutSolidSphere(0.02 * scale, 100, 100);
+		glPopMatrix();
+		glColor3ub(237, 145, 33);
+		glPushMatrix();
+			glRotatef(90, 0, 1, 0);
+			glTranslated(0, 0, bigBall / 3.0);
+			glutSolidCone(0.025 * scale, 0.2 * scale, 100, 100);
+		glPopMatrix();
+	glPopMatrix();
+}
+
+double SetSnowManZ(float scale, double offset)
+{
+	double bigBall = 0.30 * scale;
+	glPushMatrix();
+		glRotatef(alfa, 0, 1, 0);
+		glTranslated(0, 0, offset + 0.30 * scale);
+		DrawSnowMan(bigBall, scale);
+	glPopMatrix();
+	return bigBall*2 + offset;
+}
+
+double SetSnowManX(float scale, double offset)
+{
+	double bigBall = 0.30 * scale;
+	glPushMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	glTranslated(offset + 0.30 * scale, 0, 0);
+	DrawSnowMan(bigBall, scale);
+	glPopMatrix();
+	return bigBall * 2 + offset;
+}
+
+double SetSnowManY(float scale, double offset)
+{
+	double bigBall = 0.30 * scale;
+	glPushMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	glTranslated(0, offset + 0.30 * scale, 0);
+	DrawSnowMan(bigBall, scale);
+	glPopMatrix();
+	return bigBall * 2 + bigBall/3 * 2 + offset;
+}
+
+void SetSnowManXYZ(float scale)
+{
+	double bigBall = 0.30 * scale;
+	glTranslated(bigBall / sqrt(3), bigBall / sqrt(3), -bigBall / sqrt(3));
+	DrawSnowMan(bigBall, scale);
+	glTranslated(bigBall / sqrt(3), bigBall / sqrt(3), -bigBall / sqrt(3));
+}
+
+void SetSnowManXYZMain(float scale)
+{
+	double bigBall = 0.30 * scale;
+	DrawSnowMan(bigBall, scale);
+	glTranslated(bigBall/sqrt(3), bigBall / sqrt(3), -bigBall / sqrt(3));
+}
+
+
+void DrawSnowScene1()
+{
+	double bigBall = 0.30;
+	glPushMatrix();
+		glPushMatrix();
+			glColor3ub(243, 246, 251);
+			glTranslated(0, bigBall, 0);
+			glutSolidSphere(bigBall, 200, 200);
+		glPopMatrix();
+		glTranslated(bigBall + bigBall / 3.0, 0, 0);
+		glPushMatrix();
+			glTranslated(0, bigBall / 3.0, 0);
+			glutSolidSphere(bigBall / 3.0, 200, 200);
+		glPopMatrix();
+		glColor3ub(0, 0, 0);
+		glTranslated(bigBall / 3.0+0.1, 0.02, 0);
+		glutSolidSphere(0.02, 200, 200);
+		glTranslated(0.1, 0, 0);
+		glutSolidSphere(0.02, 200, 200);
+		glColor3ub(237, 145, 33);
+		glTranslated(0.1, -0.02, 0);
+		glPushMatrix();
+		glRotated(90,-1,0,0);
+		glutSolidCone(0.025, 0.2, 200, 200);
+		glPopMatrix();
+	glPopMatrix();
+}
+
+void DrawSnowScene2()
+{
+	glRotatef(-90, 0,1, 0);
+	DrawSnowMan(1);
+}
+
+void DrawSnowScene3()
+{
+	double offset = 0, scale = 1;
+	offset = DrawSnowMan(scale);
+	for (int i = 0; i < 2; i++)
+	{
+		scale *= 0.7;
+		offset = SetSnowManZ(scale, offset);
+	}
+}
+
+void DrawSnowScene4()
+{
+	double offset=0, scale=1;
+	offset = DrawSnowMan(scale);
+	for (int i = 0; i < 2; i++)
+	{
+		scale *= 0.7;
+		offset = SetSnowManX(scale,offset);
+	}
+}
+
+
+void DrawSnowScene5()
+{
+	double offset = 0, scale = 1;
+	offset = DrawSnowMan(scale)+ 0.30/3.0*2;
+	for (int i = 0; i < 2; i++)
+	{
+		scale *= 0.7;
+		offset = SetSnowManY(scale, offset);
+	}
+}
+
+void DrawSnowScene6()
+{
+	glRotatef(alfa, 1, 1, 1);
+	glRotatef(alfa, 0, 1, 0);
+	double scale = 1;
+	SetSnowManXYZMain(scale);
+	for (int i = 0; i < 2; i++)
+	{
+		scale *= 0.7;
+		SetSnowManXYZ(scale);
+	}
+}
+
+void DrawSnowScene7()
+{
+	double offset = 0, scale = 1;
+	offset = DrawSnowMan(scale);
+	scale *= 0.7;
+
+	double bigBall = 0.30 * scale;
+	glPushMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	glTranslated(0, -0.30 * scale/0.7 + 0.30 * scale, offset + 0.30 * scale);
+	DrawSnowMan(bigBall, scale);
+	glPopMatrix();
+	offset = bigBall * 2 + offset;
+
+	scale *= 0.7;
+
+	bigBall = 0.30 * scale;
+	glPushMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	glTranslated(0, 0.30 * scale - 0.30 * scale/0.49, offset + 0.30 * scale);
+	DrawSnowMan(bigBall, scale);
+	glPopMatrix();
+	offset = bigBall * 2 + offset;
+
+}
+
+void DrawSnowScene8()
+{
+	double offset = 0, scale = 1;
+	offset = DrawSnowMan(scale);
+	scale *= 0.7;
+
+	double bigBall = 0.30 * scale;
+	glPushMatrix();
+		glTranslated(offset + 0.30 * scale, -0.30 * scale / 0.7 + 0.30 * scale,0 );
+		glPushMatrix();
+			glRotatef(alfa, 0, 1, 0);
+			DrawSnowMan(bigBall, scale);
+		glPopMatrix();
+	glPopMatrix();
+	offset = bigBall * 2 + offset;
+
+	scale *= 0.7;
+
+	bigBall = 0.30 * scale;
+	glPushMatrix();
+		glTranslated(offset + 0.30 * scale, 0.30 * scale - 0.30 * scale / 0.49,0);
+		glPushMatrix();
+			glRotatef(alfa, 0, 1, 0);
+			DrawSnowMan(bigBall, scale);
+		glPopMatrix();
+	glPopMatrix();
+	offset = bigBall * 2 + offset;
+}
+
+void DrawSnowScene9()
+{
+	glPushMatrix();
+		glPushMatrix();
+			double offset = 0, scale = 1;
+			offset = DrawSnowMan(scale);
+			scale *= 0.7;
+		glPopMatrix();
+		glPushMatrix();
+			double bigBall = 0.30 * scale;
+			glPushMatrix();
+				glRotatef(alfa, 0, 1, 0);
+				glTranslated(offset + 0.30 * scale, -0.30 * scale / 0.7 + 0.30 * scale, 0);
+				glPushMatrix();
+					DrawSnowMan(bigBall, scale);
+				glPopMatrix();
+			glPopMatrix();
+		
+			offset = bigBall * 2 + offset;
+
+			scale *= 0.7;
+
+			bigBall = 0.30 * scale;
+			glTranslated(offset + 0.30 * scale, 0.30 * scale - 0.30 * scale / 0.49, 0);
+			glPushMatrix();
+				glRotatef(alfa, 0, 1, 0);//идеально
+				glPushMatrix();
+					DrawSnowMan(bigBall, scale);
+				glPopMatrix();
+			glPopMatrix();
+		glPopMatrix();
+	glPopMatrix();
+}
+
+
+
 void Scene()
 {
-	SolarSystem();
-	DrawDeathStar();
+	if (ex == 1)
+	{
+		DrawSnowScene1();
+	}
+	else if (ex == 2)
+	{
+		DrawSnowScene2();
+	}
+	else if (ex == 3)
+	{
+		DrawSnowScene3();
+	}
+	else if (ex == 4)
+	{
+		DrawSnowScene4();
+	}
+	else if (ex == 5)
+	{
+		DrawSnowScene5();
+	}
+	else if (ex == 6)
+	{
+		DrawSnowScene6();
+	}
+	else if (ex == 7)
+	{
+		DrawSnowScene7();
+	}
+	else if (ex == 8)
+	{
+		DrawSnowScene8();
+	}
+	else if (ex == 9)
+	{
+		DrawSnowScene9();
+	}
+	else if (ex == 12)
+	{
+		SolarSystem();
+		DrawDeathStar();
+
+	}
 }
 
 void Initialize() {
-	glClearColor(0.059, 0.059, 0.07, 1.0);// задаем цвет заливки холста
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);// задаем ортографическую проекцию и видимый объем
@@ -146,24 +455,39 @@ void Initialize() {
 	glLoadIdentity();
 }
 
-void Specialkeys(int key, int x, int y) {
+void Specialkeys(int key, int x, int y) 
+{
 	/*if (key == GLUT_KEY_LEFT) { rot = rot - 2.0; }
 	else
 		if (key == GLUT_KEY_RIGHT) { rot = rot + 2.0; }
 		else*/
-			if (key == GLUT_KEY_UP) { alfa = alfa - 2.0; }
-			else
-				if (key == GLUT_KEY_DOWN) { alfa = alfa + 2.0; }
-				else {
-					ex = key;
-					rot = 0;
-					alfa = 0;
-				}
+	if (key == GLUT_KEY_UP) 
+	{
+		alfa = alfa - 2.0; 
+	}
+	else if (key == GLUT_KEY_DOWN) 
+	{ 
+		alfa = alfa + 2.0;
+	}
+	else
+	{
+		ex = key;
+		rot = 0;
+		alfa = 0;
+	}
 	glutPostRedisplay(); // принудительный вызов функции визуализации
 
 }
 
 void Display() {
+	if (ex==12)
+	{
+		glClearColor(0.059, 0.059, 0.07, 1.0);// задаем цвет заливки холста
+	}
+	else
+	{
+		glClearColor(0.5, 0.5, 0.5, 1.0);
+	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glViewport(0, 0, winWidth/2, winWidth/2);

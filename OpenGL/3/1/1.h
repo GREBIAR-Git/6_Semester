@@ -1,4 +1,5 @@
 #pragma once
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <math.h>
 #include <glut.h>
@@ -12,6 +13,26 @@ struct Planet
 	int g;
 	int b;
 };
+
+double Cos20()
+{
+	return cos((20 * M_PI) / 180);
+}
+
+double Sin20()
+{
+	return sin((20 * M_PI) / 180);
+}
+
+double Cos45()
+{
+	return cos((45 * M_PI) / 180);
+}
+
+double Sin45()
+{
+	return sin((45 * M_PI) / 180);
+}
 /*
 
 class Planet
