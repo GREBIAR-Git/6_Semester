@@ -10,6 +10,8 @@ Planet planets[10];
 const float rSun = 0.30;
 const float rDeathStar = 0.20;
 const float offset = 0.03;
+double scale = 0.7;
+double rBigBall = 0.30;
 
 void InitPlanet()
 {
@@ -129,121 +131,83 @@ void SolarSystem()
 	}
 }
 
+void DrawAxes() {
+	glBegin(GL_LINES);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(1, 0, 0);
 
-double DrawSnowMan(float scale) 
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 1, 0);
+
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 0, 1);
+
+	glEnd();
+}
+
+void DrawAxes2() {
+	glBegin(GL_LINES);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(2, 0, 0);
+
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 2, 0);
+
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 0, 2);
+
+	glEnd();
+}
+
+double DrawSnowMan()
 {
-	double bigBall = 0.30*scale;
+	double rBigBall = 0.30;
 	glPushMatrix();
-		glRotatef(alfa, 0, 1, 0);
-		glColor3ub(243, 246, 251);
-		glutSolidSphere(bigBall, 100, 100);
-		glTranslated(0,bigBall + bigBall /3.1, 0);
-		glutSolidSphere(bigBall /3.0, 100, 100);
-		glColor3ub(0, 0, 0);
-		glPushMatrix();
-			glTranslated(bigBall /3.0 * Cos20() * Cos20(), bigBall / 3.0 * Sin20(), bigBall / 3.0 * Sin20());
-			glutSolidSphere(0.02, 100, 100);
-			glTranslated(0, 0,-2* bigBall / 3.0 * 0.342);
-			glutSolidSphere(0.02, 100, 100);
-		glPopMatrix();
-		glColor3ub(237, 145, 33);
-		glPushMatrix();
-			glRotatef(90, 0, 1, 0);
-			glTranslated(0, 0, bigBall / 3.0);
-			glutSolidCone(0.025, 0.2, 100, 100);
-		glPopMatrix();
-	glPopMatrix();
-	return bigBall;
-}
-
-void DrawSnowMan(double bigBall, float scale)
-{
+	DrawAxes();
+	glRotatef(-90, 0, 1, 0);
+	glColor3ub(243, 246, 251);
+	glutSolidSphere(rBigBall, 100, 100);
+	glTranslated(0, rBigBall + rBigBall / 3.1, 0);
+	glutSolidSphere(rBigBall / 3.0, 100, 100);
+	glColor3ub(0, 0, 0);
 	glPushMatrix();
-		glColor3ub(243, 246, 251);
-		glutSolidSphere(bigBall, 100, 100);
-		glTranslated(0, bigBall + bigBall / 3.1, 0);
-		glutSolidSphere(bigBall / 3.0, 100, 100);
-		glColor3ub(0, 0, 0);
-		glPushMatrix();
-			glTranslated(bigBall / 3.0 * Cos20() * Cos20(), bigBall / 3.0 * Sin20(), bigBall / 3.0 * Sin20());
-			glutSolidSphere(0.02 * scale, 100, 100);
-			glTranslated(0, 0, -2 * bigBall / 3.0 * 0.342);
-			glutSolidSphere(0.02 * scale, 100, 100);
-		glPopMatrix();
-		glColor3ub(237, 145, 33);
-		glPushMatrix();
-			glRotatef(90, 0, 1, 0);
-			glTranslated(0, 0, bigBall / 3.0);
-			glutSolidCone(0.025 * scale, 0.2 * scale, 100, 100);
-		glPopMatrix();
+	glTranslated(rBigBall / 3.0 * Cos20() * Cos20(), rBigBall / 3.0 * Sin20(), rBigBall / 3.0 * Sin20());
+	glutSolidSphere(0.02, 100, 100);
+	glTranslated(0, 0, -2 * rBigBall / 3.0 * 0.342);
+	glutSolidSphere(0.02, 100, 100);
 	glPopMatrix();
-}
-
-double SetSnowManZ(float scale, double offset)
-{
-	double bigBall = 0.30 * scale;
+	glColor3ub(237, 145, 33);
 	glPushMatrix();
-		glRotatef(alfa, 0, 1, 0);
-		glTranslated(0, 0, offset + 0.30 * scale);
-		DrawSnowMan(bigBall, scale);
+	glRotatef(90, 0, 1, 0);
+	glTranslated(0, 0, rBigBall / 3.0);
+	glutSolidCone(0.025, 0.2, 100, 100);
 	glPopMatrix();
-	return bigBall*2 + offset;
-}
-
-double SetSnowManX(float scale, double offset)
-{
-	double bigBall = 0.30 * scale;
-	glPushMatrix();
-	glRotatef(alfa, 0, 1, 0);
-	glTranslated(offset + 0.30 * scale, 0, 0);
-	DrawSnowMan(bigBall, scale);
 	glPopMatrix();
-	return bigBall * 2 + offset;
-}
-
-double SetSnowManY(float scale, double offset)
-{
-	double bigBall = 0.30 * scale;
-	glPushMatrix();
-	glRotatef(alfa, 0, 1, 0);
-	glTranslated(0, offset + 0.30 * scale, 0);
-	DrawSnowMan(bigBall, scale);
-	glPopMatrix();
-	return bigBall * 2 + bigBall/3 * 2 + offset;
-}
-
-void SetSnowManXYZ(float scale)
-{
-	double bigBall = 0.30 * scale;
-	glTranslated(bigBall / sqrt(3), bigBall / sqrt(3), -bigBall / sqrt(3));
-	DrawSnowMan(bigBall, scale);
-	glTranslated(bigBall / sqrt(3), bigBall / sqrt(3), -bigBall / sqrt(3));
-}
-
-void SetSnowManXYZMain(float scale)
-{
-	double bigBall = 0.30 * scale;
-	DrawSnowMan(bigBall, scale);
-	glTranslated(bigBall/sqrt(3), bigBall / sqrt(3), -bigBall / sqrt(3));
+	return rBigBall;
 }
 
 
 void DrawSnowScene1()
 {
-	double bigBall = 0.30;
 	glPushMatrix();
 		glPushMatrix();
 			glColor3ub(243, 246, 251);
-			glTranslated(0, bigBall, 0);
-			glutSolidSphere(bigBall, 200, 200);
+			glTranslated(0, rBigBall, 0);
+			glutSolidSphere(rBigBall, 200, 200);
 		glPopMatrix();
-		glTranslated(bigBall + bigBall / 3.0, 0, 0);
+		glTranslated(rBigBall + rBigBall / 3.0, 0, 0);
 		glPushMatrix();
-			glTranslated(0, bigBall / 3.0, 0);
-			glutSolidSphere(bigBall / 3.0, 200, 200);
+			glTranslated(0, rBigBall / 3.0, 0);
+			glutSolidSphere(rBigBall / 3.0, 200, 200);
 		glPopMatrix();
 		glColor3ub(0, 0, 0);
-		glTranslated(bigBall / 3.0+0.1, 0.02, 0);
+		glTranslated(rBigBall / 3.0+0.1, 0.02, 0);
 		glutSolidSphere(0.02, 200, 200);
 		glTranslated(0.1, 0, 0);
 		glutSolidSphere(0.02, 200, 200);
@@ -258,143 +222,167 @@ void DrawSnowScene1()
 
 void DrawSnowScene2()
 {
-	glRotatef(-90, 0,1, 0);
-	DrawSnowMan(1);
+	DrawSnowMan();
 }
 
 void DrawSnowScene3()
 {
-	double offset = 0, scale = 1;
-	offset = DrawSnowMan(scale);
+	glPushMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	DrawSnowMan();
 	for (int i = 0; i < 2; i++)
 	{
-		scale *= 0.7;
-		offset = SetSnowManZ(scale, offset);
+		glTranslated(rBigBall, 0, 0);
+		glScalef(scale, scale, scale);
+		glTranslated(rBigBall, 0, 0);
+		DrawSnowMan();
 	}
+	glPopMatrix();
 }
 
 void DrawSnowScene4()
 {
-	double offset=0, scale=1;
-	offset = DrawSnowMan(scale);
+	glPushMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	DrawSnowMan();
 	for (int i = 0; i < 2; i++)
 	{
-		scale *= 0.7;
-		offset = SetSnowManX(scale,offset);
+		glTranslated(0, 0, rBigBall);
+		glScalef(scale, scale, scale);
+		glTranslated(0, 0, rBigBall);
+		DrawSnowMan();
 	}
+	glPopMatrix();
 }
 
 
 void DrawSnowScene5()
 {
-	double offset = 0, scale = 1;
-	offset = DrawSnowMan(scale)+ 0.30/3.0*2;
+	glPushMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	DrawSnowMan();
 	for (int i = 0; i < 2; i++)
 	{
-		scale *= 0.7;
-		offset = SetSnowManY(scale, offset);
+		glTranslated(0, rBigBall + rBigBall / 3 * 2,0);
+		glScalef(scale, scale, scale);
+		glTranslated(0, rBigBall,0);
+		DrawSnowMan();
 	}
+	glPopMatrix();
 }
 
 void DrawSnowScene6()
 {
+	glPushMatrix();
 	glRotatef(alfa, 1, 1, 1);
 	glRotatef(alfa, 0, 1, 0);
-	double scale = 1;
-	SetSnowManXYZMain(scale);
+	DrawSnowMan();
 	for (int i = 0; i < 2; i++)
 	{
-		scale *= 0.7;
-		SetSnowManXYZ(scale);
+		glTranslated(rBigBall / sqrt(3), rBigBall / sqrt(3), -rBigBall / sqrt(3));
+		glScalef(scale, scale, scale);
+		glTranslated(rBigBall / sqrt(3), rBigBall / sqrt(3), -rBigBall / sqrt(3));
+		DrawSnowMan();
 	}
+	glPopMatrix();
 }
 
 void DrawSnowScene7()
 {
-	double offset = 0, scale = 1;
-	offset = DrawSnowMan(scale);
-	scale *= 0.7;
-
-	double bigBall = 0.30 * scale;
 	glPushMatrix();
+	glTranslated(rBigBall + rBigBall * scale, 0, 0);
 	glRotatef(alfa, 0, 1, 0);
-	glTranslated(0, -0.30 * scale/0.7 + 0.30 * scale, offset + 0.30 * scale);
-	DrawSnowMan(bigBall, scale);
+	glTranslated(-rBigBall - rBigBall * scale, 0, 0);
+	DrawSnowMan();
+	for (int i = 0; i < 2; i++)
+	{
+		glTranslated(rBigBall, -rBigBall+ rBigBall*scale, 0);
+		glScalef(scale, scale, scale);
+		glTranslated(rBigBall, 0, 0);
+		DrawSnowMan();
+	}
 	glPopMatrix();
-	offset = bigBall * 2 + offset;
-
-	scale *= 0.7;
-
-	bigBall = 0.30 * scale;
-	glPushMatrix();
-	glRotatef(alfa, 0, 1, 0);
-	glTranslated(0, 0.30 * scale - 0.30 * scale/0.49, offset + 0.30 * scale);
-	DrawSnowMan(bigBall, scale);
-	glPopMatrix();
-	offset = bigBall * 2 + offset;
-
 }
 
 void DrawSnowScene8()
 {
-	double offset = 0, scale = 1;
-	offset = DrawSnowMan(scale);
-	scale *= 0.7;
-
-	double bigBall = 0.30 * scale;
-	glPushMatrix();
-		glTranslated(offset + 0.30 * scale, -0.30 * scale / 0.7 + 0.30 * scale,0 );
-		glPushMatrix();
-			glRotatef(alfa, 0, 1, 0);
-			DrawSnowMan(bigBall, scale);
-		glPopMatrix();
+	glRotatef(alfa, 0, 1, 0);
+	DrawSnowMan();
+	glRotatef(alfa, 0, -1, 0);
+	for (int i = 0; i < 2; i++)
+	{
+		glTranslated(rBigBall, -rBigBall + rBigBall * scale, 0);
+		glScalef(scale, scale, scale);
+		glTranslated(rBigBall, 0, 0);
+		glRotatef(alfa, 0, 1, 0);
+		DrawSnowMan();
+		glRotatef(alfa, 0, -1, 0);
+	}
 	glPopMatrix();
-	offset = bigBall * 2 + offset;
-
-	scale *= 0.7;
-
-	bigBall = 0.30 * scale;
-	glPushMatrix();
-		glTranslated(offset + 0.30 * scale, 0.30 * scale - 0.30 * scale / 0.49,0);
-		glPushMatrix();
-			glRotatef(alfa, 0, 1, 0);
-			DrawSnowMan(bigBall, scale);
-		glPopMatrix();
-	glPopMatrix();
-	offset = bigBall * 2 + offset;
 }
 
 void DrawSnowScene9()
 {
 	glPushMatrix();
-		glPushMatrix();
-			double offset = 0, scale = 1;
-			offset = DrawSnowMan(scale);
-			scale *= 0.7;
-		glPopMatrix();
-		glPushMatrix();
-			double bigBall = 0.30 * scale;
-			glPushMatrix();
-				glRotatef(alfa, 0, 1, 0);
-				glTranslated(offset + 0.30 * scale, -0.30 * scale / 0.7 + 0.30 * scale, 0);
-				glPushMatrix();
-					DrawSnowMan(bigBall, scale);
-				glPopMatrix();
-			glPopMatrix();
-		
-			offset = bigBall * 2 + offset;
+	glTranslated(rBigBall + rBigBall * scale*2 + rBigBall * scale * scale , 0, 0);
+	glRotatef(alfa, 0, 1, 0);
+	glTranslated(-rBigBall - rBigBall * scale*2 - rBigBall * scale * scale, 0, 0);
+	DrawSnowMan();
+	for (int i = 0; i < 2; i++)
+	{
+		glTranslated(rBigBall, -rBigBall + rBigBall * scale, 0);
+		glScalef(scale, scale, scale);
+		glTranslated(rBigBall, 0, 0);
+		DrawSnowMan();
+	}
+	glPopMatrix();
+}
 
-			scale *= 0.7;
-
-			bigBall = 0.30 * scale;
-			glTranslated(offset + 0.30 * scale, 0.30 * scale - 0.30 * scale / 0.49, 0);
-			glPushMatrix();
-				glRotatef(alfa, 0, 1, 0);//טהואכüםמ
-				glPushMatrix();
-					DrawSnowMan(bigBall, scale);
-				glPopMatrix();
-			glPopMatrix();
+void DrawSnowScene10()
+{
+	DrawAxes();
+	glPushMatrix();
+		glRotatef(-90, 0, 1, 0);
+		glColor3ub(243, 246, 251);
+		glutSolidSphere(rBigBall, 100, 100);
+		glRotatef(alfa, 1, 0, 0);
+		glTranslated(0, rBigBall + rBigBall / 3.1, 0);
+		glRotatef(alfa, -1, 0, 0);
+		glutSolidSphere(rBigBall / 3.0, 100, 100);
+		glColor3ub(0, 0, 0);
+		glPushMatrix();
+			glTranslated(rBigBall / 3.0 * Cos20() * Cos20(), rBigBall / 3.0 * Sin20(), rBigBall / 3.0 * Sin20());
+			glutSolidSphere(0.02, 100, 100);
+			glTranslated(0, 0, -2 * rBigBall / 3.0 * 0.342);
+			glutSolidSphere(0.02, 100, 100);
 		glPopMatrix();
+		glColor3ub(237, 145, 33);
+		glPushMatrix();
+			glRotatef(90, 0, 1, 0);
+			glTranslated(0, 0, rBigBall / 3.0);
+			glutSolidCone(0.025, 0.2, 100, 100);
+		glPopMatrix();
+	glPopMatrix();
+}
+
+void DrawSnowScene11()
+{
+	glPushMatrix();
+		DrawSnowMan();
+		glRotatef(alfa, 0, 1, 0);
+		glTranslated(rBigBall * 2, 0, 0);
+		glScalef(scale, scale, scale);
+		DrawSnowMan();
+		glPushMatrix();
+			glRotatef(alfa, 0, 0, 1);
+			glTranslated(0, (rBigBall + rBigBall/3)*2, 0);
+			glScalef(scale, scale, scale);
+			DrawSnowMan(); 
+		glPopMatrix();
+		glRotatef(alfa, 0, 1, 0);
+		glTranslated(rBigBall * 2, rBigBall+ rBigBall*scale * scale, 0);
+		glScalef(scale* scale, scale* scale, scale* scale);
+		DrawSnowMan();
 	glPopMatrix();
 }
 
@@ -438,6 +426,14 @@ void Scene()
 	{
 		DrawSnowScene9();
 	}
+	else if (ex == 10)
+	{
+		DrawSnowScene10();
+	}
+	else if (ex == 11)
+	{
+		DrawSnowScene11();
+	}
 	else if (ex == 12)
 	{
 		SolarSystem();
@@ -457,10 +453,6 @@ void Initialize() {
 
 void Specialkeys(int key, int x, int y) 
 {
-	/*if (key == GLUT_KEY_LEFT) { rot = rot - 2.0; }
-	else
-		if (key == GLUT_KEY_RIGHT) { rot = rot + 2.0; }
-		else*/
 	if (key == GLUT_KEY_UP) 
 	{
 		alfa = alfa - 2.0; 
@@ -492,11 +484,12 @@ void Display() {
 
 	glViewport(0, 0, winWidth/2, winWidth/2);
 	glLoadIdentity();
+	DrawAxes2();
 	Scene();
-	//glutGet(GLUT_SCREEN_HEIGHT)
 	glViewport(winWidth/2, 0, winWidth/2, winWidth/2);
 	glLoadIdentity();
 	glRotatef(90, 1, 0, 0);
+	DrawAxes2();
 	Scene();
 
 	glutSwapBuffers();
