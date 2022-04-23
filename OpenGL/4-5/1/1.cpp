@@ -142,6 +142,7 @@ void Specialkeys(int key, int x, int y)
 	else
 	{
 		alfa = 0;
+		rot = 0;
 	}
 	glutPostRedisplay(); // принудительный вызов функции визуализации
 
@@ -265,8 +266,16 @@ void Display() {
 	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	GLfloat  a[16];
+	glLoadIdentity();
+	glGetFloatv(GL_MODELVIEW_MATRIX, a);
+	double angle = 45 * M_PI / 180;
+	double gamma = 45 * M_PI / 180;
+	a[8] = (M_PI / 2 - atan(gamma)) * (-cos(angle));
+	a[9] = (M_PI / 2 - atan(gamma)) * (-sin(angle));
+	glLoadMatrixf(a);
 	Scene();
-
+	
 	//кабине
 	glViewport(winWidth * 3 / 4, 0, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
@@ -274,8 +283,14 @@ void Display() {
 	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glGetFloatv(GL_MODELVIEW_MATRIX, a);
+	angle = 30 * M_PI / 180;
+	gamma = (M_PI/2 - atan(1/2));
+	a[8] = (M_PI / 2 - atan(gamma)) * (-cos(angle));
+	a[9] = (M_PI / 2 - atan(gamma)) * (-sin(angle));
+	glLoadMatrixf(a);
 	Scene();
-
+	
 	glutSwapBuffers();
 }
 
