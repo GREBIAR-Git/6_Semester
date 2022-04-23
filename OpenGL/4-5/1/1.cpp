@@ -1,4 +1,4 @@
-#include "1.h"
+п»ї#include "1.h"
 
 float alfa,rot;
 
@@ -23,6 +23,7 @@ void DrawAxes()
 
 void DrawModel() 
 {
+
 	glBegin(GL_POLYGON);
 	glColor3f(1, 0, 0);
 	glVertex3f(0, 0, 0.5);
@@ -116,7 +117,7 @@ void Scene()
 
 void Initialize() {
 	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_DEPTH_TEST); // включаем тест глубины. Если этого не сделать видимыми будут объекты не  расположенные ближе всего к наблюдателю, а созданные последними.
+	glEnable(GL_DEPTH_TEST); // РІРєР»СЋС‡Р°РµРј С‚РµСЃС‚ РіР»СѓР±РёРЅС‹. Р•СЃР»Рё СЌС‚РѕРіРѕ РЅРµ СЃРґРµР»Р°С‚СЊ РІРёРґРёРјС‹РјРё Р±СѓРґСѓС‚ РѕР±СЉРµРєС‚С‹ РЅРµ  СЂР°СЃРїРѕР»РѕР¶РµРЅРЅС‹Рµ Р±Р»РёР¶Рµ РІСЃРµРіРѕ Рє РЅР°Р±Р»СЋРґР°С‚РµР»СЋ, Р° СЃРѕР·РґР°РЅРЅС‹Рµ РїРѕСЃР»РµРґРЅРёРјРё.
 	glLoadIdentity();
 }
 
@@ -132,17 +133,17 @@ void Specialkeys(int key, int x, int y)
 	}
 	else if (key == GLUT_KEY_LEFT)
 	{
-		alfa = alfa + 2.0;
+		alfa = alfa - 2.0;
 	}
 	else if (key == GLUT_KEY_RIGHT)
 	{
-		alfa = alfa - 2.0;
+		alfa = alfa + 2.0;
 	}
 	else
 	{
 		alfa = 0;
 	}
-	glutPostRedisplay(); // принудительный вызов функции визуализации
+	glutPostRedisplay(); // РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅС‹Р№ РІС‹Р·РѕРІ С„СѓРЅРєС†РёРё РІРёР·СѓР°Р»РёР·Р°С†РёРё
 
 }
 
@@ -150,7 +151,7 @@ void Display() {
 	glClearColor(0.5, 0.5, 0.5, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	// для вращения
+	// РґР»СЏ РІСЂР°С‰РµРЅРёСЏ вњ“
 	glViewport(0, winHeight * 2 / 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -161,7 +162,7 @@ void Display() {
 	glRotatef(rot, 1, 0, 0);
 	Scene();
 
-	//вид спереди
+	//РІРёРґ СЃРїРµСЂРµРґРё вњ“
 	glViewport(winWidth / 4, winHeight * 2 / 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -170,7 +171,7 @@ void Display() {
 	glLoadIdentity();
 	Scene();
 
-	//вид сбоку
+	//РІРёРґ СЃР±РѕРєСѓ вњ“
 	glViewport(winWidth * 2 / 4, winHeight * 2 / 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -180,7 +181,7 @@ void Display() {
 	glRotatef(90, 0, -1, 0);
 	Scene();
 
-	//вид сверху
+	//РІРёРґ СЃРІРµСЂС…Сѓ вњ“
 	glViewport(winWidth * 3 / 4, winHeight * 2 / 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -190,57 +191,74 @@ void Display() {
 	glRotatef(90, 1, 0, 0);
 	Scene();
 
-	
+	//РѕРґРЅРѕС‚РѕС‡РµС‡РЅР°СЏ
 	glViewport(0, winHeight / 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+	glFrustum(-1.5, 0.5, -1.5, 0.5, 2, 5);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glTranslatef(-0.5, -0.5, -3);
 	Scene();
 
+	//С‚СЂРёРјРµС‚СЂРёС‡РµСЃРєР°СЏ
 	glViewport(winWidth / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glRotatef(22.46, 1, 0, 0);
+	glRotatef(30, 0, 1, 0);
 	Scene();
 
-	//изометрия
+	//РёР·РѕРјРµС‚СЂРёСЏ
 	glViewport(winWidth * 2 / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(33, 1, -1, 0);
+	glRotatef(22.46, 1, 0, 0);
+	glRotatef(30, 0, -1, 0);
 	Scene();
 
+	//РґРёРјРµС‚СЂРёС‡РµСЃРєР°СЏ
 	glViewport(winWidth * 3 / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glRotatef(35, 1, 0, 0);
+	glRotatef(45, 0, -1, 0);
 	Scene();
 
+	//РґРІСѓС‚РѕС‡РµС‡РЅР°СЏ
 	glViewport(0, 0, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+	glFrustum(-1, 1, -1, 1, 2, 5);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glTranslatef(0, 0, -3);
+	glRotatef(30, 1, 0, 0);
 	Scene();
 
+	//С‚СЂС‘С…С‚РѕС‡РµС‡РЅР°СЏ
 	glViewport(winWidth / 4, 0, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+	glFrustum(-1, 1, -1, 1, 2, 5);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	glTranslatef(0, 0, -3);
+	glRotatef(30, 1, 0, 0);
+	glRotatef(45, 0, -1, 0);
+	glRotatef(22.44, 0, 0, 1);
 	Scene();
 
+	//РєР°РІР°Р»СЊРµ
 	glViewport(winWidth * 2 / 4, 0, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -249,6 +267,7 @@ void Display() {
 	glLoadIdentity();
 	Scene();
 
+	//РєР°Р±РёРЅРµ
 	glViewport(winWidth * 3 / 4, 0, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -262,12 +281,12 @@ void Display() {
 
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);// -используем буфер глубины, двойную буферизацию и представление цвета триадой RGB.
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);// -РёСЃРїРѕР»СЊР·СѓРµРј Р±СѓС„РµСЂ РіР»СѓР±РёРЅС‹, РґРІРѕР№РЅСѓСЋ Р±СѓС„РµСЂРёР·Р°С†РёСЋ Рё РїСЂРµРґСЃС‚Р°РІР»РµРЅРёРµ С†РІРµС‚Р° С‚СЂРёР°РґРѕР№ RGB.
 	glutInitWindowSize(winWidth, winHeight);
 	glutCreateWindow("Our first GLUT application!");
-	glutDisplayFunc(Display);//  назначаем функцию визуализации
-	glutSpecialFunc(Specialkeys);// назначаем функцию обработки нажатия специальных клавиш
-	Initialize();// дополнительные настройки конвейера
+	glutDisplayFunc(Display);//  РЅР°Р·РЅР°С‡Р°РµРј С„СѓРЅРєС†РёСЋ РІРёР·СѓР°Р»РёР·Р°С†РёРё
+	glutSpecialFunc(Specialkeys);// РЅР°Р·РЅР°С‡Р°РµРј С„СѓРЅРєС†РёСЋ РѕР±СЂР°Р±РѕС‚РєРё РЅР°Р¶Р°С‚РёСЏ СЃРїРµС†РёР°Р»СЊРЅС‹С… РєР»Р°РІРёС€
+	Initialize();// РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё РєРѕРЅРІРµР№РµСЂР°
 	glutMainLoop();
 	return 0;
 }
