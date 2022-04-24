@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueenAttack", "5\QueenAttack.csproj", "{A749C272-001E-4D42-8BD8-909EA580E253}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{231D7075-5841-4993-8A8C-D0D7F6124D03}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A749C272-001E-4D42-8BD8-909EA580E253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A749C272-001E-4D42-8BD8-909EA580E253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A749C272-001E-4D42-8BD8-909EA580E253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A749C272-001E-4D42-8BD8-909EA580E253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{231D7075-5841-4993-8A8C-D0D7F6124D03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{231D7075-5841-4993-8A8C-D0D7F6124D03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{231D7075-5841-4993-8A8C-D0D7F6124D03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{231D7075-5841-4993-8A8C-D0D7F6124D03}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D974ABC4-A81F-440D-8658-62DE88FAB291}
+	EndGlobalSection
+EndGlobal
