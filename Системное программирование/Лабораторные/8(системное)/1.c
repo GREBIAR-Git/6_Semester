@@ -49,15 +49,11 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	case WM_RBUTTONUP:
 	{
 		HBITMAP pic = (HBITMAP)LoadImage(NULL, "0.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-		HGLOBAL hgBuffer = GlobalAlloc(GMEM_DDESHARE, sizeof(HBITMAP));
-		HBITMAP * chBuffer = (HBITMAP*)GlobalLock(hgBuffer);
-		*chBuffer = pic;
 		if(OpenClipboard(NULL))
 		{
 			EmptyClipboard();
-			SetClipboardData(CF_BITMAP, hgBuffer);
+			SetClipboardData(CF_BITMAP, pic);
 			CloseClipboard();
-			GlobalUnlock(hgBuffer);
 			UpdateWin(hwnd);
 		}
 		break;
