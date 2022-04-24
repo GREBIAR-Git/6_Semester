@@ -71,29 +71,26 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		RECT window;
 		GetClientRect(hwnd,&window);
 		FillRect(hdc, &window, (HBRUSH)(RGB(255,255,255)));
-		HGLOBAL hgBuffer = NULL;
-		UINT f = -1;
 		if(OpenClipboard(NULL))
 		{
 			if(IsClipboardFormatAvailable(CF_BITMAP))
 			{
-				if((hgBuffer = (HGLOBAL) GetClipboardData(CF_BITMAP)) != NULL) 
+				HBITMAP pic = (HBITMAP) GetClipboardData(CF_BITMAP);
+				if(pic != NULL)
 				{  
-					HBITMAP * pic = (HBITMAP *)GlobalLock(hgBuffer);
-					GetObject(pic,sizeof(bmp),&bmp);
-					SelectObject(memDc,pic);
-					BitBlt(hdc, 0,50,bmp.bmWidth,bmp.bmWidth,memDc,0,0,SRCCOPY);
-					GlobalUnlock(hgBuffer);
+					SelectObject(memDc, pic);
+					BitBlt(hdc, 0,50,window.right,window.bottom,memDc,0,0,SRCCOPY);
 				} 
 			} 
 			else if (IsClipboardFormatAvailable(CF_TEXT))
 			{
-				if((hgBuffer = (HGLOBAL) GetClipboardData(CF_TEXT)) != NULL) 
+				HGLOBAL hgBuffer = (HGLOBAL) GetClipboardData(CF_TEXT);
+				if(hgBuffer != NULL)
 				{  
 					char * chBuffer = (char *) GlobalLock(hgBuffer);
 					TextOut(hdc, 0, 0,  chBuffer, strlen(chBuffer));
 					GlobalUnlock(hgBuffer);
-				} 
+				}
 			}
 			else if (IsClipboardFormatAvailable(3))
 			{
