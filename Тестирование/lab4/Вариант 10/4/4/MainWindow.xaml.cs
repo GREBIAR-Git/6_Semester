@@ -33,7 +33,7 @@ namespace _4
 
         void PrintAnswer(string regularExp, string str, int idxStart)
         {
-            answer.Text = "Индекс:" + idxStart;
+            answer.Text = "Индекс: " + idxStart;
         }
 
         void ResetIdx(int idxReg, int i, ref int idxStart)
