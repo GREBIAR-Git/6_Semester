@@ -213,7 +213,7 @@ void Display() {
 	glRotatef(30, 0, 1, 0);
 	Scene();
 
-	//изометрия
+	//диметрическая
 	glViewport(winWidth * 2 / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -224,14 +224,14 @@ void Display() {
 	glRotatef(30, 0, -1, 0);
 	Scene();
 
-	//диметрическая
+	//изометрическая
 	glViewport(winWidth * 3 / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(35, 1, 0, 0);
+	glRotatef(asin(tan(30 * M_PI / 180))*180/M_PI, 1, 0, 0);
 	glRotatef(45, 0, -1, 0);
 	Scene();
 
