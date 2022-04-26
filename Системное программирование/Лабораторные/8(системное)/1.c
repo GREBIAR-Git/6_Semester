@@ -6,7 +6,7 @@
 void HyperCopy(char ** here, char ** fromHere)
 {
 	free(*here);
-	*here = (char *)calloc('\n', strlen(*fromHere) * sizeof(char));
+	*here = (char *)calloc('\0', strlen(*fromHere) * sizeof(char));
 	memcpy(*here, *fromHere, strlen(*fromHere) * sizeof(char));
 	return;
 }
