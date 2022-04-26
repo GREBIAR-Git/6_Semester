@@ -165,18 +165,12 @@ void Display() {
 
 	//вид спереди ✓
 	glViewport(winWidth / 4, winHeight * 2 / 3, winWidth / 4, winHeight / 3);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	Scene();
 
 	//вид сбоку ✓
 	glViewport(winWidth * 2 / 4, winHeight * 2 / 3, winWidth / 4, winHeight / 3);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(90, 0, -1, 0);
@@ -184,9 +178,6 @@ void Display() {
 
 	//вид сверху ✓
 	glViewport(winWidth * 3 / 4, winHeight * 2 / 3, winWidth / 4, winHeight / 3);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(90, 1, 0, 0);
@@ -195,6 +186,7 @@ void Display() {
 	//одноточечная
 	glViewport(0, winHeight / 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
 	glLoadIdentity();
 	glFrustum(-1.5, 0.5, -1.5, 0.5, 2, 5);
 	glMatrixMode(GL_MODELVIEW);
@@ -205,30 +197,24 @@ void Display() {
 	//триметрическая
 	glViewport(winWidth / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(22.46, 1, 0, 0);
-	glRotatef(30, 0, 1, 0);
+	glRotatef(20, 1, 0, 0);
+	glRotatef(15, 0, 1, 0);
 	Scene();
 
 	//диметрическая
 	glViewport(winWidth * 2 / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(22.46, 1, 0, 0);
-	glRotatef(30, 0, -1, 0);
+	double f = (5.0 / 8);
+	glRotatef(asin(f/ sqrt(2)) * 180 / M_PI, 1, 0, 0);
+	glRotatef(asin(f / sqrt(2 - f * f)) * 180 / M_PI, 0, -1, 0);
 	Scene();
 
 	//изометрическая
 	glViewport(winWidth * 3 / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glRotatef(asin(tan(30 * M_PI / 180))*180/M_PI, 1, 0, 0);
@@ -238,6 +224,7 @@ void Display() {
 	//двуточечная
 	glViewport(0, 0, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
 	glLoadIdentity();
 	glFrustum(-1, 1, -1, 1, 2, 5);
 	glMatrixMode(GL_MODELVIEW);
@@ -262,8 +249,7 @@ void Display() {
 	//кавалье
 	glViewport(winWidth * 2 / 4, 0, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	GLfloat  a[16];
@@ -278,9 +264,6 @@ void Display() {
 	
 	//кабине
 	glViewport(winWidth * 3 / 4, 0, winWidth / 4, winHeight / 3);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glGetFloatv(GL_MODELVIEW_MATRIX, a);
