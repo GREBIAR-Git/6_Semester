@@ -230,13 +230,17 @@ void DrawSnowScene3()
 	glPushMatrix();
 	glRotatef(alfa, 0, 1, 0);
 	DrawSnowMan();
-	for (int i = 0; i < 2; i++)
-	{
-		glTranslated(rBigBall, 0, 0);
-		glScalef(scale, scale, scale);
-		glTranslated(rBigBall, 0, 0);
-		DrawSnowMan();
-	}
+	glTranslated(rBigBall, 0, 0);
+	glScalef(scale, scale, scale);
+	glTranslated(rBigBall, 0, 0);
+	glPushMatrix();
+	glRotatef(180, 0, 0, 1);
+	DrawSnowMan();
+	glPopMatrix();
+	glTranslated(rBigBall, 0, 0);
+	glScalef(scale, scale, scale);
+	glTranslated(rBigBall, 0, 0);
+	DrawSnowMan();
 	glPopMatrix();
 }
 
