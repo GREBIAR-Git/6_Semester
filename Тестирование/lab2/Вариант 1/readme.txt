@@ -1,0 +1,1 @@
+для запуска нужен nuget: codeanalysis.csharp.scripting
