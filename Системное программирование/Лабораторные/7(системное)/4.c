@@ -36,12 +36,10 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 
 int get(HWND hwnd)
 {
-    HANDLE hBmpMappingFile;
-    LPVOID hBmpMapFileAddr;
     RECT rect;
     GetClientRect(hwnd,&rect);
-   	hBmpMappingFile = OpenFileMappingA(FILE_MAP_READ, FALSE, TEXT("kat"));
-   	hBmpMapFileAddr = MapViewOfFile(hBmpMappingFile, FILE_MAP_READ, 0, 0, 0);
+   	HANDLE hBmpMappingFile = OpenFileMappingA(FILE_MAP_READ, FALSE, TEXT("kat"));
+   	LPVOID hBmpMapFileAddr = MapViewOfFile(hBmpMappingFile, FILE_MAP_READ, 0, 0, 0);
 	hBmpFile = (HBITMAP)hBmpMapFileAddr;
 
     BITMAPFILEHEADER *bFileHeader = (BITMAPFILEHEADER*)hBmpMapFileAddr;

@@ -34,12 +34,8 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 
 int put(HWND hwnd)
 {
-    HANDLE hBmpMappingFile;
-    LPVOID hBmpMapFileAddr;
     hBmpFile = CreateFileA("0.bmp", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    RECT rect;
-    GetClientRect(hwnd,&rect);
-   	hBmpMappingFile = CreateFileMappingA(hBmpFile, NULL, PAGE_READONLY, 0, 0, TEXT("kat"));
-   	hBmpMapFileAddr = MapViewOfFile(hBmpMappingFile, FILE_MAP_READ, 0, 0, 0);
+   	HANDLE hBmpMappingFile = CreateFileMappingA(hBmpFile, NULL, PAGE_READONLY, 0, 0, TEXT("kat"));
+   	LPVOID hBmpMapFileAddr = MapViewOfFile(hBmpMappingFile, FILE_MAP_READ, 0, 0, 0);
     return (INT_PTR)TRUE;
 }

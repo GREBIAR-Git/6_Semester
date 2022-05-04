@@ -87,7 +87,6 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 			if(OpenClipboard(NULL))
 			{
 				EmptyClipboard();
-				printf("\nD\t%d", pic);
 				SetClipboardData(CF_BITMAP, pic);
 				CloseClipboard();
 			}
