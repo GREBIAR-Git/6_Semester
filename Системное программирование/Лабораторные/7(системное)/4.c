@@ -2,40 +2,9 @@
 #include <stdio.h>
 #include "WinMain.c"
 
-VOID UpdateWin(HWND hwnd)
-{
-	RECT window;  
-	GetClientRect(hwnd, &window);
-	window.left = 0;
-	InvalidateRect(hwnd, &window, 1);
-}
+int get(HWND hwnd);
 
-VOID UpdateWin1(HWND hwnd,RECT window)
-{
-	window.left = 0;
-	InvalidateRect(hwnd, &window, 1);
-}
-
-
-HBITMAP CopyBitmap(HBITMAP hbmOn) {
-    HDC hdcSrc = CreateCompatibleDC(NULL);
-    HDC hdcDst = CreateCompatibleDC(NULL);
-    HBITMAP hbmNew;
-    BITMAP bm, bm1;
-
-    GetObject(hbmOn, sizeof(bm), &bm);
-    SelectObject(hdcSrc, hbmOn);
-    hbmNew = CreateBitmap( bm.bmWidth, bm.bmHeight, bm.bmPlanes,bm.bmBitsPixel,NULL);
-    SelectObject(hdcDst, hbmNew);
-    BitBlt(hdcDst, 0, 0, bm.bmWidth, bm.bmHeight, hdcSrc, 0, 0, SRCCOPY);
-
-    DeleteDC(hdcSrc);
-    DeleteDC(hdcDst);
-
-    return hbmNew;
-}
-
-HBITMAP pic;
+HBITMAP hBmpFile;
 
 LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
 	switch (Message) {
@@ -46,31 +15,8 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 	}
 	case WM_LBUTTONDOWN:
 	{
-		HANDLE hMapFile;
-        hMapFile = OpenFileMapping(FILE_MAP_ALL_ACCESS,FALSE,TEXT("kat"));
-        HBITMAP pic1 = (HBITMAP) MapViewOfFile(hMapFile,FILE_MAP_ALL_ACCESS, 0,0,0);
-        pic = CopyBitmap(pic1);
-        UnmapViewOfFile(pic1);
-        CloseHandle(hMapFile);
-		UpdateWin(hwnd);
-		break;
-	}
-	case WM_PAINT:
-	{
-		PAINTSTRUCT ps;
-		HDC hdc = BeginPaint(hwnd, &ps);
-		HDC memDc = CreateCompatibleDC(hdc);
-		BITMAP bmp;
-		RECT window;
-		GetClientRect(hwnd,&window);
-		FillRect(hdc, &window, (HBRUSH)(RGB(255,255,255)));
-		if(pic != NULL)
-		{  
-			SelectObject(memDc, pic);
-			BitBlt(hdc, 0,50,window.right,window.bottom,memDc,0,0,SRCCOPY);
-		} 
-		DeleteDC(memDc);
-		EndPaint(hwnd, &ps);
+		get(hwnd);
+		
 		break;
 	}
 	case WM_ERASEBKGND:
@@ -85,4 +31,43 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		return DefWindowProc(hwnd, Message, wParam, lParam);
 	}
 	return 0;
+}
+
+
+int get(HWND hwnd)
+{
+    HANDLE hBmpMappingFile;
+    LPVOID hBmpMapFileAddr;
+
+    RECT rect;
+    GetClientRect(hwnd,&rect);
+
+   	hBmpMappingFile = OpenFileMappingA(FILE_MAP_READ, FALSE, TEXT("kat"));
+    if (hBmpMappingFile == NULL)
+    {
+        printf("\tCreateFileMappingA error %d\n", GetLastError());
+    }
+
+   	hBmpMapFileAddr = MapViewOfFile(hBmpMappingFile, FILE_MAP_READ, 0, 0, 0);
+    if (hBmpMapFileAddr == NULL)
+    {
+        printf("\tMapViewOfFile error %d\n", GetLastError());
+    }
+
+	hBmpFile = (HBITMAP)hBmpMapFileAddr;
+	
+    BITMAPFILEHEADER *bFileHeader = (BITMAPFILEHEADER*)hBmpMapFileAddr;
+    BITMAPINFO *bInfo = (BITMAPINFO*)((char*)hBmpMapFileAddr+14);
+    HDC hdc = GetDC(hwnd);
+    hBmpFile = CreateDIBitmap(hdc,&(bInfo->bmiHeader), CBM_INIT, (char*)hBmpMapFileAddr+bFileHeader->bfOffBits, bInfo, DIB_PAL_COLORS);
+    HDC hMemDC = CreateCompatibleDC(hdc);
+
+    SelectObject(hMemDC,hBmpFile);
+    StretchBlt(hdc, 0, 0, rect.right, rect.bottom, hMemDC, 0, 0, bInfo->bmiHeader.biWidth, bInfo->bmiHeader.biHeight, SRCCOPY); 
+    
+    ReleaseDC(hwnd,hdc);
+    DeleteDC(hMemDC);
+    DeleteObject(hBmpFile);
+
+    return (INT_PTR)TRUE;
 }
