@@ -1,55 +1,41 @@
 #include <windows.h>
 #include <stdio.h>
+#include "WinMain.c"
 
-HBITMAP CopyBitmap(HBITMAP hbmOn) {
-    HDC hdcSrc = CreateCompatibleDC(NULL);
-    HDC hdcDst = CreateCompatibleDC(NULL);
-    HBITMAP hbmNew;
-    BITMAP bm, bm1;
+int put();
 
-    GetObject(hbmOn, sizeof(bm), &bm);
-    SelectObject(hdcSrc, hbmOn);
-    hbmNew = CreateBitmap( bm.bmWidth, bm.bmHeight, bm.bmPlanes,bm.bmBitsPixel,NULL);
-    SelectObject(hdcDst, hbmNew);
-    BitBlt(hdcDst, 0, 0, bm.bmWidth, bm.bmHeight, hdcSrc, 0, 0, SRCCOPY);
+HBITMAP hBmpFile;
 
-    DeleteDC(hdcSrc);
-    DeleteDC(hdcDst);
-
-    return hbmNew;
+LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+	switch (Message) {
+	case WM_CREATE:
+	{
+		ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+		break;
+	}
+	case WM_LBUTTONDOWN:
+	{
+		put(hwnd);
+		break;
+	}
+	case WM_ERASEBKGND:
+	{
+		return 0;
+	}
+	case WM_DESTROY: {
+		PostQuitMessage(0);
+		break;
+	}
+	default:
+		return DefWindowProc(hwnd, Message, wParam, lParam);
+	}
+	return 0;
 }
 
-int main()
+int put(HWND hwnd)
 {
-   	HANDLE hMapFile;
-   	LPVOID hBmpMapFileAddr;
-
-    HANDLE pic = CreateFile("0.bmp",GENERIC_READ, FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
-    if(pic==NULL)
-    {
-        printf("1");
-    }
-   	hMapFile = CreateFileMapping(pic,NULL,PAGE_READWRITE,0,0,TEXT("kat"));
-   	hBmpMapFileAddr = MapViewOfFile(hMapFile,FILE_MAP_ALL_ACCESS, 0,0,0);
-       
-    BITMAPFILEHEADER *bFileHeader= (BITMAPFILEHEADER*)hBmpMapFileAddr; 
-
-    BITMAPINFO *bInfo=(BITMAPINFO*)((char*)hBmpMapFileAddr+14); 
-    HDC hdc=CreateCompatibleDC(NULL);
-    pic=CreateDIBitmap(hdc,&(bInfo->bmiHeader), 
-    CBM_INIT,(char*)hBmpMapFileAddr+bFileHeader->bfOffBits, 
-    bInfo,DIB_PAL_COLORS); 
-    HDC hMemDC=CreateCompatibleDC(hdc); 
-    SelectObject(hMemDC,pic); 
-    StretchBlt(hdc,0,0,rect.right,rect.bottom,hMemDC, 
-    0,0,bInfo->bmiHeader.biWidth,bInfo->bmiHeader.biHeight, 
-    SRCCOPY); 
-    ReleaseDC(NULL,hdc); 
-    DeleteDC(hMemDC); 
-    DeleteObject(pic);
-
-	system("pause");
-	UnmapViewOfFile(hBmpMapFileAddr);
-	CloseHandle(hMapFile);
-	return 0;
+    hBmpFile = CreateFileA("0.bmp", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+   	HANDLE hBmpMappingFile = CreateFileMappingA(hBmpFile, NULL, PAGE_READONLY, 0, 0, TEXT("kat"));
+   	LPVOID hBmpMapFileAddr = MapViewOfFile(hBmpMappingFile, FILE_MAP_READ, 0, 0, 0);
+    return (INT_PTR)TRUE;
 }
