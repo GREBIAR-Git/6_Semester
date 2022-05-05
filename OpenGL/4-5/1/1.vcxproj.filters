@@ -29,9 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\..\6\1\6\1.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -44,5 +41,8 @@
     <ClInclude Include="..\..\6\1\6\Planet.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
