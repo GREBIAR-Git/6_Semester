@@ -143,13 +143,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="1.cpp" />
+    <ClCompile Include="..\..\6\1\6\1.cpp" />
+    <ClCompile Include="..\..\6\1\6\Keyboard.cpp" />
+    <ClCompile Include="..\..\6\1\6\Light.cpp" />
+    <ClCompile Include="..\..\6\1\6\Planet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="1.h" />
+    <ClInclude Include="..\..\6\1\6\1.h" />
+    <ClInclude Include="..\..\6\1\6\Keyboard.h" />
+    <ClInclude Include="..\..\6\1\6\Light.h" />
+    <ClInclude Include="..\..\6\1\6\Planet.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
