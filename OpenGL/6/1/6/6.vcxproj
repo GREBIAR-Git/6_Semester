@@ -139,12 +139,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\1\1.cpp" />
-    <ClCompile Include="..\..\1\Keyboard.cpp" />
-    <ClCompile Include="..\..\1\Light.cpp" />
-    <ClCompile Include="..\..\1\Planet.cpp" />
+    <ClCompile Include="..\..\..\..\..\1.cpp" />
+    <ClCompile Include="..\..\..\..\..\Keyboard.cpp" />
+    <ClCompile Include="..\..\..\..\..\Light.cpp" />
+    <ClCompile Include="..\..\..\..\..\Planet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\1.h" />
+    <ClInclude Include="..\..\..\..\..\Keyboard.h" />
+    <ClInclude Include="..\..\..\..\..\Light.h" />
+    <ClInclude Include="..\..\..\..\..\Planet.h" />
     <ClInclude Include="..\..\1\1.h" />
     <ClInclude Include="..\..\1\Keyboard.h" />
     <ClInclude Include="..\..\1\Light.h" />
