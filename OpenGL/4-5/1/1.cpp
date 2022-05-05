@@ -217,7 +217,7 @@ void Display() {
 	glViewport(winWidth * 3 / 4, winHeight/ 3, winWidth / 4, winHeight / 3);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(asin(tan(30 * M_PI / 180))*180/M_PI, 1, 0, 0);
+	glRotatef(35.264, 1, 0, 0);
 	glRotatef(45, 0, -1, 0);
 	Scene();
 
@@ -257,8 +257,8 @@ void Display() {
 	glGetFloatv(GL_MODELVIEW_MATRIX, a);
 	double angle = 45 * M_PI / 180;
 	double gamma = 45 * M_PI / 180;
-	a[8] = (M_PI / 2 - atan(gamma)) * (-cos(angle));
-	a[9] = (M_PI / 2 - atan(gamma)) * (-sin(angle));
+	a[8] = (1) * (-cos(angle));
+	a[9] = (1) * (-sin(angle));
 	glLoadMatrixf(a);
 	Scene();
 	
@@ -269,8 +269,8 @@ void Display() {
 	glGetFloatv(GL_MODELVIEW_MATRIX, a);
 	angle = 30 * M_PI / 180;
 	gamma = (M_PI/2 - atan(1/2));
-	a[8] = (M_PI / 2 - atan(gamma)) * (-cos(angle));
-	a[9] = (M_PI / 2 - atan(gamma)) * (-sin(angle));
+	a[8] = (0.5) * (-cos(angle));
+	a[9] = (0.5) * (-sin(angle));
 	glLoadMatrixf(a);
 	Scene();
 	

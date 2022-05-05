@@ -3,7 +3,7 @@ const int winWidth = 1400;
 
 using namespace std;
 
-int rot, alfa, ex;
+int rot, alfa, beta, ex;
 
 Planet planets[10];
 
@@ -229,7 +229,9 @@ void DrawSnowScene3()
 {
 	glPushMatrix();
 	glRotatef(alfa, 0, 1, 0);
+	glTranslatef(2 *(rBigBall + rBigBall * scale + rBigBall * scale * scale), 0, 0);
 	DrawSnowMan();
+	glTranslatef(-2 * (rBigBall + rBigBall * scale + rBigBall * scale * scale), 0, 0);
 	glTranslated(rBigBall, 0, 0);
 	glScalef(scale, scale, scale);
 	glTranslated(rBigBall, 0, 0);
@@ -278,8 +280,8 @@ void DrawSnowScene5()
 void DrawSnowScene6()
 {
 	glPushMatrix();
-	glRotatef(alfa, 1, 1, 1);
-	glRotatef(alfa, 0, 1, 0);
+	glRotatef(alfa, 1, 1, -1);
+	glRotatef(beta, 0, 1, 0);
 	DrawSnowMan();
 	for (int i = 0; i < 2; i++)
 	{
@@ -463,13 +465,15 @@ void Specialkeys(int key, int x, int y)
 	}
 	else if (key == GLUT_KEY_DOWN) 
 	{ 
-		alfa = alfa + 2.0;
+		//alfa = alfa + 2.0;
+		beta = beta - 2.0;
 	}
 	else
 	{
 		ex = key;
 		rot = 0;
 		alfa = 0;
+		beta = 0;
 	}
 	glutPostRedisplay(); // принудительный вызов функции визуализации
 

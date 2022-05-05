@@ -146,10 +146,10 @@
     <ClCompile Include="1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ClInclude Include="1.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="1.h" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

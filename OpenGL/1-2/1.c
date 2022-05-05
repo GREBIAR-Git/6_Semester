@@ -111,6 +111,7 @@ LRESULT CALLBACK FrameWndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lPa
 		RECT window;
 		GetClientRect(hwnd,&window);
 		currentElement.shape = shapeLine;
+		currentElement.size = 1;
 		display.zoom.x=1;
 		display.zoom.y=1;
 		display.center.x = 0;
