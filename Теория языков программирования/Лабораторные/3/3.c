@@ -24,18 +24,16 @@ int main(int argc, char* argv[])
     
     char * fileContent = "\0";
 
-    int test = 0;
     printf("File content:\n\n");
     char ch;
     while ((ch = fgetc(fp)) != EOF)
     {
-        if (test > 10) break;
         charConcat1(&fileContent, ch);
-        //putchar(ch);
-        test++;
     }
     printf("\n\nEOF\n");
     fclose(fp);
+
+    printf("%s", fileContent);
 
     system("PAUSE");
     return 0;
