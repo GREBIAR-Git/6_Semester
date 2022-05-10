@@ -4,7 +4,7 @@
 #include <string.h>
 #include "charcopy.h"
 
-/*
+
 struct Token
 {
     char* name;
@@ -14,71 +14,219 @@ struct Token
 
 enum TokenType
 {
-    Type,
-    Identificator,
-    Number,
-    IO,
+    Delimiter,
     Comparison,
     MathSign,
-    String,
+    IOstring,
     KeyWord,
-    Delimiter
+    IO,
+    Type,
+    Identificator,
+    Number
 };
 
+char * fileContent;
 
 int currentToken = 0; int currentTokenLength = 0;
 int identificatorFirst = 1;
 struct Token tokens[300];
-enum TokenType state = Default;
+enum TokenType state = KeyWord;
 int idx = 0;
 
 void finishToken(char* stateName)
 {
-    char * buffer;
-    charcopy(&buffer, &str[idx - currentTokenLength], currentTokenLength);
-
-    char buffer[currentTokenLength + 1];
-    memcpy(buffer, &str[idx - currentTokenLength], currentTokenLength); // <- krasava
-    buffer[currentTokenLength] = '\0';
-    //strcpy(tokens[currentToken].name, stateName);
-    //strcpy(tokens[currentToken].value, buffer);
-    printf("\n\n%s - %s\n", stateName, buffer);
-    //printf("%s - %s\n\n", tokens[currentToken].name, tokens[currentToken].value);
+    //charCopy(&(tokens[currentToken].name), &stateName);
+    //charCopyL(&(tokens[currentToken].value), &(fileContent[idx - currentTokenLength]), currentTokenLength);
+    printf("%s - ", stateName);
+    printf("%.*s\n\n", currentTokenLength, &(fileContent[idx - currentTokenLength]));
     currentToken++;
     currentTokenLength = 0;
 }
 
-int main()
+int lexer()
 {
-    char buffer[strlen(str) + 1];
-    strcpy(buffer, str);
-    strcat(buffer, " ");
-    str = buffer;
+    charConcat1(&fileContent, ' ');
+    int io_started = 0;
 
-    while (idx < strlen(str))
+    while (idx < strlen(fileContent))
     {
         switch (state)
         {
-        case Default:
+        case Delimiter:
         {
-            state = KeyWord;
+            if (fileContent[idx] == ';')
+            {
+                idx++;
+                currentTokenLength++;
+                finishToken("delimiter");
+                state = Delimiter;
+            }
+            else
+            {
+                state = Comparison;
+            }
             break;
         }
-        case Identificator:
+        case Comparison:
         {
-            if (isalpha(str[idx]) || (!identificatorFirst && isdigit(str[idx])))
+            if (idx + 1 < strlen(fileContent)
+                && (fileContent[idx] == '!' && fileContent[idx + 1] == '='
+                || fileContent[idx] == '=' && fileContent[idx + 1] == '='
+                || fileContent[idx] == '<' && fileContent[idx + 1] == '='
+                || fileContent[idx] == '>' && fileContent[idx + 1] == '='))
+            {
+                idx += 2;
+                currentTokenLength += 2;
+                finishToken("comparison");
+                state = Delimiter;
+            }
+            else if (fileContent[idx] == '<' || fileContent[idx] == '>')
+            {
+                idx++;
+                currentTokenLength++;
+                finishToken("comparison");
+                state = KeyWord;
+            }
+            else
+            {
+                state = MathSign;
+            }
+            break;
+        }
+        case MathSign:
+        {
+            if (fileContent[idx] == '+' || fileContent[idx] == '-' || fileContent[idx] == '*' || fileContent[idx] == '/' || fileContent[idx] == '%' || fileContent[idx] == '(' || fileContent[idx] == ')')
+            {
+                idx++;
+                currentTokenLength++;
+                finishToken("sign");
+                state = Delimiter;
+            }
+            else
+            {
+                state = IOstring;
+            }
+            break;
+        }
+        case IOstring:
+        {
+            if (fileContent[idx] == '"' && !io_started)
+            {
+                io_started = 1;
+                currentTokenLength++;
+                idx++;
+            }
+            else if (fileContent[idx] == '"' && io_started)
+            {
+                io_started = 0;
+                idx++;
+                currentTokenLength++;
+                if (currentTokenLength)
+                {
+                    finishToken("identificator");
+                }
+                state = Delimiter;
+            }
+            else if (io_started)
             {
                 currentTokenLength++;
                 idx++;
             }
-            else if (str[idx] == ' ' || str[idx] == '\n')
+            else
+            {
+                state = KeyWord;
+            }
+            break;
+        }
+        case KeyWord:
+        {
+            if (idx + 1 < strlen(fileContent)
+                && fileContent[idx] == 'i' && fileContent[idx + 1] == 'f')
+            {
+                idx += 2;
+                currentTokenLength += 2;
+                finishToken("keyword");
+                state = Delimiter;
+            }
+            else if (idx + 5 < strlen(fileContent)
+                && fileContent[idx] == 's' && fileContent[idx + 1] == 'w' && fileContent[idx + 2] == 'i'
+                && fileContent[idx + 3] == 't' && fileContent[idx + 4] == 'c' && fileContent[idx + 5] == 'h')
+            {
+                idx += 6;
+                currentTokenLength += 6;
+                finishToken("keyword");
+                state = Delimiter;
+            }
+            else
+            {
+                state = IO;
+            }
+            break;
+        }
+        case IO:
+        {
+            if (idx + 4 < strlen(fileContent)
+                && fileContent[idx] == 's' && fileContent[idx + 1] == 'c' && fileContent[idx + 2] == 'a' && fileContent[idx + 3] == 'n' && fileContent[idx + 4] == 'f')
+            {
+                idx += 5;
+                currentTokenLength += 5;
+                finishToken("io");
+                state = Delimiter;
+            }
+            else if (idx + 5 < strlen(fileContent)
+                && fileContent[idx] == 'p' && fileContent[idx + 1] == 'r' && fileContent[idx + 2] == 'i'
+                && fileContent[idx + 3] == 'n' && fileContent[idx + 4] == 't' && fileContent[idx + 5] == 'f')
+            {
+                idx += 6;
+                currentTokenLength += 6;
+                finishToken("io");
+                state = Delimiter;
+            }
+            else
+            {
+                state = Type;
+            }
+            break;
+        }
+        case Type:
+        {
+            if (idx + 4 < strlen(fileContent)
+                && fileContent[idx] == 'f' && fileContent[idx + 1] == 'l' && fileContent[idx + 2] == 'o' && fileContent[idx + 3] == 'a' && fileContent[idx + 4] == 't')
+            {
+                idx += 5;
+                currentTokenLength += 5;
+                finishToken("type");
+                state = Delimiter;
+            }
+            else if (idx + 2 < strlen(fileContent)
+                && fileContent[idx] == 'i' && fileContent[idx + 1] == 'n' && fileContent[idx + 2] == 't')
+            {
+                idx += 3;
+                currentTokenLength += 3;
+                finishToken("type");
+                state = Delimiter;
+            }
+            else
+            {
+                state = Identificator;
+            }
+            break;
+        }
+        case Identificator:
+        {
+            if (isalpha(fileContent[idx]) || (!identificatorFirst && isdigit(fileContent[idx])))
+            {
+                currentTokenLength++;
+                idx++;
+            }
+            else if (fileContent[idx] == ' ' || fileContent[idx] == '\n')
             {
                 if (currentTokenLength)
                 {
                     finishToken("identificator");
                 }
                 idx++;
-                state = Default;
+                state = Delimiter;
             }
             else
             {
@@ -88,82 +236,20 @@ int main()
         }
         case Number:
         {
-            if (IsNumber(str))
+            if (IsNumber(fileContent))
             {
                 finishToken("number");
-                state = Default;
+                state = Delimiter;
             }
             else
             {
                 idx++;
-                state = Default;
-            }
-            break;
-        }
-        case Comparison:
-        {
-            if (idx + 1 < strlen(str)
-                && (str[idx] == '!' && str[idx] == '='
-                    || str[idx] == '=' && str[idx + 1] == '='))
-            {
-                idx += 2;
-                currentTokenLength += 2;
-                finishToken("comparison");
-                state = Default;
-            }
-            else
-            {
-                state = Sign;
-            }
-            break;
-        }
-        case Sign:
-        {
-            if (str[idx] == '+' || str[idx] == '-')
-            {
-                idx++;
-                currentTokenLength++;
-                finishToken("sign");
-                state = Default;
-            }
-            else
-            {
-                state = Identificator;
-            }
-            break;
-        }
-        case KeyWord:
-        {
-            if (idx + 1 < strlen(str)
-                && str[idx] == 'i' && str[idx + 1] == 'f')
-            {
-                idx += 2;
-                currentTokenLength += 2;
-                finishToken("keyword");
-                state = Default;
-            }
-            else if (idx + 5 < strlen(str)
-                && str[idx] == 's' && str[idx + 1] == 'w' && str[idx + 2] == 'i'
-                && str[idx + 3] == 't' && str[idx + 4] == 'c' && str[idx + 5] == 'h')
-            {
-                idx += 6;
-                currentTokenLength += 2;
-                finishToken("keyword");
-                state = Default;
-            }
-            else
-            {
-                state = Comparison;
+                state = Delimiter;
             }
             break;
         }
         }
     }
-    for (int i = 0; i < currentToken; i++)
-    {
-        //printf("%s:%s\n",tokens[i].name,tokens[i].value);
-    }
-    return 0;
 }
 
 
@@ -241,5 +327,3 @@ int IsNumber(char* str)
         }
     }
 }
-
-*/

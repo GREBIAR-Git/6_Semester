@@ -1,5 +1,6 @@
 ﻿#include "Lexer.h"
 
+
 int main(int argc, char* argv[])
 {
     char* fileName;
@@ -20,20 +21,24 @@ int main(int argc, char* argv[])
         printf("Error: could not open file %s", fileName);
         return 1;
     }
-
     
     char * fileContent = "\0";
-
-    printf("File content:\n\n");
     char ch;
     while ((ch = fgetc(fp)) != EOF)
     {
         charConcat1(&fileContent, ch);
     }
-    printf("\n\nEOF\n");
     fclose(fp);
+    printf("\n\nfileContent:\n%s\n\nEOF\n", fileContent);
+    
+    lexer();
 
-    printf("%s", fileContent);
+    printf("\n\ntokens:\n");
+    for (int i = 0; i < currentToken; i++)
+    {
+        printf("%s:%s\n",tokens[i].name,tokens[i].value);
+    }
+    printf("\n\nend tokens\n");
 
     system("PAUSE");
     return 0;
