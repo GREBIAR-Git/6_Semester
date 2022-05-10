@@ -1,6 +1,5 @@
 ﻿#include "Lexer.h"
 
-
 int main(int argc, char* argv[])
 {
     char* fileName = "1.txt";
@@ -23,6 +22,7 @@ int main(int argc, char* argv[])
     }
     fseek(fp, 0L, SEEK_END);
     long size = ftell(fp);
+    printf("%d",size);
     fseek(fp, 0L, SEEK_SET);
     fileContent = (char*)malloc(sizeof(char) * size);
     fread(fileContent, 1, size, fp);
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
     printf("\n\ntokens:\n");
     for (int i = 0; i < currentToken; i++)
     {
-        printf("%s:%s\n", NameType(tokens[i].name),tokens[i].value);
+        printf("%s - \[ %s \]\n", NameType(tokens[i].name),tokens[i].value);
     }
     printf("\n\nend tokens\n");
     free(fileContent);
