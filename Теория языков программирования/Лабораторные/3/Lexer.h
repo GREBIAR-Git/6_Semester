@@ -1,33 +1,10 @@
-#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "token.h"
 #include "charcopy.h"
-
-enum TokenType
-{
-    Delimiter,
-    Comma,
-    Comparison,
-    Assignment,
-    MathSign,
-    IOstring,
-    KeyWord,
-    IO,
-    Type,
-    Identificator,
-    Number,
-    Error,
-};
-
-struct Token
-{
-    char* name;
-    char* value;
-    int pos;
-};
 
 enum number {
     numbers,
@@ -37,49 +14,6 @@ enum number {
 };
 
 bool startNumber = false;
-
-
-char* NameType(enum TokenType type)
-{
-    switch (type)
-    {
-    case Delimiter:
-        return "Delimiter";
-        break;
-    case Comma:
-        return "Comma";
-    case Comparison:
-        return "Comparison";
-        break;
-    case Assignment:
-        return "Assignment";
-    case MathSign:
-        return "MathSign";
-        break;
-    case IOstring:
-        return "IOstring";
-        break;
-    case KeyWord:
-        return "KeyWord";
-        break;
-    case IO:
-        return "IO";
-        break;
-    case Type:
-        return "Type";
-        break;
-    case Identificator:
-        return "Identificator";
-        break;
-    case Number:
-        return "Number";
-        break;
-    default:
-        break;
-    }
-}
-
-
 
 char * fileContent;
 
@@ -163,7 +97,7 @@ int IsNumber(char* str)
     }
 }
 
-void finishToken(char * type)
+void finishToken(enum TokenType type)
 {
     tokens[currentToken].name = type;
     char buffer[currentTokenLength + 1];
@@ -189,7 +123,7 @@ int lexer()
             {
                 idx++;
                 currentTokenLength++;
-                finishToken("delimiter");
+                finishToken(Delimiter);
                 state = Delimiter;
             }
             else
@@ -204,7 +138,7 @@ int lexer()
             {
                 idx++;
                 currentTokenLength++;
-                finishToken("comma");
+                finishToken(Comma);
                 state = Delimiter;
             }
             else
@@ -223,14 +157,14 @@ int lexer()
             {
                 idx += 2;
                 currentTokenLength += 2;
-                finishToken("comparison");
+                finishToken(Comparison);
                 state = Delimiter;
             }
             else if (fileContent[idx] == '<' || fileContent[idx] == '>')
             {
                 idx++;
                 currentTokenLength++;
-                finishToken("comparison");
+                finishToken(Comparison);
                 state = KeyWord;
             }
             else
@@ -245,7 +179,7 @@ int lexer()
             {
                 idx++;
                 currentTokenLength++;
-                finishToken("assignment");
+                finishToken(Assignment);
                 state = Delimiter;
             }
             else
@@ -260,7 +194,7 @@ int lexer()
             {
                 idx++;
                 currentTokenLength++;
-                finishToken("sign");
+                finishToken(MathSign);
                 state = Delimiter;
             }
             else
@@ -284,7 +218,7 @@ int lexer()
                 currentTokenLength++;
                 if (currentTokenLength)
                 {
-                    finishToken("identificator");
+                    finishToken(IOstring);
                 }
                 state = Delimiter;
             }
@@ -306,7 +240,7 @@ int lexer()
             {
                 idx += 2;
                 currentTokenLength += 2;
-                finishToken("keyword");
+                finishToken(KeyWord);
                 state = Delimiter;
             }
             else if (idx + 5 < strlen(fileContent)
@@ -315,7 +249,7 @@ int lexer()
             {
                 idx += 6;
                 currentTokenLength += 6;
-                finishToken("keyword");
+                finishToken(KeyWord);
                 state = Delimiter;
             }
             else
@@ -331,7 +265,7 @@ int lexer()
             {
                 idx += 5;
                 currentTokenLength += 5;
-                finishToken("io");
+                finishToken(IO);
                 state = Delimiter;
             }
             else if (idx + 5 < strlen(fileContent)
@@ -340,7 +274,7 @@ int lexer()
             {
                 idx += 6;
                 currentTokenLength += 6;
-                finishToken("io");
+                finishToken(IO);
                 state = Delimiter;
             }
             else
@@ -356,7 +290,7 @@ int lexer()
             {
                 idx += 5;
                 currentTokenLength += 5;
-                finishToken("type");
+                finishToken(Type);
                 state = Delimiter;
             }
             else if (idx + 2 < strlen(fileContent)
@@ -364,7 +298,7 @@ int lexer()
             {
                 idx += 3;
                 currentTokenLength += 3;
-                finishToken("type");
+                finishToken(Type);
                 state = Delimiter;
             }
             else
@@ -384,7 +318,7 @@ int lexer()
             else if (!identificatorFirst)
             {
                 identificatorFirst = true;
-                finishToken("identificator");
+                finishToken(Identificator);
                 state = Delimiter;
             }
             else
@@ -397,7 +331,7 @@ int lexer()
         {
             if (IsNumber(fileContent))
             {
-                finishToken("number");;
+                finishToken(Number);;
                 state = Delimiter;
             }
             else

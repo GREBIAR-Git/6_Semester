@@ -21,7 +21,6 @@ int main(int argc, char* argv[])
         printf("Error: could not open file %s", fileName);
         return 1;
     }
-    // узнаем размер файла для создания буфера нужного размера
     fseek(fp, 0L, SEEK_END);
     long size = ftell(fp);
     fseek(fp, 0L, SEEK_SET);
@@ -37,7 +36,7 @@ int main(int argc, char* argv[])
     printf("\n\ntokens:\n");
     for (int i = 0; i < currentToken; i++)
     {
-        printf("%s:%s\n",tokens[i].name,tokens[i].value);
+        printf("%s:%s\n", NameType(tokens[i].name),tokens[i].value);
     }
     printf("\n\nend tokens\n");
     free(fileContent);
