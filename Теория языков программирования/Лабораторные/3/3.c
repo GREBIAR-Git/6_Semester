@@ -3,8 +3,8 @@
 
 int main(int argc, char* argv[])
 {
-    char* fileName;
-    if (argc == 2)
+    char* fileName = "1.txt";
+   /* if (argc == 2)
     {
         fileName = argv[1];
     }
@@ -14,21 +14,22 @@ int main(int argc, char* argv[])
         char buf[100];
         gets(buf);
         fileName = buf;
-    }
+    }*/
     FILE* fp = fopen(fileName, "r");
     if (fp == NULL)
     {
         printf("Error: could not open file %s", fileName);
         return 1;
     }
-    
-    char * fileContent = "\0";
-    char ch;
-    while ((ch = fgetc(fp)) != EOF)
-    {
-        charConcat1(&fileContent, ch);
-    }
+    // узнаем размер файла для создания буфера нужного размера
+    fseek(fp, 0L, SEEK_END);
+    long size = ftell(fp);
+    fseek(fp, 0L, SEEK_SET);
+    fileContent = (char*)malloc(sizeof(char) * size);
+    fread(fileContent, 1, size, fp);
     fclose(fp);
+
+
     printf("\n\nfileContent:\n%s\n\nEOF\n", fileContent);
     
     lexer();
@@ -39,7 +40,7 @@ int main(int argc, char* argv[])
         printf("%s:%s\n",tokens[i].name,tokens[i].value);
     }
     printf("\n\nend tokens\n");
-
+    free(fileContent);
     system("PAUSE");
     return 0;
 }

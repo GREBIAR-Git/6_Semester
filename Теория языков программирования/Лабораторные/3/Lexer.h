@@ -2,50 +2,181 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
 #include "charcopy.h"
-
-
-struct Token
-{
-    char* name;
-    char* value;
-};
-
 
 enum TokenType
 {
     Delimiter,
+    Comma,
     Comparison,
+    Assignment,
     MathSign,
     IOstring,
     KeyWord,
     IO,
     Type,
     Identificator,
-    Number
+    Number,
+    Error,
 };
+
+struct Token
+{
+    char* name;
+    char* value;
+    int pos;
+};
+
+enum number {
+    numbers,
+    one_dot_numbers,
+    finish_number,
+    no_number
+};
+
+bool startNumber = false;
+
+
+char* NameType(enum TokenType type)
+{
+    switch (type)
+    {
+    case Delimiter:
+        return "Delimiter";
+        break;
+    case Comma:
+        return "Comma";
+    case Comparison:
+        return "Comparison";
+        break;
+    case Assignment:
+        return "Assignment";
+    case MathSign:
+        return "MathSign";
+        break;
+    case IOstring:
+        return "IOstring";
+        break;
+    case KeyWord:
+        return "KeyWord";
+        break;
+    case IO:
+        return "IO";
+        break;
+    case Type:
+        return "Type";
+        break;
+    case Identificator:
+        return "Identificator";
+        break;
+    case Number:
+        return "Number";
+        break;
+    default:
+        break;
+    }
+}
+
+
 
 char * fileContent;
 
-int currentToken = 0; int currentTokenLength = 0;
-int identificatorFirst = 1;
+int currentToken = 0; 
+int currentTokenLength = 0;
+bool identificatorFirst = true;
 struct Token tokens[300];
 enum TokenType state = KeyWord;
 int idx = 0;
 
-void finishToken(char* stateName)
+int IsNumber(char* str)
 {
-    //charCopy(&(tokens[currentToken].name), &stateName);
-    //charCopyL(&(tokens[currentToken].value), &(fileContent[idx - currentTokenLength]), currentTokenLength);
-    printf("%s - ", stateName);
-    printf("%.*s\n\n", currentTokenLength, &(fileContent[idx - currentTokenLength]));
+    int count_str = strlen(str);
+    enum number stage = numbers;
+    startNumber = false;
+    while (1)
+    {
+        switch (stage)
+        {
+        case numbers:
+        {
+            if (idx < strlen(str))
+            {
+                if (isdigit(str[idx]))
+                {
+                    startNumber = true;
+                    currentTokenLength++;
+                    idx++;
+                }
+                else if (str[idx] == '.' && startNumber)
+                {
+
+                    currentTokenLength++;
+                    idx++;
+                    stage = one_dot_numbers;
+                }
+                else if ((str[idx] != ' ' || str[idx] != '\n' || str[idx] != ';') && startNumber)
+                {
+                    stage = finish_number;
+                }
+                else
+                {
+                    stage = no_number;
+                }
+            }
+            else
+            {
+                stage = finish_number;
+            }
+            break;
+        }
+        case one_dot_numbers:
+        {
+            if (idx < strlen(str) && (str[idx] != ' ' || str[idx] != '\n' || str[idx] != ';'))
+            {
+                if (isdigit(str[idx]))
+                {
+                    currentTokenLength++;
+                    idx++;
+                }
+                else
+                {
+                    stage = no_number;
+                }
+            }
+            else
+            {
+                stage = finish_number;
+            }
+            break;
+        }
+        case no_number:
+        {
+            return 0;
+        }
+        case finish_number:
+        {
+            return 1;
+        }
+        }
+    }
+}
+
+void finishToken(char * type)
+{
+    tokens[currentToken].name = type;
+    char buffer[currentTokenLength + 1];
+    memcpy(buffer, &fileContent[idx - currentTokenLength], currentTokenLength);
+    buffer[currentTokenLength] = '\0';
+    tokens[currentToken].value = malloc(strlen(buffer) + 1);
+    strcpy(tokens[currentToken].value, buffer);
     currentToken++;
     currentTokenLength = 0;
 }
 
 int lexer()
 {
-    charConcat1(&fileContent, ' ');
     int io_started = 0;
 
     while (idx < strlen(fileContent))
@@ -63,6 +194,21 @@ int lexer()
             }
             else
             {
+                state = Comma;
+            }
+            break;
+        }
+        case Comma:
+        {
+            if (fileContent[idx] == ',')
+            {
+                idx++;
+                currentTokenLength++;
+                finishToken("comma");
+                state = Delimiter;
+            }
+            else
+            {
                 state = Comparison;
             }
             break;
@@ -71,9 +217,9 @@ int lexer()
         {
             if (idx + 1 < strlen(fileContent)
                 && (fileContent[idx] == '!' && fileContent[idx + 1] == '='
-                || fileContent[idx] == '=' && fileContent[idx + 1] == '='
-                || fileContent[idx] == '<' && fileContent[idx + 1] == '='
-                || fileContent[idx] == '>' && fileContent[idx + 1] == '='))
+                    || fileContent[idx] == '=' && fileContent[idx + 1] == '='
+                    || fileContent[idx] == '<' && fileContent[idx + 1] == '='
+                    || fileContent[idx] == '>' && fileContent[idx + 1] == '='))
             {
                 idx += 2;
                 currentTokenLength += 2;
@@ -86,6 +232,21 @@ int lexer()
                 currentTokenLength++;
                 finishToken("comparison");
                 state = KeyWord;
+            }
+            else
+            {
+                state = Assignment;
+            }
+            break;
+        }
+        case Assignment:
+        {
+            if (fileContent[idx] == '=')
+            {
+                idx++;
+                currentTokenLength++;
+                finishToken("assignment");
+                state = Delimiter;
             }
             else
             {
@@ -216,16 +377,14 @@ int lexer()
         {
             if (isalpha(fileContent[idx]) || (!identificatorFirst && isdigit(fileContent[idx])))
             {
+                identificatorFirst = false;
                 currentTokenLength++;
                 idx++;
             }
-            else if (fileContent[idx] == ' ' || fileContent[idx] == '\n')
+            else if (!identificatorFirst)
             {
-                if (currentTokenLength)
-                {
-                    finishToken("identificator");
-                }
-                idx++;
+                identificatorFirst = true;
+                finishToken("identificator");
                 state = Delimiter;
             }
             else
@@ -238,91 +397,20 @@ int lexer()
         {
             if (IsNumber(fileContent))
             {
-                finishToken("number");
+                finishToken("number");;
                 state = Delimiter;
             }
             else
             {
-                idx++;
-                state = Delimiter;
+                state = Error;
             }
             break;
         }
-        }
-    }
-}
-
-
-#include <ctype.h>
-
-enum number {
-    numbers,
-    one_dot_numbers,
-    finish_number,
-    no_number
-};
-
-int IsNumber(char* str)
-{
-    int count_str = strlen(str);
-    enum number stage = numbers;
-    while (1)
-    {
-        switch (stage)
+        case Error:
         {
-        case numbers:
-        {
-            if (idx < strlen(str) && str[idx] != ' ')
-            {
-                if (isdigit(str[idx]))
-                {
-                    currentTokenLength++;
-                    idx++;
-                }
-                else if (str[idx] == '.')
-                {
-                    currentTokenLength++;
-                    idx++;
-                    stage = one_dot_numbers;
-                }
-                else
-                {
-                    stage = no_number;
-                }
-            }
-            else
-            {
-                stage = finish_number;
-            }
-            break;
-        }
-        case one_dot_numbers:
-        {
-            if (idx < strlen(str) && str[idx] != ' ')
-            {
-                if (isdigit(str[idx]))
-                {
-                    currentTokenLength++;
-                    idx++;
-                }
-                else
-                {
-                    stage = no_number;
-                }
-            }
-            else
-            {
-                stage = finish_number;
-            }
-            break;
-        }
-        case no_number:
-        {
-            return 0;
-        }
-        case finish_number:
-        {
-            return 1;
+            printf("skip - ( \%c )\n", fileContent[idx]);
+            idx++;
+            state = Delimiter;
         }
         }
     }
