@@ -20,9 +20,11 @@ bool Value();
 bool Input1();
 bool Is(enum TokenType type);
 
+int tokenLength;
 
-void Parser()
+void Parser(int length)
 {
+	tokenLength = length;
 	currentToken = 0;
 	printf("\nSTARTPARSER\n");
 	if (Sequence())
@@ -37,14 +39,27 @@ void Parser()
 
 bool Sequence()
 {
-	if(currentToken >= (sizeof(tokens) / sizeof(struct Token)))
+	currentToken = tempCurrentToken;
+	printf("\nnew Sequence\n");
+	printf("\nnew Sequence token - %s #%d\n", NameType(tokens[currentToken].type), currentToken);
+	printf("\n%d", sizeof(tokens));
+	printf("\n%d", tokenLength);
+	if(currentToken >= tokenLength)
 	{
+		printf("\nend Sequence\n");
+		return true;
+	}
+	else if (tokens[currentToken].type == CloseBraces)
+	{
+		printf("\nend Sequence\n");
 		return true;
 	}
 	else if (Statement() && Sequence())
 	{
+		printf("\nend Sequence\n");
 		return true;
 	}
+	printf("\nerror Sequence\n");
 	return false;
 }
 
@@ -55,6 +70,7 @@ bool Statement()
 	if (Condition())
 	{
 		currentToken = tempCurrentToken;
+		printf("Statement-true");
 		return true;
 	}
 	else
@@ -64,6 +80,7 @@ bool Statement()
 		if (VariableDeclaration())
 		{
 			currentToken = tempCurrentToken;
+			printf("Statement-true");
 			return true;
 		}
 		else 
@@ -73,6 +90,7 @@ bool Statement()
 			if (Assignment1())
 			{
 				currentToken = tempCurrentToken;
+				printf("Statement-true");
 				return true;
 			}
 			else
@@ -82,6 +100,7 @@ bool Statement()
 				if (Input1())
 				{
 					currentToken = tempCurrentToken;
+					printf("Statement-true");
 					return true;
 				}
 				else
@@ -91,6 +110,7 @@ bool Statement()
 					if (Output1())
 					{
 						currentToken = tempCurrentToken;
+						printf("Statement-true");
 						return true;
 					}
 				}
@@ -106,12 +126,20 @@ bool Condition()
 	int tempCurrentToken1 = currentToken;
 	tempCurrentToken = currentToken;
 
-	if (Is(IF) && Is(OpenBracket) && LogicalExpression() && Is(CloseBracket) && Is(OpenBraces) && Sequence() && Is(CloseBraces))
+	if (Is(IF) && Is(OpenBracket) && LogicalExpression() && Is(OpenBraces) && Sequence() && Is(CloseBraces))
 	{
 		currentToken = tempCurrentToken;
-		if (Is(Else) && Sequence())
+		printf("\nbefore ELSE current token - %s\n", NameType(tokens[tempCurrentToken].type));
+		if (Is(Else) && Is(OpenBraces) && Sequence() && Is(CloseBraces))
 		{
+			printf("ELSE END\n");
+			printf("ELSE END\n");
+			printf("ELSE END\n");
+			printf("ELSE END\n");
+			printf("ELSE END\n");
+			printf("\ncurrent token - %s #%d\n", NameType(tokens[currentToken].type), currentToken);
 			currentToken = tempCurrentToken;
+			printf("\ncurrent token - %s\n", NameType(tokens[tempCurrentToken].type));
 		}
 		printf("Condition-true");
 		return true;
@@ -133,6 +161,7 @@ bool LogicalExpression()
 	{
 		if (currentToken < tempCurrentToken)
 		{
+			printf("min");
 			currentToken = tempCurrentToken;
 		}
 		printf("\nbefore Comparison token - %s\n", NameType(tokens[currentToken].type));
@@ -237,9 +266,10 @@ bool ArithmeticExpressionMain()
 	printf("ArithmeticExpression-start\n");
 	bracketCountDifference = 0;
 	currentToken = tempCurrentToken;
+	printf("\ncurrent token - %s\n", NameType(tokens[tempCurrentToken].type));
 	if (ArithmeticExpression())
 	{
-		if (bracketCountDifference == 0)
+		if (bracketCountDifference == 0|| bracketCountDifference == -1)
 		{
 			printf("\ncountbracket:%d\n", bracketCountDifference);
 			printf("ArithmeticExpression-true\n");
@@ -254,6 +284,7 @@ bool ArithmeticExpressionMain()
 	{
 		printf("\ncountbracket:%d\n", bracketCountDifference);
 		printf("ArithmeticExpression-false\n");
+		printf("\ncurrent token - %s\n", NameType(tokens[tempCurrentToken].type));
 		return false;
 	}
 	return false;
@@ -267,14 +298,17 @@ bool ArithmeticExpression()
 	}
 	if (Value())
 	{
+		printf("value\n");
 		if (Is(MathSign) && ArithmeticExpression())
 		{
+			printf("2x\n");
 			currentToken = tempCurrentToken;
 		}
 		if (Is(CloseBracket))
 		{
+			printf("close b\n");
 			bracketCountDifference--;
-			if (bracketCountDifference < 0)
+			if (bracketCountDifference < -1)
 			{
 				printf("Error - missing opening parenthesis before: %d", tokens[tempCurrentToken].pos);
 				return false;
@@ -287,16 +321,12 @@ bool ArithmeticExpression()
 
 bool Value()//значение 
 {
-	tempCurrentToken = currentToken;
-	if (Is(Identificator)
+	if (Is(Identificator))
 	{
-		currentToken = tempCurrentToken;
-			return true;
+		return true;
 	}
-	tempCurrentToken = currentToken;
-	if (Is(Number)))
+	if (Is(Number))
 	{
-		currentToken = tempCurrentToken;
 		return true;
 	}
 	return false;

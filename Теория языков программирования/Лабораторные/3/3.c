@@ -32,17 +32,17 @@ int main(int argc, char* argv[])
 
     printf("\n\nfileContent:\n%s\n\nEOF\n", fileContent);
     
-    Lexer();
+    int tokenLength = Lexer();
 
     printf("\n\ntokens:\n");
     for (int i = 0; i < currentToken; i++)
     {
-        printf("%s - \[ %s \]\n", NameType(tokens[i].type),tokens[i].value);
+        printf("#%d : %s - \[ %s \]\n",i, NameType(tokens[i].type),tokens[i].value);
     }
     printf("\n\nend tokens\n");
     free(fileContent);
 
-    Parser();
+    Parser(tokenLength);
 
 
     system("PAUSE");

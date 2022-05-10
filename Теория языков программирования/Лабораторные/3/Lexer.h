@@ -19,7 +19,7 @@ bool startNumber = false;
 
 char * fileContent;
 
-int currentToken = 0; 
+int tokenLength = 0; 
 int currentTokenLength = 0;
 bool identificatorFirst = true;
 struct Token tokens[300];
@@ -102,14 +102,14 @@ int IsNumber(char* str)
 
 void FinishToken(enum TokenType type)
 {
-    tokens[currentToken].type = type;
+    tokens[tokenLength].type = type;
     char buffer[currentTokenLength + 1];
     memcpy(buffer, &fileContent[idx - currentTokenLength], currentTokenLength);
     buffer[currentTokenLength] = '\0';
-    tokens[currentToken].value = malloc(strlen(buffer) + 1);
-    strcpy(tokens[currentToken].value, buffer);
-    tokens[currentToken].pos = idx - currentTokenLength;
-    currentToken++;
+    tokens[tokenLength].value = malloc(strlen(buffer) + 1);
+    strcpy(tokens[tokenLength].value, buffer);
+    tokens[tokenLength].pos = idx - currentTokenLength;
+    tokenLength++;
     currentTokenLength = 0;
 }
 
@@ -427,5 +427,6 @@ int Lexer()
         }
         }
     }
+    return tokenLength;
 }
 #endif
