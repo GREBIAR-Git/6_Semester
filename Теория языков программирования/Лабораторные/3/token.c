@@ -1,4 +1,4 @@
-#include "token.h"
+/*#include "token.h"
 
 char* NameType(enum TokenType type)
 {
@@ -12,19 +12,33 @@ char* NameType(enum TokenType type)
     case Comparison:
         return "Comparison";
         break;
-    case Assignment:
-        return "Assignment";
+    case Assignment1:
+        return "Assignment1";
+    case OpenBracket:
+        return "OpenBracket";
+    case CloseBracket:
+        return "CloseBracket";
+    case OpenBracket:
+        return "OpenBraces";
+    case CloseBracket:
+        return "ClosBraces";
     case MathSign:
         return "MathSign";
         break;
     case IOstring:
         return "IOstring";
         break;
-    case KeyWord:
-        return "KeyWord";
+    case IF:
+        return "IF";
         break;
-    case IO:
-        return "IO";
+    case Else:
+        return "ELSE";
+        break;
+    case Input1:
+        return "Input1";
+        break;
+    case Output1:
+        return "Output1";
         break;
     case Type:
         return "Type";
@@ -38,4 +52,4 @@ char* NameType(enum TokenType type)
     default:
         break;
     }
-}
+}*/

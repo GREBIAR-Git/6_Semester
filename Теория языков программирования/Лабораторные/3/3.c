@@ -1,4 +1,5 @@
 ﻿#include "Lexer.h"
+#include "parser.c"
 
 int main(int argc, char* argv[])
 {
@@ -9,7 +10,7 @@ int main(int argc, char* argv[])
     }
     else
     {
-        printf("Input name file: ");
+        printf("Input1 name file: ");
         char buf[100];
         gets(buf);
         fileName = buf;
@@ -31,15 +32,19 @@ int main(int argc, char* argv[])
 
     printf("\n\nfileContent:\n%s\n\nEOF\n", fileContent);
     
-    lexer();
+    Lexer();
 
     printf("\n\ntokens:\n");
     for (int i = 0; i < currentToken; i++)
     {
-        printf("%s - \[ %s \]\n", NameType(tokens[i].name),tokens[i].value);
+        printf("%s - \[ %s \]\n", NameType(tokens[i].type),tokens[i].value);
     }
     printf("\n\nend tokens\n");
     free(fileContent);
+
+    Parser();
+
+
     system("PAUSE");
     return 0;
 }
