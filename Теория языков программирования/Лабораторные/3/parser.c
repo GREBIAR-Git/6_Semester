@@ -1,30 +1,18 @@
-#include <stdbool.h>
-#include "token.h"
+#include "parser.h"
 int tempCurrentToken;
 
 int currentToken;
 
 int bracketCountDifference;// разница открытых и закрытых скобок 
 
-bool Sequence();
-bool Statement();
-bool Condition();
-bool LogicalExpression();
-bool VariableDeclaration();
-bool Assignment1();
-bool Output1();
-bool Output1Arguments();
-bool ArithmeticExpressionMain();
-bool ArithmeticExpression();
-bool Value();
-bool Input1();
-bool Is(enum TokenType type);
-
 int tokenLength;
 
-void Parser(int length)
+struct Token * tokens;
+
+void Parser(struct Token * token, int tokenQuantity)
 {
-	tokenLength = length;
+	tokens = token;
+	tokenLength = tokenQuantity;
 	currentToken = 0;
 	printf("\nSTARTPARSER\n");
 	if (Sequence())
