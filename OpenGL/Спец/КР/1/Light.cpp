@@ -102,7 +102,7 @@ void InitFlashlight()
 	glEnable(GL_LIGHT2);
 	float position[] = { 0,0,0,1 };
 	glLightfv(GL_LIGHT2, GL_POSITION, position);
-	float spot_direction[] = {0.1,0,0};
+	float spot_direction[] = {1,0,0};
 	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, spot_direction);
 	glPopMatrix();
 	float specular1[] = { 0.4, 0.4, 0.4, 1.0 };

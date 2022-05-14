@@ -35,3 +35,5 @@ void MouseMove(int x, int y);
 void SetWidth(int w);
 
 void SetHeight(int h);
+
+bool TextureOn();

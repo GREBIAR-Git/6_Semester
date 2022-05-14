@@ -9,6 +9,14 @@
 
 void Scene()
 {
+	if (TextureOn())
+	{
+		glEnable(GL_TEXTURE_2D);
+	}
+	else
+	{
+		glDisable(GL_TEXTURE_2D);
+	}
 	glPushMatrix();
 	DrawCursor();
 	if (GetStateFlashlight())

@@ -5,6 +5,8 @@ int width, height;
 
 bool flashlight = true;
 
+bool texture = true;
+
 bool sun = true;
 
 bool moon = true;
@@ -24,6 +26,11 @@ bool GetStateMoon()
 bool GetStateFlashlight()
 {
 	return flashlight;
+}
+
+bool TextureOn()
+{
+	return texture;
 }
 
 int GetKey()
@@ -95,6 +102,18 @@ void KeyboardProcessing()
 		{
 			glDisable(GL_LIGHT2);
 		}
+	}
+	if (GetKeyState('T') < 0)
+	{
+		texture = !texture;
+	}
+	if (GetKeyState('M') < 0)
+	{
+		PlaySound(L"anthem.wav", NULL, SND_ASYNC);
+	}
+	if (GetKeyState('N') < 0)
+	{
+		PlaySound(0, NULL, SND_ASYNC);
 	}
 	if (GetKeyState('1') < 0)
 	{
