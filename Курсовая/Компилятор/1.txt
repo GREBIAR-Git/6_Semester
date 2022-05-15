@@ -1,0 +1,11 @@
+int kdfff;
+printf("k= ");
+scanf("%d", &k);
+if (k >= 5)
+{
+printf("k= ");
+}
+else
+{
+printf("k= ");
+}
