@@ -5,17 +5,19 @@ enum TokenType
 {
     Create,
     Table,
-    Name,
-    OpenBrackets,
-    CloseBrackets,
-    Type,
-    Attributes,
-    Comma,
     Primary,
     Foreign,
     Key,
     References,
+    Attributes,
+    Type,
+    Name,
+    OpenBrackets,
+    CloseBrackets,
+    Comma,
     Error,
+    Empty,
+    Epsilon,
 };
 
 struct Token

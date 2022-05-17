@@ -2,6 +2,6 @@ CREATE TABLE tableName (
     first_id INT NOT NULL,
     second_id INT NOT NULL,
     third_id CHAR NULL,
-    PRIMARY KEY (first_id , foreign_id),
-    FOREIGN KEY (foreign_id) REFERENCES foreignTableName (foreign_id)
-);
+    PRIMARY KEY (first_id , foreign_id1),
+    FOREIGN KEY (foreign_id2) REFERENCES foreignTableName (foreign_id3)
+)

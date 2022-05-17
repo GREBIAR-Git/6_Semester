@@ -30,6 +30,10 @@ char* NameType(enum TokenType type)
 		return "References";
 	case Error:
 		return "Error";
+	case Empty:
+		return "Empty";
+	case Epsilon:
+		return "Epsilon";
 	default:
 		break;
 	}

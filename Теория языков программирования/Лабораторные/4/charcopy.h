@@ -4,13 +4,13 @@
 
 // example call: charcopy(&str1, &str2);  where str1 and str2 are both of char * type
 
-void charCopy(char ** destination, char ** str)
+void charCopy(char** destination, char** str)
 {
 	if (!(*destination))
 	{
 		free(*destination); // in case the function has already been called before
 	}
-	*destination = (char *)calloc(1, (strlen(*str) + 1) * sizeof(char));
+	*destination = (char*)calloc(1, (strlen(*str) + 1) * sizeof(char));
 	memcpy(*destination, *str, strlen(*str) * sizeof(char));
 	return;
 }

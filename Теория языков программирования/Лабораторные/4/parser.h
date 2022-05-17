@@ -16,6 +16,11 @@ bool ArithmeticExpression();
 bool Value();
 bool Input1();
 bool Identificator1();
+bool CompareStrings2(char* str1, char* str2);
+bool Terminal(char* str);
+bool NonTerminal(char* str);
+void init();
+void PopStack();
 bool Is(enum TokenType type);
 void Parser(struct Token* token,int tokenQuantity);
 
