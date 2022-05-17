@@ -155,72 +155,48 @@ void init()
 	strcpy(parsing_table[8][11], "Comma Name Names'");
 }
 
-bool NonTerminal(char* str)
-{
-	CompareStrings2(str, "Create_table");
-	CompareStrings2(str, "Column");
-	CompareStrings2(str, "Column'");
-	CompareStrings2(str, "Type");
-	CompareStrings2(str, "Attributes");
-	CompareStrings2(str, "PK");
-	CompareStrings2(str, "FK");
-	CompareStrings2(str, "Names");
-	CompareStrings2(str, "Names'");
-}
-
 int RowNonTerminal()
 {
-	printf("\nRowNonTerminal\n");
 	if (CompareStrings2(stack[stackSize - 1], "Create_table"))
 	{
-		printf("\n0\n");
 		return 0;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Column"))
 	{
-		printf("\n1\n");
 		return 1;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Column'"))
 	{
-		printf("\n2\n");
 		return 2;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Type"))
 	{
-		printf("\n3\n");
 		return 3;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Attributes"))
 	{
-		printf("\n4\n");
 		return 4;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "PK"))
 	{
-		printf("\n5\n");
 		return 5;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "FK"))
 	{
-		printf("\n6\n");
 		return 6;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Names"))
 	{
-		printf("\n7\n");
 		return 7;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Names'"))
 	{
-		printf("\n8\n");
 		return 8;
 	}
 }
 
 bool Terminal(char* str)
 {
-	printf("\nterminat-test-%s", str);
 	if (CompareStrings2(str, "Create")||
 		CompareStrings2(str, "Table") ||
 		CompareStrings2(str, "Primary")||
@@ -234,19 +210,15 @@ bool Terminal(char* str)
 		CompareStrings2(str, "CloseBrackets")||
 		CompareStrings2(str, "Comma"))
 	{
-		printf("\nterminat-true");
 		return true;
 	}
-	printf("\nterminat-false");
 	return false;
 }
 
 bool CompareStrings2(char* str1,char * str2)
 {
-	printf("!");
 	if (strlen(str1) <= strlen(str2))
 	{
-		printf("!");
 		for (int i = 0; i < strlen(str1); i++)
 		{
 			if (str2[i] != str1[i])
@@ -258,6 +230,7 @@ bool CompareStrings2(char* str1,char * str2)
 	}
 	return false;
 }
+
 char** str_split(char* a_str, const char a_delim, int* count)
 {
 	char** result = 0;
@@ -330,8 +303,6 @@ void PopStack()
 	}
 }
 
-//0 1 0 1 2
-      
 void Parser(struct Token * token, int tokenQuantity)
 {
 	tokens = token;
@@ -360,26 +331,16 @@ void Parser(struct Token * token, int tokenQuantity)
 				if (!CompareStrings2(parsing_table[r][c], "Empty"))
 				{
 					PopStack();
-					int count;
 
 					char* copy;
 					charCopy(&copy, &(parsing_table[r][c]));
 
-
+					int count;
 					char** elems = str_split(copy, ' ', &count);
-					count--;
-					printf("\n!count-%d-!\n", count);
-
-					for (int g = 0; g < count; g++)
+					for (int f = count-2; f>=0; f--)
 					{
-						printf("\n!%s!\n", elems[g]);
-					}
-					for (int f = count-1; f>=0; f--)
-					{
-						printf("\npush-%s", elems[f]);
 						PushStack(elems[f]);
 					}
-
 				}
 				else
 				{
@@ -388,22 +349,17 @@ void Parser(struct Token * token, int tokenQuantity)
 			}
 			else
 			{
-				printf("pop");
 				PopStack();
 			}
 		}
-		printf("size-%d", stackSize);
 	} while (stackSize != 0);
 
-	printf("!1!");
 	if (tokens[i-1].type == CloseBrackets)
 	{
-		printf("!3!");
 		printf("\nNo one error\n");
 	}
 	else
 	{
-		printf("!2!");
 		printf("%s", tokens[i].value);
 		printf("\nError\n");
 	}
