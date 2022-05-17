@@ -34,6 +34,11 @@ int main(int argc, char * argv[])
 
     printf("\n\nfileContent:\n%s\n\nEOF\n", fileContent);
     
+    for (int i = 0; i < strlen(fileContent); i++)
+    {
+        fileContent[i] = (char)toupper(fileContent[i]);
+    }
+
     int tokenQuantity = 0;
     struct Token * tokens = Lexer(fileContent, &tokenQuantity);
 

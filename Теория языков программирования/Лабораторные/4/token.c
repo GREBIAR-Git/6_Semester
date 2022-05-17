@@ -5,29 +5,29 @@ char* NameType(enum TokenType type)
 	switch (type)
 	{
 	case Create:
-		return "Create";
+		return "CREATE";
 	case Table:
-		return "Table";
+		return "TABLE";
 	case Name:
-		return "Name";
+		return "NAME";
 	case OpenBrackets:
-		return "OpenBrackets";
+		return "OPENBRACKETS";
 	case CloseBrackets:
-		return "CloseBrackets";
+		return "CLOSEBRACKETS";
 	case Type:
-		return "Type";
+		return "TYPE";
 	case Attributes:
-		return "Attributes";
+		return "ATTRIBUTES";
 	case Comma:
-		return "Comma";
+		return "COMMA";
 	case Primary:
-		return "Primary";
+		return "PRIMARY";
 	case Foreign:
-		return "Foreign";
+		return "FOREIGN";
 	case Key:
-		return "Key";
+		return "KEY";
 	case References:
-		return "References";
+		return "REFERENCES";
 	case Error:
 		return "Error";
 	case Empty:

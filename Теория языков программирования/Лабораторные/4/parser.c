@@ -37,7 +37,7 @@ void init()
 
 	char* empty = "Empty";
 
-	strcpy(parsing_table[0][0], "Create Table Name OpenBrackets Column PK FK CloseBrackets");
+	strcpy(parsing_table[0][0], "CREATE TABLE NAME OPENBRACKETS Column PK FK CLOSEBRACKETS");
 	strcpy(parsing_table[0][1], empty);
 	strcpy(parsing_table[0][2], empty);
 	strcpy(parsing_table[0][3], empty);
@@ -58,7 +58,7 @@ void init()
 	strcpy(parsing_table[1][5], empty);
 	strcpy(parsing_table[1][6], empty);
 	strcpy(parsing_table[1][7], empty);
-	strcpy(parsing_table[1][8], "Name Type Attributes Comma Column'");
+	strcpy(parsing_table[1][8], "NAME TYPE ATTRIBUTES COMMA Column'");
 	strcpy(parsing_table[1][9], empty);
 	strcpy(parsing_table[1][10], empty);
 	strcpy(parsing_table[1][11], empty);
@@ -71,7 +71,7 @@ void init()
 	strcpy(parsing_table[2][5], empty);
 	strcpy(parsing_table[2][6], empty);
 	strcpy(parsing_table[2][7], empty);
-	strcpy(parsing_table[2][8], "Name Type Attributes Comma Column'");
+	strcpy(parsing_table[2][8], "NAME TYPE ATTRIBUTES COMMA Column'");
 	strcpy(parsing_table[2][9], empty);
 	strcpy(parsing_table[2][10], empty);
 	strcpy(parsing_table[2][11], empty);
@@ -83,7 +83,7 @@ void init()
 	strcpy(parsing_table[3][4], empty);
 	strcpy(parsing_table[3][5], empty);
 	strcpy(parsing_table[3][6], empty);
-	strcpy(parsing_table[3][7], "Type");
+	strcpy(parsing_table[3][7], "TYPE");
 	strcpy(parsing_table[3][8], empty);
 	strcpy(parsing_table[3][9], empty);
 	strcpy(parsing_table[3][10], empty);
@@ -95,7 +95,7 @@ void init()
 	strcpy(parsing_table[4][3], empty);
 	strcpy(parsing_table[4][4], empty);
 	strcpy(parsing_table[4][5], empty);
-	strcpy(parsing_table[4][6], "Attributes");
+	strcpy(parsing_table[4][6], "ATTRIBUTES");
 	strcpy(parsing_table[4][7], empty);
 	strcpy(parsing_table[4][8], empty);
 	strcpy(parsing_table[4][9], empty);
@@ -104,7 +104,7 @@ void init()
 
 	strcpy(parsing_table[5][0], empty);
 	strcpy(parsing_table[5][1], empty);
-	strcpy(parsing_table[5][2], "Primary Key OpenBrackets Names CloseBrackets");
+	strcpy(parsing_table[5][2], "PRIMARY KEY OPENBRACKETS Names CLOSEBRACKETS");
 	strcpy(parsing_table[5][3], empty);
 	strcpy(parsing_table[5][4], empty);
 	strcpy(parsing_table[5][5], empty);
@@ -126,7 +126,7 @@ void init()
 	strcpy(parsing_table[6][8], empty);
 	strcpy(parsing_table[6][9], empty);
 	strcpy(parsing_table[6][10], "Epsilon");
-	strcpy(parsing_table[6][11], "Comma Foreign Key OpenBrackets Names CloseBrackets References Name OpenBrackets Names CloseBrackets FK");
+	strcpy(parsing_table[6][11], "COMMA FOREIGN KEY OPENBRACKETS Names CLOSEBRACKETS REFERENCES NAME OPENBRACKETS Names CLOSEBRACKETS FK");
 
 	strcpy(parsing_table[7][0], empty);
 	strcpy(parsing_table[7][1], empty);
@@ -136,7 +136,7 @@ void init()
 	strcpy(parsing_table[7][5], empty);
 	strcpy(parsing_table[7][6], empty);
 	strcpy(parsing_table[7][7], empty);
-	strcpy(parsing_table[7][8], "Name Names'");
+	strcpy(parsing_table[7][8], "NAME Names'");
 	strcpy(parsing_table[7][9], empty);
 	strcpy(parsing_table[7][10], empty);
 	strcpy(parsing_table[7][11], empty);
@@ -152,101 +152,73 @@ void init()
 	strcpy(parsing_table[8][8], empty);
 	strcpy(parsing_table[8][9], empty);
 	strcpy(parsing_table[8][10], "Epsilon");
-	strcpy(parsing_table[8][11], "Comma Name Names'");
-}
-
-bool NonTerminal(char* str)
-{
-	CompareStrings2(str, "Create_table");
-	CompareStrings2(str, "Column");
-	CompareStrings2(str, "Column'");
-	CompareStrings2(str, "Type");
-	CompareStrings2(str, "Attributes");
-	CompareStrings2(str, "PK");
-	CompareStrings2(str, "FK");
-	CompareStrings2(str, "Names");
-	CompareStrings2(str, "Names'");
+	strcpy(parsing_table[8][11], "COMMA NAME Names'");
 }
 
 int RowNonTerminal()
 {
-	printf("\nRowNonTerminal\n");
 	if (CompareStrings2(stack[stackSize - 1], "Create_table"))
 	{
-		printf("\n0\n");
 		return 0;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Column"))
 	{
-		printf("\n1\n");
 		return 1;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Column'"))
 	{
-		printf("\n2\n");
 		return 2;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Type"))
 	{
-		printf("\n3\n");
 		return 3;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Attributes"))
 	{
-		printf("\n4\n");
 		return 4;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "PK"))
 	{
-		printf("\n5\n");
 		return 5;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "FK"))
 	{
-		printf("\n6\n");
 		return 6;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Names"))
 	{
-		printf("\n7\n");
 		return 7;
 	}
 	else if (CompareStrings2(stack[stackSize - 1], "Names'"))
 	{
-		printf("\n8\n");
 		return 8;
 	}
 }
 
 bool Terminal(char* str)
 {
-	printf("\nterminat-test-%s", str);
-	if (CompareStrings2(str, "Create")||
-		CompareStrings2(str, "Table") ||
-		CompareStrings2(str, "Primary")||
-		CompareStrings2(str, "Foreign")||
-		CompareStrings2(str, "Key")||
-		CompareStrings2(str, "References")||
-		CompareStrings2(str, "Attributes")||
-		CompareStrings2(str, "Type")||
-		CompareStrings2(str, "Name")||
-		CompareStrings2(str, "OpenBrackets")||
-		CompareStrings2(str, "CloseBrackets")||
-		CompareStrings2(str, "Comma"))
+	if (CompareStrings2(str, "CREATE")||
+		CompareStrings2(str, "TABLE") ||
+		CompareStrings2(str, "PRIMARY")||
+		CompareStrings2(str, "FOREIGN")||
+		CompareStrings2(str, "KEY")||
+		CompareStrings2(str, "REFERENCES")||
+		CompareStrings2(str, "ATTRIBUTES")||
+		CompareStrings2(str, "TYPE")||
+		CompareStrings2(str, "NAME")||
+		CompareStrings2(str, "OPENBRACKETS")||
+		CompareStrings2(str, "CLOSEBRACKETS")||
+		CompareStrings2(str, "COMMA"))
 	{
-		printf("\nterminat-true");
 		return true;
 	}
-	printf("\nterminat-false");
 	return false;
 }
 
 bool CompareStrings2(char* str1,char * str2)
 {
-	printf("!");
 	if (strlen(str1) <= strlen(str2))
 	{
-		printf("!");
 		for (int i = 0; i < strlen(str1); i++)
 		{
 			if (str2[i] != str1[i])
@@ -258,6 +230,7 @@ bool CompareStrings2(char* str1,char * str2)
 	}
 	return false;
 }
+
 char** str_split(char* a_str, const char a_delim, int* count)
 {
 	char** result = 0;
@@ -330,8 +303,6 @@ void PopStack()
 	}
 }
 
-//0 1 0 1 2
-      
 void Parser(struct Token * token, int tokenQuantity)
 {
 	tokens = token;
@@ -346,40 +317,43 @@ void Parser(struct Token * token, int tokenQuantity)
 	int i = 0;
 	do
 	{
+		printf("1");
 		if (Terminal(stack[stackSize - 1]))
 		{
-			PopStack();
-			i++;
+			printf("\n!-%s\n%s-!",stack[stackSize - 1],NameType(token[i].type));
+			if (CompareStrings2(stack[stackSize - 1], NameType(token[i].type)))
+			{
+				PopStack();
+				i++;
+			}
+			else 
+			{
+				printf("Error");
+				return;
+			}
 		}
 		else
 		{
+			printf("2");
 			int r = RowNonTerminal();
 			int c = tokens[i].type;
 			if (!CompareStrings2(parsing_table[r][c], "Epsilon"))
 			{
+				printf("3");
 				if (!CompareStrings2(parsing_table[r][c], "Empty"))
 				{
+					printf("4");
 					PopStack();
-					int count;
-
+					printf("%s",parsing_table[r][c]);
 					char* copy;
 					charCopy(&copy, &(parsing_table[r][c]));
 
-
+					int count;
 					char** elems = str_split(copy, ' ', &count);
-					count--;
-					printf("\n!count-%d-!\n", count);
-
-					for (int g = 0; g < count; g++)
+					for (int f = count-2; f>=0; f--)
 					{
-						printf("\n!%s!\n", elems[g]);
-					}
-					for (int f = count-1; f>=0; f--)
-					{
-						printf("\npush-%s", elems[f]);
 						PushStack(elems[f]);
 					}
-
 				}
 				else
 				{
@@ -388,22 +362,17 @@ void Parser(struct Token * token, int tokenQuantity)
 			}
 			else
 			{
-				printf("pop");
 				PopStack();
 			}
 		}
-		printf("size-%d", stackSize);
 	} while (stackSize != 0);
 
-	printf("!1!");
 	if (tokens[i-1].type == CloseBrackets)
 	{
-		printf("!3!");
 		printf("\nNo one error\n");
 	}
 	else
 	{
-		printf("!2!");
 		printf("%s", tokens[i].value);
 		printf("\nError\n");
 	}

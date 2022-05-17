@@ -1,7 +1,8 @@
-CREATE TABLE tableName (
+CREATE TABLE t1ablename (
     first_id INT NOT NULL,
-    second_id INT NOT NULL,
+    second_id INfdT NOT NULL,
     third_id CHAR NULL,
-    PRIMARY KEY (first_id , foreign_id1),
-    FOREIGN KEY (foreign_id2) REFERENCES foreignTableName (foreign_id3)
+    PRIMARY KEY (first_id , forei1g1n_id1),
+    FOREIGN KEY (foreiqg1n_id2) REFERENCES
+    forei1gnTableName (for1deig1n_id3)
 )
