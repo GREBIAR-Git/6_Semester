@@ -7,8 +7,6 @@ int idx = 0;
 
 struct Token * tokenS;
 
-enum TokenType state = Delimiter;
-
 void FinishToken(enum TokenType type, int * tokenQuantity)
 {
     struct Token* temp = malloc((*tokenQuantity + 1)*sizeof(struct Token));
@@ -34,18 +32,25 @@ void FinishToken(enum TokenType type, int * tokenQuantity)
 
 struct Token * Lexer(char* content, int * tokenQuantity)
 {
+    enum TokenType state = Delimiter;
     tokenS = malloc(0);
     fileContent = content;
     bool io_started = false;
     bool identificatorFirst = true;
 
     while (idx < strlen(fileContent))
-    {
+    {  
         switch (state)
         {
         case Delimiter:
-        {
-            if (fileContent[idx] == ';')
+            if ((idx + 1 < strlen(fileContent) && fileContent[idx] == '\r'&& fileContent[idx+1] =='\n'))
+            {
+                idx+=2;
+                currentTokenLength+=1;
+                FinishToken(Delimiter, tokenQuantity);
+                state = Delimiter;
+            }
+            else if ( fileContent[idx] == '\n' || fileContent[idx] == '\0')
             {
                 idx++;
                 currentTokenLength++;
@@ -54,88 +59,68 @@ struct Token * Lexer(char* content, int * tokenQuantity)
             }
             else
             {
+                state = Tab;
+            }
+            break;
+        case Tab:
+            if(CompareStrings("\t"))
+            {
+                FinishToken(Tab, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
                 state = Comma;
             }
             break;
-        }
         case Comma:
-        {
-            if (fileContent[idx] == ',')
+            if (CompareStrings(","))
             {
-                idx++;
-                currentTokenLength++;
                 FinishToken(Comma, tokenQuantity);
                 state = Delimiter;
             }
             else
             {
-                state = Comparison;
+                state = Dot;
             }
             break;
-        }
-        case Comparison:
-        {
-            if (idx + 1 < strlen(fileContent)
-                && (fileContent[idx] == '!' && fileContent[idx + 1] == '='
-                    || fileContent[idx] == '=' && fileContent[idx + 1] == '='
-                    || fileContent[idx] == '<' && fileContent[idx + 1] == '='
-                    || fileContent[idx] == '>' && fileContent[idx + 1] == '='))
+        case Dot:
+            if (CompareStrings("."))
             {
-                idx += 2;
-                currentTokenLength += 2;
-                FinishToken(Comparison, tokenQuantity);
-                state = Delimiter;
-            }
-            else if (fileContent[idx] == '<' || fileContent[idx] == '>')
-            {
-                idx++;
-                currentTokenLength++;
-                FinishToken(Comparison, tokenQuantity);
+                FinishToken(Dot, tokenQuantity);
                 state = Delimiter;
             }
             else
             {
-                state = Assignment;
+                state = DoubleDot;
             }
             break;
-        }
-        case Assignment:
-        {
-            if (fileContent[idx] == '=')
+        case DoubleDot:
+            if (CompareStrings(":"))
             {
-                idx++;
-                currentTokenLength++;
-                FinishToken(Assignment, tokenQuantity);
+                FinishToken(DoubleDot, tokenQuantity);
                 state = Delimiter;
             }
             else
             {
-                state = OpenBracket;
+                state = Bool;
             }
             break;
-        }
-        case OpenBracket:
-        {
-            if (fileContent[idx] == '(')
+        case Bool:
+            if (CompareStringCheck("true")||CompareStringCheck("false"))
             {
-                idx++;
-                currentTokenLength++;
-                FinishToken(OpenBracket, tokenQuantity);
+                FinishToken(Bool, tokenQuantity);
                 state = Delimiter;
             }
             else
             {
-                state = CloseBracket;
+                state = Logical;
             }
             break;
-        }
-        case CloseBracket:
-        {
-            if (fileContent[idx] == ')')
+        case Logical:
+            if (CompareStringCheck("and")||CompareStringCheck("or")||CompareStringCheck("not"))
             {
-                idx++;
-                currentTokenLength++;
-                FinishToken(CloseBracket, tokenQuantity);
+                FinishToken(Logical, tokenQuantity);
                 state = Delimiter;
             }
             else
@@ -143,13 +128,9 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = OpenBraces;
             }
             break;
-        }
         case OpenBraces:
-        {
-            if (fileContent[idx] == '{')
+            if (CompareStrings("["))
             {
-                idx++;
-                currentTokenLength++;
                 FinishToken(OpenBraces, tokenQuantity);
                 state = Delimiter;
             }
@@ -158,14 +139,54 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = CloseBraces;
             }
             break;
-        }
         case CloseBraces:
-        {
-            if (fileContent[idx] == '}')
+            if (CompareStrings("]"))
             {
-                idx++;
-                currentTokenLength++;
                 FinishToken(CloseBraces, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
+                state = OpenBracket;
+            }
+            break;
+        case OpenBracket:
+            if (CompareStrings("("))
+            {
+                FinishToken(OpenBracket, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
+                state = CloseBracket;
+            }
+            break;
+        case CloseBracket:
+            if (CompareStrings(")"))
+            {
+                FinishToken(CloseBracket, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
+                state = Comparison;
+            }
+            break;
+        case Comparison:
+            if (CompareStrings("!=")||CompareStrings("==")||CompareStrings("<=")||CompareStrings(">=")||CompareStrings(">")||CompareStrings("<"))
+            {
+                FinishToken(Comparison, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
+                state = Assignment;
+            }
+            break;
+        case Assignment:
+            if (CompareStrings("=")||CompareStrings("+=")||CompareStrings("-=")||CompareStrings("*=")||CompareStrings("/=")||CompareStrings("\%="))
+            {
+                FinishToken(Assignment, tokenQuantity);
                 state = Delimiter;
             }
             else
@@ -173,60 +194,21 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = MathSign;
             }
             break;
-        }
         case MathSign:
-        {
-            if (fileContent[idx] == '+' || fileContent[idx] == '-' || fileContent[idx] == '*' || fileContent[idx] == '/' || fileContent[idx] == '%' || fileContent[idx] == '(' || fileContent[idx] == ')')
+            if (CompareStrings("+") || CompareStrings("-") || CompareStrings("*") || CompareStrings("/") || CompareStrings("\%"))
             {
-                idx++;
-                currentTokenLength++;
                 FinishToken(MathSign, tokenQuantity);
                 state = Delimiter;
             }
             else
             {
-                state = IOstring;
+                state = If;
             }
             break;
-        }
-        case IOstring:
-        {
-            if (fileContent[idx] == '"' && !io_started)
+        case If:
+            if (CompareStringCheck("if"))
             {
-                io_started = true;
-                currentTokenLength++;
-                idx++;
-            }
-            else if (fileContent[idx] == '"' && io_started)
-            {
-                io_started = false;
-                idx++;
-                currentTokenLength++;
-                if (currentTokenLength)
-                {
-                    FinishToken(IOstring, tokenQuantity);
-                }
-                state = Delimiter;
-            }
-            else if (io_started)
-            {
-                currentTokenLength++;
-                idx++;
-            }
-            else
-            {
-                state = IF;
-            }
-            break;
-        }
-        case IF:
-        {
-            if (idx + 1 < strlen(fileContent)
-                && fileContent[idx] == 'i' && fileContent[idx + 1] == 'f')
-            {
-                idx += 2;
-                currentTokenLength += 2;
-                FinishToken(IF, tokenQuantity);
+                FinishToken(If, tokenQuantity);
                 state = Delimiter;
             }
             else
@@ -234,15 +216,32 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = Else;
             }
             break;
-        }
         case Else:
-        {
-            if (idx + 3 < strlen(fileContent)
-                && fileContent[idx] == 'e' && fileContent[idx + 1] == 'l' && fileContent[idx + 2] == 's' && fileContent[idx + 3] == 'e')
+            if (CompareStringCheck("else"))
             {
-                idx += 4;
-                currentTokenLength += 4;
                 FinishToken(Else, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
+                state = For;
+            }
+            break;
+        case For:
+            if (CompareStringCheck("for"))
+            {
+                FinishToken(For, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
+                state = While;
+            }
+            break;
+        case While:
+            if (CompareStringCheck("while"))
+            {
+                FinishToken(While, tokenQuantity);
                 state = Delimiter;
             }
             else
@@ -250,14 +249,9 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = Input;
             }
             break;
-        }
         case Input:
-        {
-            if (idx + 4 < strlen(fileContent)
-                && fileContent[idx] == 's' && fileContent[idx + 1] == 'c' && fileContent[idx + 2] == 'a' && fileContent[idx + 3] == 'n' && fileContent[idx + 4] == 'f')
+            if (CompareStringCheck("input"))
             {
-                idx += 5;
-                currentTokenLength += 5;
                 FinishToken(Input, tokenQuantity);
                 state = Delimiter;
             }
@@ -266,40 +260,43 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = Output;
             }
             break;
-        }
         case Output:
-        {
-            if (idx + 5 < strlen(fileContent)
-                && fileContent[idx] == 'p' && fileContent[idx + 1] == 'r' && fileContent[idx + 2] == 'i'
-                && fileContent[idx + 3] == 'n' && fileContent[idx + 4] == 't' && fileContent[idx + 5] == 'f')
+            if (CompareStringCheck("print"))
             {
-                idx += 6;
-                currentTokenLength += 6;
                 FinishToken(Output, tokenQuantity);
                 state = Delimiter;
             }
             else
             {
-                state = Type;
+                state = Class;
             }
             break;
-        }
-        case Type:
-        {
-            if (idx + 4 < strlen(fileContent)
-                && fileContent[idx] == 'f' && fileContent[idx + 1] == 'l' && fileContent[idx + 2] == 'o' && fileContent[idx + 3] == 'a' && fileContent[idx + 4] == 't')
+        case Class:
+            if (CompareStringCheck("class"))
             {
-                idx += 5;
-                currentTokenLength += 5;
-                FinishToken(Type, tokenQuantity);
+                FinishToken(Class, tokenQuantity);
                 state = Delimiter;
             }
-            else if (idx + 2 < strlen(fileContent)
-                && fileContent[idx] == 'i' && fileContent[idx + 1] == 'n' && fileContent[idx + 2] == 't')
+            else
             {
-                idx += 3;
-                currentTokenLength += 3;
-                FinishToken(Type, tokenQuantity);
+                state = Def;
+            }
+            break;
+        case Def:
+            if (CompareStringCheck("def"))
+            {
+                FinishToken(Def, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
+                state = In;
+            }
+            break;
+        case In:
+            if (CompareStringCheck("in"))
+            {
+                FinishToken(In, tokenQuantity);
                 state = Delimiter;
             }
             else
@@ -307,10 +304,8 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = Identificator;
             }
             break;
-        }
         case Identificator:
-        {
-            if (isalpha(fileContent[idx]) || (!identificatorFirst && isdigit(fileContent[idx])))
+            if (isalpha(fileContent[idx]) || CompareStrings("_") || (!identificatorFirst && isdigit(fileContent[idx])))
             {
                 identificatorFirst = false;
                 currentTokenLength++;
@@ -327,9 +322,7 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = Number;
             }
             break;
-        }
         case Number:
-        {
             if (IsNumber(fileContent))
             {
                 FinishToken(Number, tokenQuantity);
@@ -340,24 +333,69 @@ struct Token * Lexer(char* content, int * tokenQuantity)
                 state = Error;
             }
             break;
-        }
         case Error:
-        {
-            printf("skip - ( \%c )\n", fileContent[idx]);
+            if(fileContent[idx]!=' ')
+            {
+                printf("\n skip - ( %c )", fileContent[idx]);
+            }
             idx++;
             state = Delimiter;
-        }
+        default:
+            break;
         }
     }
+    FinishToken(Delimiter, tokenQuantity);
     return tokenS;
+}
+
+bool CompareStrings(char* str)
+{
+    if (idx + strlen(str)-1 < strlen(fileContent))
+    {
+        for (int i = 0; i < strlen(str); i++)
+        {
+            if (fileContent[idx + i] != str[i])
+            {
+                return false;
+            }
+        }
+        idx += strlen(str);
+        currentTokenLength += strlen(str);
+        return true;
+    }
+    return false;
+}
+
+bool CompareStringCheck(char* str)
+{
+    if (idx + strlen(str)-1 < strlen(fileContent))
+    {
+        for (int i = 0; i < strlen(str); i++)
+        {
+            if (fileContent[idx + i] != str[i])
+            {
+                return false;
+            }
+        }
+        if(idx + strlen(str) < strlen(fileContent))
+        {
+            if(isalpha(fileContent[idx + strlen(str)]) || isdigit(fileContent[idx + strlen(str)]))
+            {
+                return false;
+            }
+        }
+        idx += strlen(str);
+        currentTokenLength += strlen(str);
+        return true;
+    }
+    return false;
 }
 
 bool IsNumber(char* str)
 {
-    int count_str = strlen(str);
     enum number stage = numbers;
     bool startNumber = false;
-    while (1)
+    while (true)
     {
         switch (stage)
         {
@@ -378,7 +416,7 @@ bool IsNumber(char* str)
                     idx++;
                     stage = one_dot_numbers;
                 }
-                else if ((str[idx] != ' ' || str[idx] != '\n' || str[idx] != ';') && startNumber)
+                else if ((str[idx] != ' ' || str[idx] != '\n' || str[idx] != '\r') && startNumber)
                 {
                     stage = finish_number;
                 }
@@ -395,7 +433,7 @@ bool IsNumber(char* str)
         }
         case one_dot_numbers:
         {
-            if (idx < strlen(str) && (str[idx] != ' ' || str[idx] != '\n' || str[idx] != ';'))
+            if (idx < strlen(str) && str[idx] != ' ' && str[idx] != '\n' && str[idx] != '\r')
             {
                 if (isdigit(str[idx]))
                 {

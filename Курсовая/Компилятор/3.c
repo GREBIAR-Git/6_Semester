@@ -40,7 +40,14 @@ int main(int argc, char* argv[])
     printf("\n\ntokens:\n");
     for (int i = 0; i < tokenQuantity; i++)
     {
-        printf("#%d : %s - \[ %s ]\n",i, NameType(tokens[i].type),tokens[i].value);
+        if (tokens[i].type==Delimiter)
+        {
+            printf("#%d : %s - \[ \\n ]\n", i, NameType(tokens[i].type));
+        }
+        else
+        {
+            printf("#%d : %s - \[ %s ]\n",i, NameType(tokens[i].type),tokens[i].value);
+        }
     }
     printf("end tokens\n");
     

@@ -17,5 +17,7 @@ enum number {
 bool IsNumber(char* str);
 void FinishToken(enum TokenType type, int* tokenQuantity);
 struct Token* Lexer(char* content,int * tokenQuantity);
+bool CompareStrings(char* str);
+bool CompareStringCheck(char* str);
 
 #endif

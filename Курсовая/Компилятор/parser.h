@@ -8,14 +8,14 @@ bool Sequence();
 bool Statement();
 bool Condition();
 bool LogicalExpression();
-bool VariableDeclaration();
-bool Assignment1();
+bool VariableDeclarationOrAssignment();
 bool Output1();
 bool Output1Arguments();
-bool ArithmeticExpressionMain();
+bool ArithmeticExpressionMain(bool open1);
 bool ArithmeticExpression();
 bool Value();
 bool Input1();
+bool Identificator1();
 bool Is(enum TokenType type);
 void Parser(struct Token* token,int tokenQuantity);
 

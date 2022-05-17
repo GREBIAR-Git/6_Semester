@@ -1,11 +1,15 @@
-int kdfff;
-printf("k= ");
-scanf("%d", &k);
-if (k >= 5)
-{
-printf("k= ");
-}
-else
-{
-printf("k= ");
-}
+kdfff = 4+f+ff+printf
+print(kdfff+fdsfsd)
+f = input()
+if k > 35+(4)>3:
+print(2+4*7)
+print(3)
+x = 3
+y = 4
+z = x + y
+f = 5.3
+test = true
+
+if(test):
+c = input()
+input()

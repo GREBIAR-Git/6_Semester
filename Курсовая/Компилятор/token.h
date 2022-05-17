@@ -3,21 +3,29 @@
 #include <stdio.h>
 enum TokenType
 {
-    Delimiter,
-    Comma,
-    Comparison,
-    Assignment,
-    OpenBracket,
-    CloseBracket,
-    OpenBraces,
-    CloseBraces,
-    MathSign,
-    IOstring,
-    IF,
-    Else,
-    Input,
-    Output,
-    Type,
+    Delimiter,// \n
+    Tab,// \t
+    Comma,// ,
+    Dot,// .
+    DoubleDot,// :
+    Bool, // true false
+    OpenBraces,//[
+    CloseBraces,//]
+    OpenBracket,//(
+    CloseBracket,//)
+    Comparison,//< > == != >= <=
+    Logical,// and or not
+    Assignment,// = += -= *= /= %=
+    MathSign,// + - * / %
+    If, // if
+    Else, // else 
+    For, // for
+    In, // in
+    While, // while
+    Input, // input
+    Output, // print
+    Def, // def
+    Class, // class
     Identificator,
     Number,
     Error,
