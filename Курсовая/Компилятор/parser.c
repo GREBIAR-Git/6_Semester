@@ -45,13 +45,11 @@ bool Sequence()
 	if(currentToken >= tokenLength)
 	{
 		tabCount -= 1;
-		printf("\nEND Sequence\n");
 		return true;
 	}
 	else if (tokens[currentToken].type == END)
 	{
 		tabCount -= 1;
-		//printf("\nEND Sequence\n");
 		return true;
 	}
 	else 
@@ -83,18 +81,15 @@ bool Sequence()
 		{
 			if (!Is(Tab))
 			{
-				//printf("\nend Sequence\n");
 				tempCurrentToken = currentToken;
 				tabCount -= 1;
 				return true;
 			}
-			//printf("\ntrue\n");
 		}
 
 		currentToken = tempCurrentToken;
 		if (sequence == CommonSequence)
 		{
-			//printf("\n\n\n!!!!!!!Statement!!!!!!!\n\n\n");
 			if (Statement() && Sequence())
 			{
 				sequence = CommonSequence;
@@ -104,7 +99,6 @@ bool Sequence()
 		}
 		else if (sequence == ClassSequence)
 		{
-			//printf("\n\n\n!!!!!!!Class!!!!!!!\n\n\n");
 			if (StatementClass() && Sequence())
 			{
 				prevSequence = CommonSequence;
@@ -115,8 +109,6 @@ bool Sequence()
 		}
 		else if (sequence == DefSequence)
 		{
-			//printf("\n\n\n!!!!!!!Def!!!!!!!\n\n\n");
-
 			if (StatementDef() && Sequence())
 			{
 				sequence = prevSequence;
@@ -142,7 +134,6 @@ bool StatementDef()
 		if (Return1())
 		{
 			currentToken = tempCurrentToken;
-			//printf("Return1-true");
 			return true;
 		}
 		return false;
@@ -164,7 +155,6 @@ bool Return1()
 bool StatementClass()
 {
 	tempCurrentToken = currentToken;
-	//printf("\nnew Sequence token - %s #%d\n", NameType(tokens[currentToken].type), currentToken);
 	if (Is(Delimiter))
 	{
 		return true;
@@ -172,7 +162,6 @@ bool StatementClass()
 	if (VariableDeclarationOrAssignment())
 	{
 		currentToken = tempCurrentToken;
-		//printf("\nVariableDeclarationOrAssignment-true\n");
 		return true;
 	}
 	else
@@ -180,7 +169,6 @@ bool StatementClass()
 		if (FunctionDefinition())
 		{
 			currentToken = tempCurrentToken;
-			//printf("\nFunctionDefinition-true\n");
 			return true;
 		}
 	}
@@ -189,12 +177,10 @@ bool StatementClass()
 bool Statement()
 {
 	tempCurrentToken = currentToken;
-	//printf("\nnew Sequence token - %s #%d\n", NameType(tokens[currentToken].type), currentToken);
 	if(Is(Delimiter))
 	{
 		return true;
 	}
-	//printf("\ntest-Condition\n");
 	if (Condition())
 	{
 		currentToken = tempCurrentToken;
@@ -202,7 +188,6 @@ bool Statement()
 	}
 	else
 	{
-		//printf("\ntest-VariableDeclaration\n");
 		tempCurrentToken = currentToken;
 		if (VariableDeclarationOrAssignment())
 		{
@@ -211,7 +196,6 @@ bool Statement()
 		}
 		else 
 		{
-			//printf("\ntest-Input1\n");
 			tempCurrentToken = currentToken;
 			if (Input1()&&Is(Delimiter))
 			{
@@ -220,7 +204,6 @@ bool Statement()
 			}
 			else
 			{
-				//printf("\ntest-Output1\n");
 				tempCurrentToken = currentToken;
 				if (Output1())
 				{
@@ -246,7 +229,6 @@ bool Statement()
 							if(FunctionDefinition())
 							{
 								currentToken = tempCurrentToken;
-								//printf("\nFunctionDefinition-true\n");
 								return true;
 							}
 							else 
@@ -254,7 +236,6 @@ bool Statement()
 								if(FunctionCall())
 								{
 									currentToken = tempCurrentToken;
-									//printf("\nFunctionCall-true\n");
 									return true;
 								}
 								else
@@ -262,7 +243,6 @@ bool Statement()
 									if (ClassDefinition())
 									{
 										currentToken = tempCurrentToken;
-										//printf("\nClassDefinition-true\n");
 										return true;
 									}
 								}
@@ -416,107 +396,26 @@ bool Arguments()
 	}
 }
 
-bool Condition()
-{
-	int tempCurrentToken1 = currentToken;
-	tempCurrentToken = currentToken;
-
-	if (Is(If) && LogicalOperation() && Is(DoubleDot) && Is(Delimiter))
-	{
-		tabCount += 1;
-		needTabCount = tabCount;
-		if (Sequence())
-		{
-			currentToken = tempCurrentToken;
-			//printf("\nbefore ELSE current token - %s\n", NameType(tokens[tempCurrentToken].type));
-			if (Is(Else) && Is(DoubleDot) && Is(Delimiter) && Sequence())
-			{
-				//printf("ELSE END\n");
-				//printf("\ncurrent token - %s #%d\n", NameType(tokens[currentToken].type), currentToken);
-				currentToken = tempCurrentToken;
-			}
-			//printf("Condition-true");
-			return true;
-		}
-	}
-	else
-	{
-		currentToken = tempCurrentToken1;
-		//printf("Condition-false");
-		return false;
-	}
-}
-
-//пофиксить скобки до
-bool LogicalExpression()
-{
-	//printf("\nLogicalExpression -start\n");
-	//printf("\n#%dcurrent token - %s\n", tempCurrentToken, NameType(tokens[tempCurrentToken].type));
-	if (ArithmeticExpressionMain(false))
-	{
-		//printf("\nbefore Comparison token - %s\n", NameType(tokens[currentToken].type));
-		if(Is(Comparison))
-		{
-			if(LogicalExpression())
-			{
-				currentToken = tempCurrentToken;
-			}
-			else
-			{
-				//printf("LogicalExpression - false\n");
-				return false;
-			}
-		}
-		//printf("LogicalExpression -true\n");
-		return true;
-	}
-	//printf("LogicalExpression - false\n");
-	return false;
-}
-
-bool LogicalOperation()
-{
-	//printf("\nLogicalOperation\n");
-	//printf("\nbefore LogicalOperation - %s\n", NameType(tokens[currentToken].type));
-	if(LogicalExpression())
-	{
-		//printf("\nafte before LogicalOperation - %s\n", NameType(tokens[currentToken].type));
-		if(Is(Logical)&&LogicalExpression())
-		{
-			//printf("\nafter after LogicalOperation - %s\n", NameType(tokens[currentToken].type));
-			currentToken = tempCurrentToken; 
-		}
-		//printf("\nLogicalOperation-true\n");
-		return true;
-	}
-	//printf("\nLogicalOperation-false\n");
-	return false;
-}
-
 bool VariableDeclarationOrAssignment()
 {
 	tempCurrentToken = currentToken;
 	if (Identificator1() && Is(Assignment) && ArithmeticExpressionMain(false) && Is(Delimiter))
 	{
-		//printf("VariableDeclaration-true\n");
 		currentToken = tempCurrentToken;
 		return true;
 	}
 	tempCurrentToken = currentToken;
 	if (Identificator1() && Is(Assignment) && Input1() && Is(Delimiter))
 	{
-		//printf("VariableDeclaration-true\n");
 		currentToken = tempCurrentToken;
 		return true;
 	}
 	tempCurrentToken = currentToken;
-	if(Identificator1() && Is(Assignment) && FunctionCall())
+	if (Identificator1() && Is(Assignment) && FunctionCall())
 	{
-		//printf("VariableDeclaration-true\n");
 		currentToken = tempCurrentToken;
 		return true;
 	}
-	//printf("VariableDeclaration-false\n");
 	return false;
 }
 
@@ -532,29 +431,123 @@ bool Output1()
 				if (Is(Delimiter))
 				{
 					currentToken = tempCurrentToken;
-					//printf("Output1-true\n");
 				}
 				return true;
 			}
 		}
 	}
-	//printf("Output1-false\n");
+	return false;
+}
+
+bool Input1()
+{
+	if (Is(Input))
+	{
+		if (Is(OpenBracket))
+		{
+			if (Is(CloseBracket))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool LogicalOperationMain()
+{
+	int bracketCountDifference = 0;
+	if (Is(OpenBracket))
+	{
+		bracketCountDifference++;
+	}
+	if (LogicalOperation(&bracketCountDifference))
+	{
+		if (Is(CloseBracket))
+		{
+			bracketCountDifference--;
+		}
+		if (bracketCountDifference == 0)
+		{
+			return true;
+		}
+		else
+		{
+			printf("\ncountbracket:! %d !\n", bracketCountDifference);
+			printf("\nError - the difference in the number of opening brackets to the closing ones: %d\n", tokens[tempCurrentToken].pos);
+		}
+	}
+	return false;
+}
+
+bool LogicalOperation(int * bracketCountDifference)
+{
+	if (Is(OpenBracket))
+	{
+		(*bracketCountDifference)++;
+	}
+	if (LogicalExpression(bracketCountDifference))
+	{
+		if (Is(Logical) && LogicalOperation(bracketCountDifference))
+		{
+			currentToken = tempCurrentToken;
+		}
+		if (Is(CloseBracket))
+		{
+			(* bracketCountDifference)--;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool LogicalExpression(int * bracketCountDifference)
+{
+	if (Is(OpenBracket))
+	{
+		(*bracketCountDifference)++;
+	}
+	if (ArithmeticExpressionLO(bracketCountDifference))
+	{
+		if(Is(Comparison))
+		{
+			if(LogicalExpression(bracketCountDifference))
+			{
+				currentToken = tempCurrentToken;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		if (Is(CloseBracket))
+		{
+			(*bracketCountDifference)--;
+		}
+		return true;
+	}
+	return false;
+}
+
+bool ArithmeticExpressionLO(int * bracketCountDifference)
+{
+	int temp = tempCurrentToken;
+	if (ArithmeticExpression(bracketCountDifference))
+	{
+		return true;
+	}
+	tempCurrentToken = temp;
 	return false;
 }
 
 bool ArithmeticExpressionMain(bool open1)
 {
-
 	int temp = tempCurrentToken;
-	//printf("ArithmeticExpression-start\n");
 	int bracketCountDifference = open1;
-	//printf("\ncurrent token - %s\n", NameType(tokens[tempCurrentToken].type));
 	if (ArithmeticExpression(&bracketCountDifference))
 	{
 		if (bracketCountDifference == 0)
 		{
-			//printf("\ncountbracket:%d\n", bracketCountDifference);
-			//printf("ArithmeticExpression-true\n");
 			return true;
 		}
 		else
@@ -563,16 +556,7 @@ bool ArithmeticExpressionMain(bool open1)
 			printf("\nError - the difference in the number of opening brackets to the closing ones: %d\n", tokens[tempCurrentToken].pos);
 		}
 	}
-	else
-	{
-		tempCurrentToken = temp;
-		//printf("\ncountbracket:%d\n", bracketCountDifference);
-		//printf("ArithmeticExpression-false\n");
-		//printf("\ncurrent token - %s\n", NameType(tokens[tempCurrentToken].type));
-		return false;
-	}
 	tempCurrentToken = temp;
-	//printf("ArithmeticExpression-false\n");
 	return false;
 }
 
@@ -584,15 +568,12 @@ bool ArithmeticExpression(int * bracketCount)
 	}
 	if (Value())
 	{
-		//printf("\ncurrent token - %s\n", NameType(tokens[tempCurrentToken].type));
 		if (Is(MathSign) && ArithmeticExpression(bracketCount))
 		{
 			currentToken = tempCurrentToken;
 		}
-		//printf("\ncurrent token - %s\n", NameType(tokens[tempCurrentToken].type));
 		if (Is(CloseBracket))
 		{
-			//printf("close");
 			(*bracketCount)--;
 			if ((*bracketCount) < 0)
 			{
@@ -645,30 +626,37 @@ bool Identificator1()
 	return false;
 }
 
-bool Input1()
+bool Condition()
 {
-	//printf("Input1-start\n");
-	if (Is(Input))
+	int tempCurrentToken1 = currentToken;
+	tempCurrentToken = currentToken;
+
+	if (Is(If) && LogicalOperationMain() && Is(DoubleDot) && Is(Delimiter))
 	{
-		if (Is(OpenBracket))
+		tabCount += 1;
+		needTabCount = tabCount;
+		if (Sequence())
 		{
-			if (Is(CloseBracket))
+			currentToken = tempCurrentToken;
+			if (Is(Else) && Is(DoubleDot) && Is(Delimiter) && Sequence())
 			{
-				//printf("Input1-true\n");
-				return true;
+				currentToken = tempCurrentToken;
 			}
+			return true;
 		}
 	}
-	//printf("Input1-false\n");
-	return false;
+	else
+	{
+		currentToken = tempCurrentToken1;
+		return false;
+	}
 }
 
 bool While1()
 {
-	//printf("while start");
 	if(Is(While))
 	{
-		if(LogicalOperation())
+		if(LogicalOperationMain())
 		{
 			if(Is(DoubleDot))
 			{
@@ -679,7 +667,6 @@ bool While1()
 					if(Sequence())
 					{
 						currentToken = tempCurrentToken;
-						//printf("while true");
 						return true;
 					}
 				}
@@ -691,7 +678,6 @@ bool While1()
 bool For1()
 {
 	tempCurrentToken = currentToken;
-	//printf("for start");
 	if(Is(For))
 	{
 		if(Identificator1())
@@ -709,7 +695,6 @@ bool For1()
 							if(Sequence())
 							{
 								currentToken = tempCurrentToken;
-								//printf("for true");
 								return true;
 							}
 						}

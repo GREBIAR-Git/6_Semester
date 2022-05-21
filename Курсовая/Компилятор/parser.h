@@ -28,8 +28,11 @@ bool VariableDeclarationOrAssignment();
 bool FunctionDefinition();
 bool FunctionCall();
 
-bool LogicalOperation();
-bool LogicalExpression();
+bool LogicalOperationMain();
+
+bool LogicalOperation(int* bracketCountDifference);
+bool LogicalExpression(int* bracketCountDifference);
+bool ArithmeticExpressionLO(int* bracketCountDifference);
 
 bool ArithmeticExpressionMain(bool open1);
 bool ArithmeticExpression(int* bracketCount);

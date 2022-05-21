@@ -17,7 +17,7 @@ while 4<6:
 		print(kdfff+fdsfsd)
 		input()
 f = input()
-if k > 35+(4)>3 or rte:
+if (k > (35+(4)>3) or rte) and fr:
 	print(2+4*7)
 	print(3)
 x = 3
