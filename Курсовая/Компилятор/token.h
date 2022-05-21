@@ -28,6 +28,8 @@ enum TokenType
     Class, // class
     Identificator,
     Number,
+    Return,
+    END,
     Error,
 };
 
@@ -36,6 +38,7 @@ struct Token
     enum TokenType type;
     char* value;
     int pos;
+    int line;
 };
 
 char* NameType(enum TokenType type);

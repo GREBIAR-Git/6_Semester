@@ -5,6 +5,8 @@ char* fileContent;
 int currentTokenLength = 0;
 int idx = 0;
 
+int lines = 0;
+
 struct Token * tokenS;
 
 void FinishToken(enum TokenType type, int * tokenQuantity)
@@ -21,6 +23,7 @@ void FinishToken(enum TokenType type, int * tokenQuantity)
     temp[*tokenQuantity].value = malloc(strlen(buffer) + 1);
     strcpy(temp[*tokenQuantity].value, buffer);
     temp[*tokenQuantity].pos = idx - currentTokenLength;
+    temp[*tokenQuantity].line = lines;
     if (tokenS)
     {
         free(tokenS);
@@ -45,6 +48,7 @@ struct Token * Lexer(char* content, int * tokenQuantity)
         case Delimiter:
             if ((idx + 1 < strlen(fileContent) && fileContent[idx] == '\r'&& fileContent[idx+1] =='\n'))
             {
+                lines++;
                 idx+=2;
                 currentTokenLength+=1;
                 FinishToken(Delimiter, tokenQuantity);
@@ -52,6 +56,7 @@ struct Token * Lexer(char* content, int * tokenQuantity)
             }
             else if ( fileContent[idx] == '\n' || fileContent[idx] == '\0')
             {
+                lines++;
                 idx++;
                 currentTokenLength++;
                 FinishToken(Delimiter, tokenQuantity);
@@ -301,6 +306,17 @@ struct Token * Lexer(char* content, int * tokenQuantity)
             }
             else
             {
+                state = Return;
+            }
+            break;
+        case Return:
+            if (CompareStringCheck("return"))
+            {
+                FinishToken(Return, tokenQuantity);
+                state = Delimiter;
+            }
+            else
+            {
                 state = Identificator;
             }
             break;
@@ -336,7 +352,7 @@ struct Token * Lexer(char* content, int * tokenQuantity)
         case Error:
             if(fileContent[idx]!=' ')
             {
-                printf("\n skip - ( %c )", fileContent[idx]);
+                printf("\nLexical error on the line %d - unreserved character: %c  ",lines+1 , fileContent[idx]);
             }
             idx++;
             state = Delimiter;
@@ -345,6 +361,7 @@ struct Token * Lexer(char* content, int * tokenQuantity)
         }
     }
     FinishToken(Delimiter, tokenQuantity);
+    FinishToken(END, tokenQuantity);
     return tokenS;
 }
 

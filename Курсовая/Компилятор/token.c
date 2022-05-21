@@ -54,6 +54,10 @@ char* NameType(enum TokenType type)
         return "Identificator";
     case Number:
         return "Number";
+    case Return:
+        return "Return";
+    case END:
+        return "END";
     case Error:
         return "Error";
     default:
