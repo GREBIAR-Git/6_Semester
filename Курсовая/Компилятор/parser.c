@@ -16,8 +16,6 @@ enum StateSequence sequence = CommonSequence;
 
 enum StateSequence prevSequence = CommonSequence;
 
-//скобки в logical
-
 void Parser(struct Token * token, int tokenQuantity)
 {
 	tokens = token;
@@ -286,6 +284,21 @@ bool ClassDefinition()
 	}
 }
 
+bool ArrayFunctionDefinition()
+{
+	if(Is(OpenBraces))
+	{
+		if(Arguments())
+		{
+			if(Is(CloseBraces))
+			{
+				currentToken = tempCurrentToken;
+				return true;
+			}
+		}
+	}
+}
+
 bool FunctionDefinition()
 {
 	tempCurrentToken = currentToken;
@@ -350,7 +363,7 @@ bool ArgumentsFunctionDefinition()
 	{
 		if (Is(Comma))
 		{
-			if (ArgumentsFunctionDefinition())
+			if (ArgumentFunctionDefinition())
 			{
 				return true;
 			}
@@ -370,13 +383,39 @@ bool ArgumentsFunctionDefinition()
 	}
 }
 
-bool Arguments()
+bool ArgumentFunctionDefinition()
 {
-	if (Identificator1())
+	if (Is(Identificator))
 	{
 		if (Is(Comma))
 		{
-			if (Arguments())
+			if (ArgumentFunctionDefinition())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Arguments()
+{
+	if (Value())
+	{
+		if (Is(Comma))
+		{
+			if (Argument())
 			{
 				return true;
 			}
@@ -393,6 +432,32 @@ bool Arguments()
 	else
 	{
 		return true;
+	}
+}
+
+bool Argument()
+{
+	if (Value())
+	{
+		if (Is(Comma))
+		{
+			if (Argument())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -412,6 +477,12 @@ bool VariableDeclarationOrAssignment()
 	}
 	tempCurrentToken = currentToken;
 	if (Identificator1() && Is(Assignment) && FunctionCall())
+	{
+		currentToken = tempCurrentToken;
+		return true;
+	}
+	tempCurrentToken = currentToken;
+	if(Identificator1() && Is(Assignment) && ArrayFunctionDefinition() && Is(Delimiter))
 	{
 		currentToken = tempCurrentToken;
 		return true;
