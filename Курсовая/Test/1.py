@@ -1,5 +1,11 @@
-r = 4324+3
-t = [r,4,5]
-t1 = [r,t,5]
-for x in r:
-	print(x)
+def ff():
+	print(1)
+	def fds():
+		print(2)
+	fds()
+	class fgf():
+		w = 1
+	fdsf = fgf()
+	print(fdsf.w)
+
+ff()

@@ -3,6 +3,7 @@
 #include <stdio.h>
 enum TokenType
 {
+    Start,
     Delimiter,// \n
     Tab,// \t
     Comma,// ,

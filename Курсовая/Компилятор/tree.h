@@ -7,11 +7,19 @@
 struct Node
 {
 	struct Token data;
-	struct Node* left, *right;
+	struct Node* parent;
+	struct Node* next;
+	struct Node* childs;
 };
 
-struct Node* newNode(struct Token data);
+struct Node* AddChild(struct Token data, struct Node* node);
 
-void print2DUtil(struct Node *root, int space);
+void AddParent(struct Token data, struct Node* node);
 
-void print2D(struct Node *root);
+struct Node* NewNode(struct Token data);
+
+void AddNext(struct Token data, struct Node* node);
+
+void PrintTree(struct Node *root, int space);
+
+void Print2D(struct Node *root);

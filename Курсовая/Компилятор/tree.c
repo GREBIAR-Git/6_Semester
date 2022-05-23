@@ -1,31 +1,137 @@
 #include "tree.h"
 
-struct Node* newNode(struct Token data)
+struct Node* NewNode(struct Token data)
 {
 	struct Node* node = malloc(sizeof(struct Node));
 	node->data = data;
-	node->left = node->right = NULL;
+	node->next = node->childs = NULL;
 	return node;
 }
 
-void print2DUtil(struct Node *root, int space)
+struct Node * AddChild(struct Token data, struct Node* node)
+{
+	if (node == NULL)
+	{
+		node = malloc(sizeof(struct Node));
+		node->data = data;
+		node->next = node->childs = NULL;
+		return node;
+	}
+	else
+	{
+		if (node->childs == NULL)
+		{
+			node->childs = malloc(sizeof(struct Node));
+			node->childs->data = data;
+			node->childs->next = node->childs->childs = NULL;
+			node->childs->parent = node;
+			return node->childs;
+		}
+		struct Node** temp = &node->childs;
+		
+		while ((*temp)->next != NULL)
+		{
+			temp = (&((*temp)->next));
+		}
+		if ((*temp)->next == NULL)
+		{
+			(*temp)->next = malloc(sizeof(struct Node));
+			(*temp)->next->parent = node;
+			(*temp)->next->data = data;
+			(*temp)->next->next = (*temp)->next->childs = NULL;
+			return (*temp)->next;
+		}
+	}
+}
+
+void AddParent(struct Token data, struct Node* node)
+{
+	if (node == NULL)
+	{
+		node = malloc(sizeof(struct Node));
+		node->data = data;
+		node->next = node->childs = NULL;
+	}
+	else
+	{
+		if (node->parent == NULL)
+		{
+			node->parent = malloc(sizeof(struct Node));
+			node->parent->data = data;
+			node->parent->next = NULL;
+			node->parent->childs = node;
+			return;
+		}
+		struct Node** temp = &node->childs;
+
+		while ((*temp)->next != NULL)
+		{
+			temp = (&((*temp)->next));
+		}
+		if ((*temp)->next == NULL)
+		{
+			(*temp)->next->parent = node;
+			(*temp)->next = malloc(sizeof(struct Node));
+			(*temp)->next->data = data;
+			(*temp)->next->next = (*temp)->next->childs = NULL;
+		}
+	}
+}
+
+void AddNext(struct Token data, struct Node* node)
+{
+	if (node == NULL)
+	{
+		node = malloc(sizeof(struct Node));
+		node->data = data;
+		node->next = node->childs = NULL;
+	}
+	else
+	{
+		if (node->next== NULL)
+		{
+			node->next = malloc(sizeof(struct Node));
+			node->next->data = data;
+			node->next->next = node->next->childs = NULL;
+			return;
+		}
+		struct Node** temp = &node->next;
+
+		while ((*temp)->next != NULL)
+		{
+			temp = (&((*temp)->next));
+		}
+		if ((*temp)->next == NULL)
+		{
+			(*temp)->next = malloc(sizeof(struct Node));
+			(*temp)->next->parent = (*temp)->parent;
+			(*temp)->next->data = data;
+			(*temp)->next->next = (*temp)->next->childs = NULL;
+		}
+	}
+}
+
+void PrintTree(struct Node *root, int space)
 {
 	if (root == NULL)
 		return;
-
-	space += COUNT;
-
-	print2DUtil(root->right, space);
-
-	printf("\n");
-	for (int i = COUNT; i < space; i++)
+	for (int i = 0; i < space; i++)
 		printf(" ");
-	printf("%d\n",  NameType(root->data.type));
-
-	print2DUtil(root->left, space);
+	if (root->childs == NULL)
+	{
+		printf("%s - %s\n", NameType(root->data.type), ((*root).data.value));
+	}
+	else
+	{
+		printf("%s\n", NameType(root->data.type));
+	}
+	PrintTree(root->childs, space+ COUNT);
+	PrintTree(root->next, space);
 }
 
-void print2D(struct Node *root)
+void Print2D(struct Node *root)
 {
-    print2DUtil(root, 0);
+	printf("\nTree: \n\n");
+    PrintTree(root, 0);
+	printf("\nTree end; \n");
 }

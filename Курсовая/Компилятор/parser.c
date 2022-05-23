@@ -12,17 +12,32 @@ int needTabCount = 0;
 
 struct Token * tokens;
 
-enum StateSequence sequence = CommonSequence;
+enum StateBlock sequence = CommonBlock;
 
-enum StateSequence prevSequence = CommonSequence;
+enum StateBlock prevBlock = CommonBlock;
+
+struct Node root;
+
+struct Node * current;
+
+void InitFirstTree()
+{
+	struct Token tokenMain;
+	tokenMain.value = "Main";
+	tokenMain.type = Start;
+	root = *NewNode(tokenMain);
+	current = &root;
+}
 
 void Parser(struct Token * token, int tokenQuantity)
 {
+	InitFirstTree();
+
 	tokens = token;
 	tokenLength = tokenQuantity;
 	currentToken = 0;
 	printf("\nSTART_PARSER\n");
-	if (Sequence())
+	if (Block())
 	{
 		printf("\nSuccessfully\n");
 	}
@@ -30,15 +45,16 @@ void Parser(struct Token * token, int tokenQuantity)
 	{
 		printf("\nSyntax error on the line: %d\n",tokens[currentToken].line+1);
 	}
+	Print2D(&root);
 	printf("\nEND_PARSER\n");
 }
 
-bool Sequence()
+bool Block()
 {
 	currentToken = tempCurrentToken;
 	if(currentToken < tokenLength)
 	{
-		//printf("\nnew Sequence token - %s #%d\n", NameType(tokens[currentToken].type), currentToken);
+		//printf("\nnew Block token - %s #%d\n", NameType(tokens[currentToken].type), currentToken);
 	}
 	if(currentToken >= tokenLength)
 	{
@@ -79,6 +95,7 @@ bool Sequence()
 		{
 			if (!Is(Tab))
 			{
+				current = current->parent;
 				tempCurrentToken = currentToken;
 				tabCount -= 1;
 				return true;
@@ -86,30 +103,30 @@ bool Sequence()
 		}
 
 		currentToken = tempCurrentToken;
-		if (sequence == CommonSequence)
+		if (sequence == CommonBlock)
 		{
-			if (Statement() && Sequence())
+			if (Statement() && Block())
 			{
-				sequence = CommonSequence;
+				sequence = CommonBlock;
 				needTabCount = 0;
 				return true;
 			}
 		}
-		else if (sequence == ClassSequence)
+		else if (sequence == ClassBlock)
 		{
-			if (StatementClass() && Sequence())
+			if (StatementClass() && Block())
 			{
-				prevSequence = CommonSequence;
-				sequence = CommonSequence;
+				prevBlock = CommonBlock;
+				sequence = CommonBlock;
 				needTabCount = 0;
 				return true;
 			}
 		}
-		else if (sequence == DefSequence)
+		else if (sequence == DefBlock)
 		{
-			if (StatementDef() && Sequence())
+			if (StatementDef() && Block())
 			{
-				sequence = prevSequence;
+				sequence = prevBlock;
 				needTabCount = 0;
 				return true;
 			}
@@ -117,7 +134,7 @@ bool Sequence()
 		return false;
 
 	}
-	printf("\nerror Sequence\n");
+	printf("\nerror Block\n");
 	return false;
 }
 
@@ -164,7 +181,7 @@ bool StatementClass()
 	}
 	else
 	{
-		if (FunctionDefinition())
+		if (FunctionDefinition())//нужно
 		{
 			currentToken = tempCurrentToken;
 			return true;
@@ -179,7 +196,7 @@ bool Statement()
 	{
 		return true;
 	}
-	if (Condition())
+	if (Condition())//нужно
 	{
 		currentToken = tempCurrentToken;
 		return true;
@@ -197,6 +214,7 @@ bool Statement()
 			tempCurrentToken = currentToken;
 			if (Input1()&&Is(Delimiter))
 			{
+				AddChild(tokens[currentToken], current);
 				currentToken = tempCurrentToken;
 				return true;
 			}
@@ -210,21 +228,21 @@ bool Statement()
 				}
 				else
 				{
-					if(While1())
+					if(While1())//нужно
 					{
 						currentToken = tempCurrentToken;
 						return true;
 					}
 					else 
 					{
-						if(For1())
+						if(For1())//нужно
 						{
 							currentToken = tempCurrentToken;
 							return true;
 						}
 						else 
 						{
-							if(FunctionDefinition())
+							if(FunctionDefinition())//нужно
 							{
 								currentToken = tempCurrentToken;
 								return true;
@@ -238,7 +256,7 @@ bool Statement()
 								}
 								else
 								{
-									if (ClassDefinition())
+									if (ClassDefinition())//нужно
 									{
 										currentToken = tempCurrentToken;
 										return true;
@@ -270,8 +288,11 @@ bool ClassDefinition()
 						{
 							tabCount += 1;
 							needTabCount = tabCount;
-							sequence = ClassSequence;
-							if (Sequence())
+							sequence = ClassBlock;
+
+							current = AddChild(tokens[currentToken], current);
+
+							if (Block())
 							{
 								currentToken = tempCurrentToken;
 								return true;
@@ -292,7 +313,6 @@ bool ArrayFunctionDefinition()
 		{
 			if(Is(CloseBraces))
 			{
-				currentToken = tempCurrentToken;
 				return true;
 			}
 		}
@@ -318,9 +338,11 @@ bool FunctionDefinition()
 							{
 								tabCount += 1;
 								needTabCount = tabCount;
-								prevSequence = sequence;
-								sequence = DefSequence;
-								if (Sequence())
+								prevBlock = sequence;
+								sequence = DefBlock;
+								current = AddChild(tokens[currentToken], current);
+								//printf("\n!2!%s!2!\n", NameType(root.data.type));
+								if (Block())
 								{
 									currentToken = tempCurrentToken;
 									return true;
@@ -347,6 +369,7 @@ bool FunctionCall()
 				{
 					if (Is(Delimiter))
 					{
+						AddChild(tokens[currentToken], current);
 						currentToken = tempCurrentToken;
 						return true;
 					}
@@ -464,28 +487,41 @@ bool Argument()
 bool VariableDeclarationOrAssignment()
 {
 	tempCurrentToken = currentToken;
-	if (Identificator1() && Is(Assignment) && ArithmeticExpressionMain(false) && Is(Delimiter))
+	
+	if (Identificator1())
 	{
-		currentToken = tempCurrentToken;
-		return true;
-	}
-	tempCurrentToken = currentToken;
-	if (Identificator1() && Is(Assignment) && Input1() && Is(Delimiter))
-	{
-		currentToken = tempCurrentToken;
-		return true;
-	}
-	tempCurrentToken = currentToken;
-	if (Identificator1() && Is(Assignment) && FunctionCall())
-	{
-		currentToken = tempCurrentToken;
-		return true;
-	}
-	tempCurrentToken = currentToken;
-	if(Identificator1() && Is(Assignment) && ArrayFunctionDefinition() && Is(Delimiter))
-	{
-		currentToken = tempCurrentToken;
-		return true;
+		struct Token* token = &tokens[tempCurrentToken];
+		if (Is(Assignment))
+		{
+			currentToken = tempCurrentToken;
+			if (ArithmeticExpressionMain(false) && Is(Delimiter))
+			{
+				AddChild(*token, current);
+				currentToken = tempCurrentToken;
+				return true;
+			}
+			tempCurrentToken = currentToken;
+			if (Input1() && Is(Delimiter))
+			{
+				AddChild(*token, current);
+				currentToken = tempCurrentToken;
+				return true;
+			}
+			tempCurrentToken = currentToken;
+			if (FunctionCall())
+			{
+				AddChild(*token, current);
+				currentToken = tempCurrentToken;
+				return true;
+			}
+			tempCurrentToken = currentToken;
+			if (ArrayFunctionDefinition() && Is(Delimiter))
+			{
+				AddChild(*token, current);
+				currentToken = tempCurrentToken;
+				return true;
+			}
+		}
 	}
 	return false;
 }
@@ -495,12 +531,14 @@ bool Output1()
 	tempCurrentToken = currentToken;
 	if (Is(Output))
 	{
+		struct Token* token = &tokens[currentToken];
 		if (Is(OpenBracket))
 		{
 			if (ArithmeticExpressionMain(true))
 			{
 				if (Is(Delimiter))
 				{
+					AddChild(*token, current);
 					currentToken = tempCurrentToken;
 				}
 				return true;
@@ -702,18 +740,30 @@ bool Condition()
 	int tempCurrentToken1 = currentToken;
 	tempCurrentToken = currentToken;
 
-	if (Is(If) && LogicalOperationMain() && Is(DoubleDot) && Is(Delimiter))
+	if (Is(If))
 	{
-		tabCount += 1;
-		needTabCount = tabCount;
-		if (Sequence())
+		struct Token* token = &tokens[currentToken];
+		if (LogicalOperationMain() && Is(DoubleDot) && Is(Delimiter))
 		{
-			currentToken = tempCurrentToken;
-			if (Is(Else) && Is(DoubleDot) && Is(Delimiter) && Sequence())
+			tabCount += 1;
+			needTabCount = tabCount;
+			current = AddChild(*token, current);
+			if (Block())
 			{
+				token = &tokens[currentToken];
 				currentToken = tempCurrentToken;
+				if (Is(Else) && Is(DoubleDot) && Is(Delimiter))
+				{
+					tabCount += 1;
+					needTabCount = tabCount;
+					current = AddChild(*token, current);
+					if (Block())
+					{
+						currentToken = tempCurrentToken;
+					}
+				}
+				return true;
 			}
-			return true;
 		}
 	}
 	else
@@ -727,6 +777,7 @@ bool While1()
 {
 	if(Is(While))
 	{
+		struct Token* token = &tokens[currentToken];
 		if(LogicalOperationMain())
 		{
 			if(Is(DoubleDot))
@@ -735,7 +786,8 @@ bool While1()
 				{
 					tabCount += 1;
 					needTabCount = tabCount;
-					if(Sequence())
+					current = AddChild(*token, current);
+					if(Block())
 					{
 						currentToken = tempCurrentToken;
 						return true;
@@ -763,7 +815,9 @@ bool For1()
 						{
 							tabCount += 1;
 							needTabCount = tabCount;
-							if(Sequence())
+							current = AddChild(tokens[currentToken], current);
+							//printf("\n!2!%s!2!\n", NameType(root.data.type));
+							if(Block())
 							{
 								currentToken = tempCurrentToken;
 								return true;

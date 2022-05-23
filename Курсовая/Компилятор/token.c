@@ -4,6 +4,8 @@ char* NameType(enum TokenType type)
 {
     switch (type)
     {
+    case Start:
+        return "Start";
     case Delimiter:
         return "Delimiter";
     case Tab:

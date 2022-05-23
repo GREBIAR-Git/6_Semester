@@ -4,14 +4,14 @@
 #include <stdbool.h>
 #include "token.h"
 
-enum StateSequence
+enum StateBlock
 {
-	CommonSequence,
-	ClassSequence,
-	DefSequence,
+	CommonBlock,
+	ClassBlock,
+	DefBlock,
 };
 
-bool Sequence();
+bool Block();
 bool Statement();
 bool StatementDef();
 bool StatementClass();
