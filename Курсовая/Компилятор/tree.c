@@ -39,7 +39,6 @@ struct Node * AddChild(struct Token data, struct Node* node)
 			return node->childs;
 		}
 		struct Node** temp = &node->childs;
-		
 		while ((*temp)->next != NULL)
 		{
 			temp = (&((*temp)->next));
@@ -111,20 +110,18 @@ struct Node* AddChildNode(struct Node* child, struct Node* node)
 				(*temp)->next->parent = node;
 				temp = (&((*temp)->next));
 			}
-
 			node->childs = malloc(sizeof(struct Node));
 			node->childs = child;
 			node->childs->parent = node;
 
-
 			return child;
 		}
-		struct Node** temp = &node->childs;
-		while ((*temp)->next != NULL)
+		struct Node** temp2 = &node->childs;
+		while ((*temp2)->next != NULL)
 		{
-			temp = (&((*temp)->next));
+			temp2 = (&((*temp2)->next));
 		}
-		if ((*temp)->next == NULL)
+		if ((*temp2)->next == NULL)
 		{
 			struct Node** temp1 = &child;
 			while ((*temp1)->next != NULL)
@@ -133,10 +130,9 @@ struct Node* AddChildNode(struct Node* child, struct Node* node)
 				temp1 = (&((*temp1)->next));
 			}
 
-			(*temp)->next = malloc(sizeof(struct Node));
-			(*temp)->next = child;
-			(*temp)->next->parent = node;
-
+			(*temp2)->next = malloc(sizeof(struct Node));
+			(*temp2)->next = child;
+			(*temp2)->next->parent = node;
 
 			return child;
 		}

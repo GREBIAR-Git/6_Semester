@@ -22,7 +22,7 @@ if (k > (35+(4)>3) or rte) and fr:
 	print(2+4*7)
 	print(3)
 else:
-	fdsf= 4
+	fdsf= (4+54435*342)
 x = 3
 y = 4
 z = x + y

@@ -9,7 +9,7 @@ d = [2,f]
 input();
 def tf(dsf,d,f,f):
 	kdfff = 4+f.h+ff+printf
-	return 1
+	return f.r
 while 4<6:
 	print(d[3])
 	print(kdfff+fdsfsd)
@@ -21,6 +21,8 @@ f = input()
 if (k > (35+(4)>3) or rte) and fr:
 	print(2+4*7)
 	print(3)
+else:
+	fdsf= (4+54435*342)+(3*43+(43-4))
 x = 3
 y = 4
 z = x + y
@@ -32,6 +34,6 @@ if (test):
 	input()
 
 sd.width = 3
-f = tf(a[4],2)
+f = tf(a[4],2,3)
 for rt in er:
 	input()

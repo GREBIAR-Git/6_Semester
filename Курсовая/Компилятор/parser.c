@@ -559,7 +559,7 @@ bool VariableDeclarationOrAssignment()
 		{
 			AddChildNode(assignmentNode, current);
 			currentToken = tempCurrentToken;
-			if (ArithmeticExpressionMain(false) && Is(Delimiter))
+			if (ArithmeticExpressionMain(false, assignmentNode) && Is(Delimiter))
 			{
 				currentToken = tempCurrentToken;
 				return true;
@@ -592,14 +592,14 @@ bool Output1()
 	tempCurrentToken = currentToken;
 	if (Is(Output))
 	{
-		struct Token* token = &tokens[currentToken];
+		struct Node* outputNode = NewNode(tokens[currentToken]);
 		if (Is(OpenBracket))
 		{
-			if (ArithmeticExpressionMain(true))
+			if (ArithmeticExpressionMain(true, outputNode))
 			{
 				if (Is(Delimiter))
 				{
-					AddChild(*token, current);
+					AddChildNode(outputNode, current);
 					currentToken = tempCurrentToken;
 				}
 				return true;
@@ -628,14 +628,14 @@ bool Input1(struct Node * inputNode)
 	return false;
 }
 
-bool LogicalOperationMain()
+bool LogicalOperationMain(struct Node* arifNode)
 {
 	int bracketCountDifference = 0;
 	if (Is(OpenBracket))
 	{
 		bracketCountDifference++;
 	}
-	if (LogicalOperation(&bracketCountDifference))
+	if (LogicalOperation(&bracketCountDifference, arifNode))
 	{
 		if (Is(CloseBracket))
 		{
@@ -654,17 +654,31 @@ bool LogicalOperationMain()
 	return false;
 }
 
-bool LogicalOperation(int * bracketCountDifference)
+bool LogicalOperation(int * bracketCountDifference, struct Node* arifNode)
 {
 	if (Is(OpenBracket))
 	{
 		(*bracketCountDifference)++;
 	}
-	if (LogicalExpression(bracketCountDifference))
+	struct Node* valueNode = NewNode(tokens[currentToken]);
+	if (LogicalExpression(bracketCountDifference, valueNode))
 	{
-		if (Is(Logical) && LogicalOperation(bracketCountDifference))
+		if (Is(Logical))
 		{
-			currentToken = tempCurrentToken;
+			struct Node* childLog = AddChild(tokens[tempCurrentToken - 1], arifNode);
+			AddChildNode(valueNode->childs, childLog);
+			if (LogicalOperation(bracketCountDifference, childLog))
+			{
+				currentToken = tempCurrentToken;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			AddChildNode(valueNode->childs, arifNode);
 		}
 		if (Is(CloseBracket))
 		{
@@ -675,17 +689,18 @@ bool LogicalOperation(int * bracketCountDifference)
 	return false;
 }
 
-bool LogicalExpression(int * bracketCountDifference)
+bool LogicalExpression(int * bracketCountDifference, struct Node* arifNode)
 {
 	if (Is(OpenBracket))
 	{
 		(*bracketCountDifference)++;
 	}
-	if (ArithmeticExpressionLO(bracketCountDifference))
+	if (ArithmeticExpressionLO(bracketCountDifference, arifNode))
 	{
 		if(Is(Comparison))
 		{
-			if(LogicalExpression(bracketCountDifference))
+			struct Node* childComp = AddChild(tokens[tempCurrentToken - 1], arifNode);
+			if(LogicalExpression(bracketCountDifference, childComp))
 			{
 				currentToken = tempCurrentToken;
 			}
@@ -703,10 +718,10 @@ bool LogicalExpression(int * bracketCountDifference)
 	return false;
 }
 
-bool ArithmeticExpressionLO(int * bracketCountDifference)
+bool ArithmeticExpressionLO(int * bracketCountDifference, struct Node* arifNode)
 {
 	int temp = tempCurrentToken;
-	if (ArithmeticExpression(bracketCountDifference))
+	if (ArithmeticExpression(bracketCountDifference, arifNode))
 	{
 		return true;
 	}
@@ -714,11 +729,11 @@ bool ArithmeticExpressionLO(int * bracketCountDifference)
 	return false;
 }
 
-bool ArithmeticExpressionMain(bool open1)
+bool ArithmeticExpressionMain(bool open1, struct Node* arifNode)
 {
 	int temp = tempCurrentToken;
 	int bracketCountDifference = open1;
-	if (ArithmeticExpression(&bracketCountDifference))
+	if (ArithmeticExpression(&bracketCountDifference, arifNode))
 	{
 		if (bracketCountDifference == 0)
 		{
@@ -734,17 +749,29 @@ bool ArithmeticExpressionMain(bool open1)
 	return false;
 }
 
-bool ArithmeticExpression(int * bracketCount)
+struct Node* bracketNode;
+
+bool ArithmeticExpression(int * bracketCount, struct Node* arifNode)
 {
 	if (Is(OpenBracket))
 	{
 		(*bracketCount)++;
 	}
-	if (Value())
+	struct Node* valueNode=NewNode(tokens[currentToken]);
+	if (Value1(valueNode))
 	{
-		if (Is(MathSign) && ArithmeticExpression(bracketCount))
+		if (Is(MathSign))
 		{
-			currentToken = tempCurrentToken;
+			struct Node* mathNode = AddChild(tokens[tempCurrentToken-1],arifNode);
+			AddChildNode(valueNode->childs, mathNode);
+			if(ArithmeticExpression(bracketCount, mathNode))
+			{
+				currentToken = tempCurrentToken;
+			}
+		}
+		else
+		{
+			AddChildNode(valueNode->childs, arifNode);
 		}
 		if (Is(CloseBracket))
 		{
@@ -771,9 +798,12 @@ bool Value1(struct Node* valueNode)
 		return true;
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
+	if (Is(Identificator) && Is(OpenBraces) )
 	{
-		return true;
+		if (ArithmeticExpressionMain(false, valueNode) && Is(CloseBraces))
+		{
+			return true;
+		}
 	}
 	tempCurrentToken = temp;
 	if (Is(Identificator) || Is(Number) || Is(Bool))
@@ -792,10 +822,10 @@ bool Value()
 		return true;
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
+	/*if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
 	{
 		return true;
-	}
+	}*/
 	tempCurrentToken = temp;
 	if (Is(Identificator) || Is(Number) || Is(Bool))
 	{
@@ -815,7 +845,7 @@ bool Identificator2(struct Node* identificatorNode)
 		return true;
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
+	if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false, identificatorNode) && Is(CloseBraces))
 	{
 		return true;
 	}
@@ -836,10 +866,10 @@ bool Identificator1()
 		return true;
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
+	/*if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
 	{
 		return true;
-	}
+	}*/
 	tempCurrentToken = temp;
 	if (Is(Identificator))
 	{
@@ -858,7 +888,7 @@ bool Condition()
 		struct Node* ifNode = NewNode(tokens[currentToken]);
 		enum TerminalType lo = LogicalOperationTerm;
 		struct Node* loNode = AddChildTerminal(lo, ifNode);
-		if (LogicalOperationMain() && Is(DoubleDot) && Is(Delimiter))//всунуть сюда loNode
+		if (LogicalOperationMain(loNode) && Is(DoubleDot) && Is(Delimiter))//всунуть сюда loNode
 		{
 			tabCount += 1;
 			needTabCount = tabCount;
@@ -916,7 +946,7 @@ bool While1()
 		struct Node* whileNode = NewNode(tokens[currentToken]);
 		enum TerminalType lo = LogicalOperationTerm;
 		struct Node* loNode = AddChildTerminal(lo, whileNode);
-		if(LogicalOperationMain())//всунть loNode
+		if(LogicalOperationMain(loNode))//всунть loNode
 		{
 			if(Is(DoubleDot))
 			{
