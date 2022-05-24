@@ -38,7 +38,7 @@ struct Token * Lexer(char* content, int * tokenQuantity)
     enum TokenType state = Delimiter;
     tokenS = malloc(0);
     fileContent = content;
-    bool io_started = false;
+    bool io_Rooted = false;
     bool identificatorFirst = true;
 
     while (idx < strlen(fileContent))
@@ -317,10 +317,10 @@ struct Token * Lexer(char* content, int * tokenQuantity)
             }
             else
             {
-                state = Identificator;
+                state = Variable;
             }
             break;
-        case Identificator:
+        case Variable:
             if (isalpha(fileContent[idx]) || CompareStrings("_") || (!identificatorFirst && isdigit(fileContent[idx])))
             {
                 identificatorFirst = false;
@@ -330,7 +330,7 @@ struct Token * Lexer(char* content, int * tokenQuantity)
             else if (!identificatorFirst)
             {
                 identificatorFirst = true;
-                FinishToken(Identificator, tokenQuantity);
+                FinishToken(Variable, tokenQuantity);
                 state = Delimiter;
             }
             else
@@ -411,7 +411,7 @@ bool CompareStringCheck(char* str)
 bool IsNumber(char* str)
 {
     enum number stage = numbers;
-    bool startNumber = false;
+    bool RootNumber = false;
     while (true)
     {
         switch (stage)
@@ -422,18 +422,18 @@ bool IsNumber(char* str)
             {
                 if (isdigit(str[idx]))
                 {
-                    startNumber = true;
+                    RootNumber = true;
                     currentTokenLength++;
                     idx++;
                 }
-                else if (str[idx] == '.' && startNumber)
+                else if (str[idx] == '.' && RootNumber)
                 {
 
                     currentTokenLength++;
                     idx++;
                     stage = one_dot_numbers;
                 }
-                else if ((str[idx] != ' ' || str[idx] != '\n' || str[idx] != '\r') && startNumber)
+                else if ((str[idx] != ' ' || str[idx] != '\n' || str[idx] != '\r') && RootNumber)
                 {
                     stage = finish_number;
                 }

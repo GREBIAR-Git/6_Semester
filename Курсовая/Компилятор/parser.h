@@ -12,47 +12,43 @@ enum StateBlock
 	DefBlock,
 };
 
-bool Identificator2(struct Node* identificatorNode);
-
-bool Value1(struct Node* valueNode);
-
 bool Block();
 bool Statement();
 bool StatementDef();
 bool StatementClass();
 
 bool Condition();
-bool While1();
-bool For1();
+bool WhileLoop();
+bool ForLoop();
 
-bool Output1();
-bool Input1();
+bool OutputCommand();
+bool InputCommand(struct Node* inputNode);
 
-bool VariableDeclarationOrAssignment();
+bool AssignmentOperation();
 
-bool ArrayFunctionDefinition();
+bool ArrayDefinition(struct Node* arrayFunctionDefinition);
 
 bool FunctionDefinition();
-bool FunctionCall();
+bool FunctionCall(struct Node* functionCallNode);
+bool Return1();
 
-bool LogicalOperationMain();
+bool LogicalOperationMain(struct Node* arifNode);
 bool LogicalOperation(int* bracketCountDifference, struct Node* arifNode);
 bool LogicalExpression(int* bracketCountDifference, struct Node* arifNode);
 bool ArithmeticExpressionLO(int* bracketCountDifference, struct Node* arifNode);
 
-bool ArithmeticExpressionMain(bool open1, struct Node* arifNode);
+bool ArithmeticExpressionMain(bool open, struct Node* arifNode);
 bool ArithmeticExpression(int* bracketCount, struct Node* arifNode);
 
-bool ArgumentsFunctionDefinition();
-bool ArgumentFunctionDefinition();
-bool Arguments();
-bool Argument();
-bool Return1();
+bool ArgumentsFunctionDefinition(struct Node* argumentsFunctionNode);
+bool ArgumentFunctionDefinition(struct Node* argumentFunctionNode);
+bool Arguments(struct Node* argumentsNode);
+bool Argument(struct Node* argumentNode);
 
 bool ClassDefinition();
 
-bool Value();
-bool Identificator1();
+bool Value(struct Node* valueNode);
+bool Identificator(struct Node* identificatorNode);
 
 bool Is(enum TokenType type);
 void Parser(struct Token* token,int tokenQuantity);

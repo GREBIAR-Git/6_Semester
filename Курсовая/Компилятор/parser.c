@@ -21,9 +21,9 @@ struct Node * current;
 
 void InitFirstTree()
 {
-	enum TerminalType startTerm = Start;
+	enum NonTerminalType RootTerm = BlockTerm;
 
-	root = *NewNodeTerminal(startTerm);
+	root = *NewNodeTerminal(RootTerm);
 	current = &root;
 }
 
@@ -54,7 +54,7 @@ void Parser(struct Token * token, int tokenQuantity)
 	printf("\nSTART_PARSER\n");
 	if (Block())
 	{
-		printf("\n Successfully (A good program without errors well done)\n");
+		printf("\nSuccessfully (A good program without errors well done)\n");
 	}
 	else
 	{
@@ -175,7 +175,7 @@ bool Return1()
 	if (Is(Return))
 	{
 		struct Node* returnNode = AddChild(tokens[tempCurrentToken - 1], current);
-		if (Is(Delimiter) || (Value1(returnNode) && Is(Delimiter)))
+		if (Is(Delimiter) || (Value(returnNode) && Is(Delimiter)))
 		{
 			return true;
 		}
@@ -190,14 +190,14 @@ bool StatementClass()
 	{
 		return true;
 	}
-	if (VariableDeclarationOrAssignment())
+	if (AssignmentOperation())
 	{
 		currentToken = tempCurrentToken;
 		return true;
 	}
 	else
 	{
-		if (FunctionDefinition())//нужно
+		if (FunctionDefinition())
 		{
 			currentToken = tempCurrentToken;
 			return true;
@@ -212,7 +212,7 @@ bool Statement()
 	{
 		return true;
 	}
-	if (Condition())//нужно
+	if (Condition())
 	{
 		currentToken = tempCurrentToken;
 		return true;
@@ -220,7 +220,7 @@ bool Statement()
 	else
 	{
 		tempCurrentToken = currentToken;
-		if (VariableDeclarationOrAssignment())
+		if (AssignmentOperation())
 		{
 			currentToken = tempCurrentToken;
 			return true;
@@ -228,7 +228,7 @@ bool Statement()
 		else 
 		{
 			tempCurrentToken = currentToken;
-			if (Input1(current))
+			if (InputCommand(current))
 			{
 				currentToken = tempCurrentToken;
 				return true;
@@ -236,42 +236,42 @@ bool Statement()
 			else
 			{
 				tempCurrentToken = currentToken;
-				if (Output1())
+				if (OutputCommand())
 				{
 					currentToken = tempCurrentToken;
 					return true;
 				}
 				else
 				{
-					if(While1())//нужно
+					if(WhileLoop())
 					{
 						currentToken = tempCurrentToken;
 						return true;
 					}
 					else 
 					{
-						if(For1())//нужно
+						if(ForLoop())
 						{
 							currentToken = tempCurrentToken;
 							return true;
 						}
 						else 
 						{
-							if(FunctionDefinition())//нужно
+							if(FunctionDefinition())
 							{
 								currentToken = tempCurrentToken;
 								return true;
 							}
 							else 
 							{
-								if(FunctionCall())
+								if(FunctionCall(current))
 								{
 									currentToken = tempCurrentToken;
 									return true;
 								}
 								else
 								{
-									if (ClassDefinition())//нужно
+									if (ClassDefinition())
 									{
 										currentToken = tempCurrentToken;
 										return true;
@@ -292,7 +292,7 @@ bool ClassDefinition()
 	if (Is(Class))
 	{
 		struct Node* funcNode = NewNode(tokens[tempCurrentToken - 1]);
-		if (Is(Identificator))
+		if (Is(Variable))
 		{
 			struct Node* funcNodetemp = AddChild(tokens[tempCurrentToken - 1], funcNode);
 			if (Is(OpenBracket))
@@ -307,7 +307,7 @@ bool ClassDefinition()
 							needTabCount = tabCount;
 							sequence = ClassBlock;
 
-							enum TerminalType body = BlockTerm;
+							enum NonTerminalType body = BlockTerm;
 
 							struct Node * returnCurrent = current;
 							AddChildNode(funcNode, current);
@@ -334,12 +334,12 @@ bool FunctionDefinition()
 	if(Is(Def))
 	{
 		struct Node* funcNode = NewNode(tokens[tempCurrentToken - 1]);
-		if(Is(Identificator))
+		if(Is(Variable))
 		{
 			struct Node* funcNodetemp = AddChild(tokens[tempCurrentToken - 1], funcNode);
 			if (Is(OpenBracket))
 			{
-				enum TerminalType param = Params;
+				enum NonTerminalType param = Params;
 				struct Node * params = AddNextTerminal(param, funcNodetemp);
 				if (ArgumentsFunctionDefinition(params))
 				{
@@ -354,7 +354,7 @@ bool FunctionDefinition()
 								prevBlock = sequence;
 								sequence = DefBlock;
 
-								enum TerminalType body = BlockTerm;
+								enum NonTerminalType body = BlockTerm;
 
 								struct Node* returnCurrent = current;
 								AddChildNode(funcNode, current);
@@ -377,13 +377,13 @@ bool FunctionDefinition()
 	return false;
 }
 
-bool ArrayFunctionDefinition(struct Node* arrayFunctionDefinition)
+bool ArrayDefinition(struct Node* ArrayDefinition)
 {
 	if (Is(OpenBraces))
 	{
 		struct Node* arrayDefinition = NewNode(tokens[tempCurrentToken - 1]);
 
-		enum TerminalType ParamsTerm = Params;
+		enum NonTerminalType ParamsTerm = Params;
 
 
 		struct Node* paramsNode = AddChildTerminal(ParamsTerm, arrayDefinition);
@@ -391,7 +391,7 @@ bool ArrayFunctionDefinition(struct Node* arrayFunctionDefinition)
 		{
 			if (Is(CloseBraces))
 			{
-				AddChildNode(arrayDefinition, arrayFunctionDefinition);
+				AddChildNode(arrayDefinition, ArrayDefinition);
 				AddChild(tokens[tempCurrentToken - 1], arrayDefinition);
 				return true;
 			}
@@ -401,13 +401,13 @@ bool ArrayFunctionDefinition(struct Node* arrayFunctionDefinition)
 
 bool FunctionCall(struct Node * functionCallNode)
 {
-	if(Is(Identificator))
+	if(Is(Variable))
 	{
-		enum TerminalType funcTerm = Function;
+		enum NonTerminalType funcTerm = Function;
 		struct Node* functionCallTemp = NewNodeTerminal(funcTerm);
 	
 		struct Node* functionCallChild = AddChild(tokens[tempCurrentToken - 1], functionCallTemp);
-		enum TerminalType params = Params;
+		enum NonTerminalType params = Params;
 
 		functionCallChild = AddNextTerminal(params, functionCallChild);
 
@@ -432,14 +432,12 @@ bool FunctionCall(struct Node * functionCallNode)
 
 bool ArgumentsFunctionDefinition(struct Node * argumentsFunctionNode)
 {
-	if (Is(Identificator))
+	if (Is(Variable))
 	{
 		struct Node* argFuncTemp = NewNode(tokens[tempCurrentToken-1]);
 		if (Is(Comma))
 		{
 			struct Node* commaNode = AddNext(tokens[tempCurrentToken - 1], argFuncTemp);
-			//AddNext(Token[tempCurrentToken - 2], temp);
-			//AddNext(Token[tempCurrentToken - 1], temp);
 			if (ArgumentFunctionDefinition(commaNode))
 			{
 				AddChildNode(argFuncTemp, argumentsFunctionNode);
@@ -464,7 +462,7 @@ bool ArgumentsFunctionDefinition(struct Node * argumentsFunctionNode)
 
 bool ArgumentFunctionDefinition(struct Node* argumentFunctionNode)
 {
-	if (Is(Identificator))
+	if (Is(Variable))
 	{
 		struct Node* argFuncTemp = NewNode(tokens[tempCurrentToken - 1]);
 		if (Is(Comma))
@@ -494,7 +492,7 @@ bool ArgumentFunctionDefinition(struct Node* argumentFunctionNode)
 
 bool Arguments(struct Node* argumentsNode)
 {
-	if (Value1(argumentsNode))
+	if (Value(argumentsNode))
 	{
 		if (Is(Comma))
 		{
@@ -521,7 +519,7 @@ bool Arguments(struct Node* argumentsNode)
 
 bool Argument(struct Node* argumentNode)
 {
-	if (Value1(argumentNode))
+	if (Value(argumentNode))
 	{
 		if (Is(Comma))
 		{
@@ -546,14 +544,14 @@ bool Argument(struct Node* argumentNode)
 	}
 }
 
-bool VariableDeclarationOrAssignment()
+bool AssignmentOperation()
 {
 	tempCurrentToken = currentToken;
 	struct Token assignment;
 	assignment.value = "=";
 	assignment.type = Assignment;
 	struct Node* assignmentNode = NewNode(assignment);
-	if (Identificator2(assignmentNode))
+	if (Identificator(assignmentNode))
 	{
 		if (Is(Assignment))
 		{
@@ -565,7 +563,7 @@ bool VariableDeclarationOrAssignment()
 				return true;
 			}
 			tempCurrentToken = currentToken;
-			if (Input1(assignmentNode))
+			if (InputCommand(assignmentNode))
 			{
 				currentToken = tempCurrentToken;
 				return true;
@@ -577,7 +575,7 @@ bool VariableDeclarationOrAssignment()
 				return true;
 			}
 			tempCurrentToken = currentToken;
-			if (ArrayFunctionDefinition(assignmentNode) && Is(Delimiter))
+			if (ArrayDefinition(assignmentNode) && Is(Delimiter))
 			{
 				currentToken = tempCurrentToken;
 				return true;
@@ -587,7 +585,7 @@ bool VariableDeclarationOrAssignment()
 	return false;
 }
 
-bool Output1()
+bool OutputCommand()
 {
 	tempCurrentToken = currentToken;
 	if (Is(Output))
@@ -609,7 +607,7 @@ bool Output1()
 	return false;
 }
 
-bool Input1(struct Node * inputNode)
+bool InputCommand(struct Node * inputNode)
 {
 	if (Is(Input))
 	{
@@ -729,10 +727,10 @@ bool ArithmeticExpressionLO(int * bracketCountDifference, struct Node* arifNode)
 	return false;
 }
 
-bool ArithmeticExpressionMain(bool open1, struct Node* arifNode)
+bool ArithmeticExpressionMain(bool open, struct Node* arifNode)
 {
 	int temp = tempCurrentToken;
-	int bracketCountDifference = open1;
+	int bracketCountDifference = open;
 	if (ArithmeticExpression(&bracketCountDifference, arifNode))
 	{
 		if (bracketCountDifference == 0)
@@ -758,7 +756,7 @@ bool ArithmeticExpression(int * bracketCount, struct Node* arifNode)
 		(*bracketCount)++;
 	}
 	struct Node* valueNode=NewNode(tokens[currentToken]);
-	if (Value1(valueNode))
+	if (Value(valueNode))
 	{
 		if (Is(MathSign))
 		{
@@ -787,10 +785,10 @@ bool ArithmeticExpression(int * bracketCount, struct Node* arifNode)
 	return false;
 }
 
-bool Value1(struct Node* valueNode)
+bool Value(struct Node* valueNode)
 {
 	int temp = tempCurrentToken;
-	if (Is(Identificator) && Is(Dot) && Is(Identificator))
+	if (Is(Variable) && Is(Dot) && Is(Variable))
 	{
 		struct Node* temp = AddChild(tokens[tempCurrentToken - 3], valueNode);
 		struct Node* forNext = AddChild(tokens[tempCurrentToken - 2], temp);
@@ -798,7 +796,7 @@ bool Value1(struct Node* valueNode)
 		return true;
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator) && Is(OpenBraces) )
+	if (Is(Variable) && Is(OpenBraces) )
 	{
 		if (ArithmeticExpressionMain(false, valueNode) && Is(CloseBraces))
 		{
@@ -806,7 +804,7 @@ bool Value1(struct Node* valueNode)
 		}
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator) || Is(Number) || Is(Bool))
+	if (Is(Variable) || Is(Number) || Is(Bool))
 	{
 		AddChild(tokens[tempCurrentToken - 1], valueNode);
 		return true;
@@ -814,65 +812,25 @@ bool Value1(struct Node* valueNode)
 	return false;
 }
 
-bool Value()
+bool Identificator(struct Node* identificatorNode)
 {
 	int temp = tempCurrentToken;
-	if (Is(Identificator)&& Is(Dot)&& Is(Identificator))
-	{
-		return true;
-	}
-	tempCurrentToken = temp;
-	/*if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
-	{
-		return true;
-	}*/
-	tempCurrentToken = temp;
-	if (Is(Identificator) || Is(Number) || Is(Bool))
-	{
-		return true;
-	};
-	return false;
-}
-
-bool Identificator2(struct Node* identificatorNode)
-{
-	int temp = tempCurrentToken;
-	if (Is(Identificator) && Is(Dot) && Is(Identificator))
+	if (Is(Variable) && Is(Dot) && Is(Variable))
 	{
 		struct Node* temp = AddChild(tokens[tempCurrentToken - 3], identificatorNode);
-		struct Node * forNext = AddChild(tokens[tempCurrentToken - 2], temp);
+		struct Node* forNext = AddChild(tokens[tempCurrentToken - 2], temp);
 		AddNext(tokens[tempCurrentToken - 1], forNext);
 		return true;
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false, identificatorNode) && Is(CloseBraces))
+	if (Is(Variable) && Is(OpenBraces) && ArithmeticExpressionMain(false, identificatorNode) && Is(CloseBraces))
 	{
 		return true;
 	}
 	tempCurrentToken = temp;
-	if (Is(Identificator))
+	if (Is(Variable))
 	{
 		AddChild(tokens[tempCurrentToken - 1], identificatorNode);
-		return true;
-	}
-	return false;
-}
-
-bool Identificator1()
-{
-	int temp = tempCurrentToken;
-	if (Is(Identificator) && Is(Dot) && Is(Identificator))
-	{
-		return true;
-	}
-	tempCurrentToken = temp;
-	/*if (Is(Identificator) && Is(OpenBraces) && ArithmeticExpressionMain(false) && Is(CloseBraces))
-	{
-		return true;
-	}*/
-	tempCurrentToken = temp;
-	if (Is(Identificator))
-	{
 		return true;
 	}
 	return false;
@@ -886,14 +844,14 @@ bool Condition()
 	if (Is(If))
 	{
 		struct Node* ifNode = NewNode(tokens[currentToken]);
-		enum TerminalType lo = LogicalOperationTerm;
+		enum NonTerminalType lo = LogicalOperationTerm;
 		struct Node* loNode = AddChildTerminal(lo, ifNode);
-		if (LogicalOperationMain(loNode) && Is(DoubleDot) && Is(Delimiter))//всунуть сюда loNode
+		if (LogicalOperationMain(loNode) && Is(DoubleDot) && Is(Delimiter))
 		{
 			tabCount += 1;
 			needTabCount = tabCount;
 			
-			enum TerminalType body = BlockTerm;
+			enum NonTerminalType body = BlockTerm;
 
 			struct Node* returnCurrent = current;
 			AddChildNode(ifNode, current);
@@ -913,7 +871,7 @@ bool Condition()
 						tabCount += 1;
 						needTabCount = tabCount;
 						
-						enum TerminalType body = BlockTerm;
+						enum NonTerminalType body = BlockTerm;
 
 						returnCurrent = current;
 						AddChildNode(elseNode, current);
@@ -939,14 +897,14 @@ bool Condition()
 	}
 }
 
-bool While1()
+bool WhileLoop()
 {
 	if(Is(While))
 	{
 		struct Node* whileNode = NewNode(tokens[currentToken]);
-		enum TerminalType lo = LogicalOperationTerm;
+		enum NonTerminalType lo = LogicalOperationTerm;
 		struct Node* loNode = AddChildTerminal(lo, whileNode);
-		if(LogicalOperationMain(loNode))//всунть loNode
+		if(LogicalOperationMain(loNode))
 		{
 			if(Is(DoubleDot))
 			{
@@ -955,7 +913,7 @@ bool While1()
 					tabCount += 1;
 					needTabCount = tabCount;
 
-					enum TerminalType body = BlockTerm;
+					enum NonTerminalType body = BlockTerm;
 
 					struct Node* returnCurrent = current;
 					AddChildNode(whileNode, current);
@@ -974,17 +932,17 @@ bool While1()
 	}
 }
 
-bool For1()
+bool ForLoop()
 {
 	tempCurrentToken = currentToken;
 	if(Is(For))
 	{
 		struct Node* forNode = NewNode(tokens[currentToken]);
-		if(Identificator2(forNode))
+		if(Identificator(forNode))
 		{
 			if(Is(In))
 			{
-				if(Identificator2(forNode))
+				if(Identificator(forNode))
 				{
 					if(Is(DoubleDot))
 					{
@@ -993,7 +951,7 @@ bool For1()
 							tabCount += 1;
 							needTabCount = tabCount;
 							
-							enum TerminalType body = BlockTerm;
+							enum NonTerminalType body = BlockTerm;
 
 							struct Node* returnCurrent = current;
 							AddChildNode(forNode, current);

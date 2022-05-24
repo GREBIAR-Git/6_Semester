@@ -50,8 +50,8 @@ char* NameType(enum TokenType type)
         return "Input";
     case Output:
         return "Output";
-    case Identificator:
-        return "Identificator";
+    case Variable:
+        return "Variable";
     case Number:
         return "Number";
     case Return:
@@ -65,15 +65,12 @@ char* NameType(enum TokenType type)
     }
 }
 
-char* NameTerminalType(enum TerminalType type)
+char* NameNonTerminalType(enum NonTerminalType type)
 {
     switch (type)
     {
-    case NonTerminal:
+    case Terminal:
         return "nonterminal";
-    case Start:
-        return "Root";
-        break;
     case BlockTerm:
         return "Block";
         break;

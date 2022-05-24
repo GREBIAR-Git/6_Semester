@@ -4,12 +4,12 @@ struct Node* NewNode(struct Token data)
 {
 	struct Node* node = malloc(sizeof(struct Node));
 	node->data = data;
-	node->type = NonTerminal;
+	node->type = Terminal;
 	node->next = node->childs = NULL;
 	return node;
 }
 
-struct Node* NewNodeTerminal(enum TerminalType data)
+struct Node* NewNodeTerminal(enum NonTerminalType data)
 {
 	struct Node* node = malloc(sizeof(struct Node));
 	node->type = data;
@@ -23,7 +23,7 @@ struct Node * AddChild(struct Token data, struct Node* node)
 	{
 		node = malloc(sizeof(struct Node));
 		node->data = data;
-		node->type = NonTerminal;
+		node->type = Terminal;
 		node->next = node->childs = NULL;
 		return node;
 	}
@@ -33,7 +33,7 @@ struct Node * AddChild(struct Token data, struct Node* node)
 		{
 			node->childs = malloc(sizeof(struct Node));
 			node->childs->data = data;
-			node->childs->type = NonTerminal;
+			node->childs->type = Terminal;
 			node->childs->next = node->childs->childs = NULL;
 			node->childs->parent = node;
 			return node->childs;
@@ -47,7 +47,7 @@ struct Node * AddChild(struct Token data, struct Node* node)
 		{
 			(*temp)->next = malloc(sizeof(struct Node));
 			(*temp)->next->parent = node;
-			(*temp)->next->type = NonTerminal;
+			(*temp)->next->type = Terminal;
 			(*temp)->next->data = data;
 			(*temp)->next->next = (*temp)->next->childs = NULL;
 			return (*temp)->next;
@@ -55,7 +55,7 @@ struct Node * AddChild(struct Token data, struct Node* node)
 	}
 }
 
-struct Node* AddChildTerminal(enum TerminalType data, struct Node* node)
+struct Node* AddChildTerminal(enum NonTerminalType data, struct Node* node)
 {
 	if (node == NULL)
 	{
@@ -179,7 +179,7 @@ struct Node * AddNext(struct Token data, struct Node* node)
 	{
 		node = malloc(sizeof(struct Node));
 		node->data = data;
-		node->type = NonTerminal;
+		node->type = Terminal;
 		node->next = node->childs = NULL;
 		return node;
 	}
@@ -189,7 +189,7 @@ struct Node * AddNext(struct Token data, struct Node* node)
 		{
 			node->next = malloc(sizeof(struct Node));
 			node->next->data = data;
-			node->next->type = NonTerminal;
+			node->next->type = Terminal;
 			node->next->parent = node->parent;
 			node->next->next = node->next->childs = NULL;
 			return node->next;
@@ -204,14 +204,14 @@ struct Node * AddNext(struct Token data, struct Node* node)
 			(*temp)->next = malloc(sizeof(struct Node));
 			(*temp)->next->parent = node->parent;
 			(*temp)->next->data = data;
-			(*temp)->next->type = NonTerminal;
+			(*temp)->next->type = Terminal;
 			(*temp)->next->next = (*temp)->next->childs = NULL;
 			return (*temp)->next;
 		}
 	}
 }
 
-struct Node* AddNextTerminal(enum TerminalType data, struct Node* node)
+struct Node* AddNextTerminal(enum NonTerminalType data, struct Node* node)
 {
 	if (node == NULL)
 	{
@@ -252,9 +252,9 @@ void PrintTree(struct Node *root, int space)
 		return;
 	for (int i = 0; i < space; i++)
 		printf(" ");
-	if (root->type == NonTerminal)
+	if (root->type == Terminal)
 	{
-		if (root->childs == NULL || root->data.type == Identificator)
+		if (root->childs == NULL || root->data.type == Variable)
 		{
 			printf("%s - %s\n", NameType(root->data.type), ((*root).data.value));
 		}
@@ -265,7 +265,7 @@ void PrintTree(struct Node *root, int space)
 	}
 	else
 	{
-		printf("%s\n", NameTerminalType(root->type));
+		printf("%s\n", NameNonTerminalType(root->type));
 	}
 	PrintTree(root->childs, space + COUNT);
 	PrintTree(root->next, space);

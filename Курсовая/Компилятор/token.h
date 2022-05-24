@@ -26,17 +26,16 @@ enum TokenType
     Output, // print
     Def, // def
     Class, // class
-    Identificator,
+    Variable,
     Number,
     Return,
     END,
     Error,
 };
 
-enum TerminalType
+enum NonTerminalType
 {
-    NonTerminal,
-    Start,
+    Terminal,
     BlockTerm,
     Function,
     Params,
@@ -51,7 +50,7 @@ struct Token
     int line;
 };
 
-char* NameTerminalType(enum TerminalType type);
+char* NameNonTerminalType(enum NonTerminalType type);
 
 char* NameType(enum TokenType type);
 
