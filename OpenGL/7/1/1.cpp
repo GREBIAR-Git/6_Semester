@@ -1,6 +1,5 @@
 #include "1.h"
 #define STB_IMAGE_IMPLEMENTATION
-#define GL_CLAMP_TO_EDGE 0x812F
 #include <stb_image.h>
 const int winWidth = 1400;
 
@@ -26,7 +25,7 @@ void InitTexture()
 	int width1 = 1, height1 = 1, cnt;
 
 	unsigned char* image = stbi_load("bmp\\128.bmp", &width1, &height1, &cnt, 0);
-	glGenTextures(1, &texture[0]);
+	glGenTextures(8, texture);
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -38,7 +37,6 @@ void InitTexture()
 
 
 	image = stbi_load("cube\\1.bmp", &width1, &height1, &cnt, 0);
-	glGenTextures(1, &texture[1]);
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -49,7 +47,6 @@ void InitTexture()
 	stbi_image_free(image);
 
 	image = stbi_load("cube\\2.bmp", &width1, &height1, &cnt, 0);
-	glGenTextures(1, &texture[2]);
 	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -60,7 +57,6 @@ void InitTexture()
 	stbi_image_free(image);
 
 	image = stbi_load("cube\\3.bmp", &width1, &height1, &cnt, 0);
-	glGenTextures(1, &texture[3]);
 	glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -71,7 +67,6 @@ void InitTexture()
 	stbi_image_free(image);
 
 	image = stbi_load("cube\\4.bmp", &width1, &height1, &cnt, 0);
-	glGenTextures(1, &texture[4]);
 	glBindTexture(GL_TEXTURE_2D, texture[4]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -82,7 +77,6 @@ void InitTexture()
 	stbi_image_free(image);
 
 	image = stbi_load("cube\\5.bmp", &width1, &height1, &cnt, 0);
-	glGenTextures(1, &texture[5]);
 	glBindTexture(GL_TEXTURE_2D, texture[5]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -93,7 +87,6 @@ void InitTexture()
 	stbi_image_free(image);
 
 	image = stbi_load("cube\\6.bmp", &width1, &height1, &cnt, 0);
-	glGenTextures(1, &texture[6]);
 	glBindTexture(GL_TEXTURE_2D, texture[6]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -104,15 +97,13 @@ void InitTexture()
 	stbi_image_free(image);
 
 
-	glGenTextures(1, &texture[7]);
 	glBindTexture(GL_TEXTURE_2D, texture[7]);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);//GL_NEAREST
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
-	//GL_NEAREST_MIPMAP_NEAREST GL_LINEAR_MIPMAP_NEAREST GL_NEAREST_MIPMAP_LINEAR GL_LINEAR_MIPMAP_LINEAR
 	image = stbi_load("bmp\\1.bmp", &width1, &height1, &cnt, 0);
 	glTexImage2D(GL_TEXTURE_2D, 8, GL_RGB, width1, height1, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	image = stbi_load("bmp\\2.bmp", &width1, &height1, &cnt, 0);
@@ -325,13 +316,13 @@ void DrawSnowScene10()
 	glRotatef(alfa, 0, 0, 1);
 	glEnable(GL_TEXTURE_GEN_S);
 	glEnable(GL_TEXTURE_GEN_T);
-	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
+	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 	int x = 1;
 	GLdouble ss[4] = { x, x, 0, 0.25 * x*2 };
-	glTexGendv(GL_S, GL_EYE_PLANE, ss);
+	glTexGendv(GL_S, GL_OBJECT_PLANE, ss);
 	GLdouble ss1[4] = { -x, x, 0, 0.25 * x*2};
-	glTexGendv(GL_T, GL_EYE_PLANE, ss1);
+	glTexGendv(GL_T, GL_OBJECT_PLANE, ss1);
 	glBegin(GL_POLYGON);
 	glVertex3f(-0.25, -0.25, 0);
 	glVertex3f(-0.25, 0.25, 0);
@@ -351,10 +342,8 @@ void DrawSnowScene11()
 	glRotatef(rot, 1, 0, 0);
 	glEnable(GL_TEXTURE_GEN_S);
 	glEnable(GL_TEXTURE_GEN_T);
-	glEnable(GL_TEXTURE_GEN_R);
 	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-	glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
 
 	int x = 1;
 	GLdouble ss[4] = { 0, -x, x, 0.5 * x *2 };
@@ -363,7 +352,6 @@ void DrawSnowScene11()
 	glTexGendv(GL_T, GL_OBJECT_PLANE, ss1);
 
 	glBindTexture(GL_TEXTURE_2D, texture[1]);
-	// Ѕела€ сторона Ч «јƒЌяя
 	glBegin(GL_POLYGON);
 	glVertex3f(0.5, -0.5, 0.5);
 	glVertex3f(0.5, 0.5, 0.5);
@@ -371,8 +359,7 @@ void DrawSnowScene11()
 	glVertex3f(-0.5, -0.5, 0.5);
 	glEnd();
 
-	glBindTexture(GL_TEXTURE_2D, texture[2]);
-	// Ѕела€ сторона Ч «јƒЌяя
+	glBindTexture(GL_TEXTURE_2D, texture[6]);
 	glBegin(GL_POLYGON);
 	glVertex3f(0.5, -0.5, -0.5);
 	glVertex3f(0.5, 0.5, -0.5);
@@ -385,8 +372,7 @@ void DrawSnowScene11()
 	GLdouble ss5[4] = { 0, x, x, 0.5 * x * 2 };
 	glTexGendv(GL_T, GL_OBJECT_PLANE, ss5);
 
-	glBindTexture(GL_TEXTURE_2D, texture[5]);
-	// —ин€€ сторона Ч ¬≈–’Ќяя
+	glBindTexture(GL_TEXTURE_2D, texture[3]);
 	glBegin(GL_POLYGON);
 	glVertex3f(0.5, 0.5, 0.5);
 	glVertex3f(0.5, 0.5, -0.5);
@@ -394,8 +380,7 @@ void DrawSnowScene11()
 	glVertex3f(-0.5, 0.5, 0.5);
 	glEnd();
 
-	glBindTexture(GL_TEXTURE_2D, texture[6]);
-	//  расна€ сторона Ч Ќ»∆Ќяя
+	glBindTexture(GL_TEXTURE_2D, texture[4]);
 	glBegin(GL_POLYGON);
 	glVertex3f(0.5, -0.5, -0.5);
 	glVertex3f(0.5, -0.5, 0.5);
@@ -409,8 +394,7 @@ void DrawSnowScene11()
 	GLdouble ss3[4] = { 0, x, 0, 0.5 * x  };
 	glTexGendv(GL_T, GL_OBJECT_PLANE, ss3);
 
-	glBindTexture(GL_TEXTURE_2D, texture[3]);
-	// ‘иолетова€ сторона Ч ѕ–ј¬јя
+	glBindTexture(GL_TEXTURE_2D, texture[2]);
 	glBegin(GL_POLYGON);
 	glVertex3f(0.5, -0.5, -0.5);
 	glVertex3f(0.5, 0.5, -0.5);
@@ -418,8 +402,7 @@ void DrawSnowScene11()
 	glVertex3f(0.5, -0.5, 0.5);
 	glEnd();
 
-	glBindTexture(GL_TEXTURE_2D, texture[4]);
-	// «елена€ сторона Ч Ћ≈¬јя
+	glBindTexture(GL_TEXTURE_2D, texture[5]);
 	glBegin(GL_POLYGON);
 	glVertex3f(-0.5, -0.5, 0.5);
 	glVertex3f(-0.5, 0.5, 0.5);
@@ -432,7 +415,6 @@ void DrawSnowScene11()
 	glPopMatrix();
 	glDisable(GL_TEXTURE_GEN_T);
 	glDisable(GL_TEXTURE_GEN_S);
-	glDisable(GL_TEXTURE_GEN_R);
 }
 
 
@@ -518,19 +500,19 @@ void Specialkeys(int key, int x, int y)
 {
 	if (key == GLUT_KEY_UP) 
 	{
-		alfa -= 0.1; 
+		alfa -= 1; 
 	}
 	else if (key == GLUT_KEY_DOWN) 
 	{ 
-		alfa += 0.1;
+		alfa += 1;
 	}
 	else if (key == GLUT_KEY_LEFT)
 	{
-		rot += 0.1;
+		rot += 1;
 	}
 	else if (key == GLUT_KEY_RIGHT)
 	{
-		rot -= 0.1;
+		rot -= 1;
 	}
 	else if (key == GLUT_KEY_END)
 	{
