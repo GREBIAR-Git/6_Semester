@@ -37,7 +37,7 @@ enum TerminalType
 {
     NonTerminal,
     Start,
-    Body,
+    BlockTerm,
     Function,
     Params,
     LogicalOperationTerm,

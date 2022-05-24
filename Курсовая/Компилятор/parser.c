@@ -307,7 +307,7 @@ bool ClassDefinition()
 							needTabCount = tabCount;
 							sequence = ClassBlock;
 
-							enum TerminalType body = Body;
+							enum TerminalType body = BlockTerm;
 
 							struct Node * returnCurrent = current;
 							AddChildNode(funcNode, current);
@@ -354,7 +354,7 @@ bool FunctionDefinition()
 								prevBlock = sequence;
 								sequence = DefBlock;
 
-								enum TerminalType body = Body;
+								enum TerminalType body = BlockTerm;
 
 								struct Node* returnCurrent = current;
 								AddChildNode(funcNode, current);
@@ -386,13 +386,13 @@ bool ArrayFunctionDefinition(struct Node* arrayFunctionDefinition)
 		enum TerminalType ParamsTerm = Params;
 
 
-		struct Node* paramsNode = AddNextTerminal(ParamsTerm, arrayDefinition);
+		struct Node* paramsNode = AddChildTerminal(ParamsTerm, arrayDefinition);
 		if (Arguments(paramsNode))
 		{
 			if (Is(CloseBraces))
 			{
 				AddChildNode(arrayDefinition, arrayFunctionDefinition);
-				AddChild(tokens[tempCurrentToken - 1], arrayFunctionDefinition);
+				AddChild(tokens[tempCurrentToken - 1], arrayDefinition);
 				return true;
 			}
 		}
@@ -863,7 +863,7 @@ bool Condition()
 			tabCount += 1;
 			needTabCount = tabCount;
 			
-			enum TerminalType body = Body;
+			enum TerminalType body = BlockTerm;
 
 			struct Node* returnCurrent = current;
 			AddChildNode(ifNode, current);
@@ -883,7 +883,7 @@ bool Condition()
 						tabCount += 1;
 						needTabCount = tabCount;
 						
-						enum TerminalType body = Body;
+						enum TerminalType body = BlockTerm;
 
 						returnCurrent = current;
 						AddChildNode(elseNode, current);
@@ -925,7 +925,7 @@ bool While1()
 					tabCount += 1;
 					needTabCount = tabCount;
 
-					enum TerminalType body = Body;
+					enum TerminalType body = BlockTerm;
 
 					struct Node* returnCurrent = current;
 					AddChildNode(whileNode, current);
@@ -963,7 +963,7 @@ bool For1()
 							tabCount += 1;
 							needTabCount = tabCount;
 							
-							enum TerminalType body = Body;
+							enum TerminalType body = BlockTerm;
 
 							struct Node* returnCurrent = current;
 							AddChildNode(forNode, current);

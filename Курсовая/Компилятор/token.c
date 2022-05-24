@@ -74,8 +74,8 @@ char* NameTerminalType(enum TerminalType type)
     case Start:
         return "Root";
         break;
-    case Body:
-        return "Body";
+    case BlockTerm:
+        return "Block";
         break;
     case Function:
         return "Function";
