@@ -64,3 +64,29 @@ char* NameType(enum TokenType type)
         break;
     }
 }
+
+char* NameTerminalType(enum TerminalType type)
+{
+    switch (type)
+    {
+    case NonTerminal:
+        return "nonterminal";
+    case Start:
+        return "Root";
+        break;
+    case BlockTerm:
+        return "Block";
+        break;
+    case Function:
+        return "Function";
+        break;
+    case Params:
+        return "Params";
+        break;
+    case LogicalOperationTerm:
+        return "LogicalOperation";
+    default:
+        break;
+    }
+   
+}

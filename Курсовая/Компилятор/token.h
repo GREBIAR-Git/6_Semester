@@ -33,6 +33,16 @@ enum TokenType
     Error,
 };
 
+enum TerminalType
+{
+    NonTerminal,
+    Start,
+    BlockTerm,
+    Function,
+    Params,
+    LogicalOperationTerm,
+};
+
 struct Token
 {
     enum TokenType type;
@@ -40,6 +50,8 @@ struct Token
     int pos;
     int line;
 };
+
+char* NameTerminalType(enum TerminalType type);
 
 char* NameType(enum TokenType type);
 

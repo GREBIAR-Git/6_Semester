@@ -3,15 +3,20 @@
 
 #include <stdbool.h>
 #include "token.h"
+#include "tree.h"
 
-enum StateSequence
+enum StateBlock
 {
-	CommonSequence,
-	ClassSequence,
-	DefSequence,
+	CommonBlock,
+	ClassBlock,
+	DefBlock,
 };
 
-bool Sequence();
+bool Identificator2(struct Node* identificatorNode);
+
+bool Value1(struct Node* valueNode);
+
+bool Block();
 bool Statement();
 bool StatementDef();
 bool StatementClass();
@@ -31,12 +36,12 @@ bool FunctionDefinition();
 bool FunctionCall();
 
 bool LogicalOperationMain();
-bool LogicalOperation(int* bracketCountDifference);
-bool LogicalExpression(int* bracketCountDifference);
-bool ArithmeticExpressionLO(int* bracketCountDifference);
+bool LogicalOperation(int* bracketCountDifference, struct Node* arifNode);
+bool LogicalExpression(int* bracketCountDifference, struct Node* arifNode);
+bool ArithmeticExpressionLO(int* bracketCountDifference, struct Node* arifNode);
 
-bool ArithmeticExpressionMain(bool open1);
-bool ArithmeticExpression(int* bracketCount);
+bool ArithmeticExpressionMain(bool open1, struct Node* arifNode);
+bool ArithmeticExpression(int* bracketCount, struct Node* arifNode);
 
 bool ArgumentsFunctionDefinition();
 bool ArgumentFunctionDefinition();
