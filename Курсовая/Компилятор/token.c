@@ -4,8 +4,6 @@ char* NameType(enum TokenType type)
 {
     switch (type)
     {
-    case Start:
-        return "Start";
     case Delimiter:
         return "Delimiter";
     case Tab:
@@ -65,4 +63,30 @@ char* NameType(enum TokenType type)
     default:
         break;
     }
+}
+
+char* NameTerminalType(enum TerminalType type)
+{
+    switch (type)
+    {
+    case NonTerminal:
+        return "nonterminal";
+    case Start:
+        return "Root";
+        break;
+    case Body:
+        return "Body";
+        break;
+    case Function:
+        return "Function";
+        break;
+    case Params:
+        return "Params";
+        break;
+    case LogicalOperationTerm:
+        return "LogicalOperation";
+    default:
+        break;
+    }
+   
 }

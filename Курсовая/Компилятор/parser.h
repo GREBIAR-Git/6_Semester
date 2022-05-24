@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include "token.h"
+#include "tree.h"
 
 enum StateBlock
 {
@@ -10,6 +11,10 @@ enum StateBlock
 	ClassBlock,
 	DefBlock,
 };
+
+bool Identificator2(struct Node* identificatorNode);
+
+bool Value1(struct Node* valueNode);
 
 bool Block();
 bool Statement();

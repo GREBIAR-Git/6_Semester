@@ -3,7 +3,6 @@
 #include <stdio.h>
 enum TokenType
 {
-    Start,
     Delimiter,// \n
     Tab,// \t
     Comma,// ,
@@ -34,6 +33,16 @@ enum TokenType
     Error,
 };
 
+enum TerminalType
+{
+    NonTerminal,
+    Start,
+    Body,
+    Function,
+    Params,
+    LogicalOperationTerm,
+};
+
 struct Token
 {
     enum TokenType type;
@@ -41,6 +50,8 @@ struct Token
     int pos;
     int line;
 };
+
+char* NameTerminalType(enum TerminalType type);
 
 char* NameType(enum TokenType type);
 
