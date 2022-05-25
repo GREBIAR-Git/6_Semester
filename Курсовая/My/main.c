@@ -8,34 +8,34 @@
 // token.h
 enum TokenType
 {
-    Delimiter,// \n
-    Tab,// \t
-    Comma,// ,
-    Dot,// .
-    DoubleDot,// :
-    Bool, // true false
-    OpenBraces,//[
-    CloseBraces,//]
-    OpenBracket,//(
-    CloseBracket,//)
-    Comparison,//< > == != >= <=
-    Logical,// and or not
-    Assignment,// = += -= *= /= %=
-    MathSign,// + - * / %
-    If, // if
-    Else, // else 
-    For, // for
-    In, // in
-    While, // while
-    Input, // input
-    Output, // print
-    Def, // def
-    Class, // class
-    Variable,
-    Number,
-    Return,
-    END,
-    Error,
+    Delimiter = 258,// \n
+    Tab = 259,// \t
+    Comma = 260,// ,
+    Dot = 261,// .
+    DoubleDot = 262,// :
+    Bool = 263, // true false
+    OpenBraces = 264,//[
+    CloseBraces = 265,//]
+    OpenBracket = 266,//(
+    CloseBracket = 267,//)
+    Comparison = 268,//< > == != >= <=
+    Logical = 269,// and or not
+    Assignment = 270,// = += -= *= /= %=
+    MathSign = 271,// + - * / %
+    If = 272, // if
+    Else = 273, // else 
+    For = 274, // for
+    In = 275, // in
+    While = 276, // while
+    Input = 277, // input
+    Output = 278, // print
+    Def = 279, // def
+    Class = 280, // class
+    Variable = 281,
+    Number = 282,
+    Return = 283,
+    END = 284,
+    Error = 285,
 };
 
 enum NonTerminalType
@@ -686,7 +686,6 @@ int tokenize()
 int ind = -1;
 int yylex()
 {
-    printf("1kek\n");
     if (ind == -1)
     {
         tokenize();
