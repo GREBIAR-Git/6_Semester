@@ -680,9 +680,6 @@ int tokenize()
     
     free(fileContent);
 
-    //Parser(tokens, tokenQuantity);
-
-    system("PAUSE");
     return 0;
 }
 
