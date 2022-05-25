@@ -689,10 +689,12 @@ int tokenize()
 int ind = -1;
 int yylex()
 {
+    printf("1kek\n");
     if (ind == -1)
     {
         tokenize();
     }
     ind++;
+    printf("%s - %s\n", NameType(tokens[ind].type), tokens[ind].value);
     return tokens[ind].type;
 }

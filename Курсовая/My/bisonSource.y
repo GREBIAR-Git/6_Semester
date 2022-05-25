@@ -7,7 +7,7 @@ int yylex(void);
 
 int yywrap()
 {
-        return 1;
+    return 1;
 }
 
 void yyerror(const char *str)
@@ -26,102 +26,102 @@ main()
 
 %%
     Value:
-        Variable Dot Variable | Variable OpenBraces Arithmetic CloseBraces | Variable | Number | Bool
+        Variable Dot Variable | Variable OpenBraces Arithmetic CloseBraces | Variable | Number | Bool;
 
     Identificator:
-        Variable Dot Variable | Variable OpenBraces Arithmetic CloseBraces | Variable
+        Variable Dot Variable | Variable OpenBraces Arithmetic CloseBraces | Variable;
 
     ReturnStatement:
-        Return Delimiter | Return Value Delimiter
+        Return Delimiter | Return Value Delimiter;
 
     AssignmentStatement:
-        Identificator Assignment Arithmetic Delimiter | Identificator Assignment Read Delimiter | Identificator Assignment FunctionCall Delimiter | Identificator Assignment ArrayDeclaration Delimiter
+        Identificator Assignment Arithmetic Delimiter | Identificator Assignment Read Delimiter | Identificator Assignment FunctionCall Delimiter | Identificator Assignment ArrayDeclaration Delimiter;
 
     ArrayDeclaration: // "[" Arguments "]""
-        OpenBraces Arguments CloseBraces
+        OpenBraces Arguments CloseBraces;
 
     ClassDeclaration:
-        Class Variable OpenBracket CloseBracket DoubleDot Delimiter Block
+        Class Variable OpenBracket CloseBracket DoubleDot Delimiter Block;
 
     Function:
-        Def Variable OpenBracket FunctionArguments CloseBracket DoubleDot Delimiter Block
+        Def Variable OpenBracket FunctionArguments CloseBracket DoubleDot Delimiter Block;
 
     FunctionArguments: // Variable [Comma FunctionArgument] | empty
-        Variable FuncArgsZeroOrMore | /* empty */
+        Variable FuncArgsZeroOrMore | /* empty */;
 
     FuncArgsZeroOrMore: // [Comma FunctionArgument]
-        /* empty */ | FuncArgsZeroOrMore Comma FunctionArgument
+        /* empty */ | FuncArgsZeroOrMore Comma FunctionArgument;
 
     FunctionArgument: // Variable [Comma FunctionArgument]
-        Variable FuncArgsZeroOrMore
+        Variable FuncArgsZeroOrMore;
 
     FunctionCall:
-        Variable OpenBracket Arguments CloseBracket Delimiter
+        Variable OpenBracket Arguments CloseBracket Delimiter;
 
     Arguments: // Identificator ["," Argument] | empty
-        Identificator ArgsZeroOrMore | /* empty */
+        Identificator ArgsZeroOrMore | /* empty */;
 
     ArgsZeroOrMore: // ["," Argument]
-        /* empty */ | ArgsZeroOrMore Comma Argument
+        /* empty */ | ArgsZeroOrMore Comma Argument;
 
     Argument: // Identificator ["," Argument]
-        Identificator ArgsZeroOrMore
+        Identificator ArgsZeroOrMore;
 
     IfStatement:
-        If Logic DoubleDot Delimiter Block IfZeroOrMore
+        If Logic DoubleDot Delimiter Block IfZeroOrMore;
 
     IfZeroOrMore: // [Else DoubleDot Delimiter Block]
-        /* empty */ | Else DoubleDot Delimiter Block
+        /* empty */ | Else DoubleDot Delimiter Block;
 
     WhileStatement:
-        While Logic DoubleDot Delimiter Block
+        While Logic DoubleDot Delimiter Block;
 
     ForStatement:
-        For Value In Value DoubleDot Delimiter Block
+        For Value In Value DoubleDot Delimiter Block;
 
     Logic:
-        OpenBracketZeroOrMore LogicExpression LogicZeroOrMore CloseBracketZeroOrMore
+        OpenBracketZeroOrMore LogicExpression LogicZeroOrMore CloseBracketZeroOrMore;
 
     LogicZeroOrMore: // [Logical Logic]
-        /* empty */ | LogicZeroOrMore Logical Logic
+        /* empty */ | LogicZeroOrMore Logical Logic;
 
     LogicExpression:
-        OpenBracketZeroOrMore Arithmetic LogicExprZeroOrMore CloseBracketZeroOrMore
+        OpenBracketZeroOrMore Arithmetic LogicExprZeroOrMore CloseBracketZeroOrMore;
 
     LogicExprZeroOrMore: // [Logical LogicExpression]
-        /* empty */ | LogicExprZeroOrMore Logical LogicExpression
+        /* empty */ | LogicExprZeroOrMore Comparison LogicExpression;
 
     OpenBracketZeroOrMore:
-        /* empty */ | OpenBracketZeroOrMore OpenBracket
+        /* empty */ | OpenBracketZeroOrMore OpenBracket;
 
     CloseBracketZeroOrMore:
-        /* empty */ | CloseBracketZeroOrMore CloseBracket
+        /* empty */ | CloseBracketZeroOrMore CloseBracket;
 
     Arithmetic: // ["("] Value [MathSign Arithmetic] [")"]
-        OpenBracketZeroOrMore Value ArithmeticZeroOrMore CloseBracketZeroOrMore
+        OpenBracketZeroOrMore Value ArithmeticZeroOrMore CloseBracketZeroOrMore;
 
     ArithmeticZeroOrMore: // [MathSign Arithmetic]
-        /* empty */ | ArithmeticZeroOrMore MathSign Arithmetic
+        /* empty */ | ArithmeticZeroOrMore MathSign Arithmetic;
 
     InputStatement:
-        Input OpenBracket CloseBracket Delimiter
+        Input OpenBracket CloseBracket Delimiter;
 
     OutputStatement:
-        Output OpenBracket Arithmetic CloseBracket Delimiter
+        Output OpenBracket Arithmetic CloseBracket Delimiter;
 
     Statement:
-        IfStatement | WhileStatement | ForStatement | AssignmentStatement | InputStatement | OutputStatement | ClassDeclaration | Function | FunctionCall | Delimiter
+        IfStatement | WhileStatement | ForStatement | AssignmentStatement | InputStatement | OutputStatement | ClassDeclaration | Function | FunctionCall | Delimiter;
 
     ClassStatement:
-        AssignmentStatement | Function | Delimiter
+        AssignmentStatement | Function | Delimiter;
 
     FunctionStatement:
-        Statement | ReturnStatement
+        Statement | ReturnStatement;
 
     Block:
-        TabZeroOrMore Statement Block | TabZeroOrMore ClassStatement Block | TabZeroOrMore FunctionStatement Block | /* empty */
+        TabZeroOrMore Statement Block | TabZeroOrMore ClassStatement Block | TabZeroOrMore FunctionStatement Block | /* empty */;
 
     TabZeroOrMore:
-        /* empty */ | TabZeroOrMore Tab
+        /* empty */ | TabZeroOrMore Tab;
 
 %%
