@@ -29,7 +29,7 @@ main()
 
 %%
     Program:
-        TabZeroOrMore Statement Block | TabZeroOrMore ClassStatement Block | TabZeroOrMore FunctionStatement Block | /* empty */;
+        Statement Block | ClassStatement Block | FunctionStatement Block | /* empty */;
 
     Value:
         VariableY DotY VariableY | VariableY OpenBracesY Arithmetic CloseBracesY | VariableY | NumberY | BoolY;
@@ -125,9 +125,12 @@ main()
         Statement | ReturnStatement;
 
     Block:
-        TabZeroOrMore Statement Block | TabZeroOrMore ClassStatement Block | TabZeroOrMore FunctionStatement Block | /* empty */;
+        TabOneOrMore Statement Block | TabOneOrMore ClassStatement Block | TabOneOrMore FunctionStatement Block | /* empty */;
 
     TabZeroOrMore:
         /* empty */ | TabZeroOrMore TabY;
+
+    TabOneOrMore:
+        TabY | TabZeroOrMore TabY;
 
 %%
