@@ -27,7 +27,7 @@ void InitFirstTree()
 	current = &root;
 }
 
-void ErrorRecovery()//надо вставить
+void ErrorRecovery()//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
 	while (currentToken < tokenLength)
 	{
@@ -384,7 +384,6 @@ bool ArrayDefinition(struct Node* ArrayDefinition)
 		struct Node* arrayDefinition = NewNode(tokens[tempCurrentToken - 1]);
 
 		enum NonTerminalType ParamsTerm = Params;
-
 
 		struct Node* paramsNode = AddChildTerminal(ParamsTerm, arrayDefinition);
 		if (Arguments(paramsNode))
