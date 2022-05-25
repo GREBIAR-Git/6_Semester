@@ -1,10 +1,10 @@
-_ = f
-_f = d
+_ = 2
+_f = 4
 class f():
 	width = 1;
 	h = 2;
-	def tf(dsf,d,f,f):
-		kdfff = 4+f.h+ff+printf
+	def tf(dsf,d,f,printf):
+		dsf = 4+d.h+f+printf
 		return 1
 	c = input();
 d = [2,f]
