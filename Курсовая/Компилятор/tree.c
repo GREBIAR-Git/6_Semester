@@ -251,10 +251,21 @@ void PrintTree(struct Node *root, int space)
 	if (root == NULL)
 		return;
 	for (int i = 0; i < space; i++)
-		printf(" ");
+		if(i==space-4)
+		{
+			printf("|");
+		}
+		else if (i>space-4)
+		{
+			printf("-");
+		}
+		else
+		{
+			printf(" ");
+		}
 	if (root->type == Terminal)
 	{
-		if (root->childs == NULL || root->data.type == Variable)
+		if (root->childs == NULL || root->data.type == Variable || root->data.type == MathSign || root->data.type == Comparison || root->data.type == Logical)
 		{
 			printf("%s - %s\n", NameType(root->data.type), ((*root).data.value));
 		}

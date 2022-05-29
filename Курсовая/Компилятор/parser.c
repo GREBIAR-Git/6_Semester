@@ -27,21 +27,29 @@ void InitFirstTree()
 	current = &root;
 }
 
-void ErrorRecovery()//���� ��������
+bool ErrorRecovery()
 {
-	while (currentToken < tokenLength)
+	if(tokens[currentToken].type != END)
 	{
-		if (tokens[currentToken].type != Delimiter)
+		printf("\nSyntax error on the line: %d\n",tokens[currentToken].line+1);
+		while (currentToken < tokenLength)
 		{
-			currentToken++;
-		}
-		else
-		{
-			currentToken++;
-			break;
+			if (tokens[currentToken].type == END)
+			{
+				return false;
+			}
+			else if (tokens[currentToken].type != Delimiter)
+			{
+				currentToken++;
+			}
+			else
+			{
+				tempCurrentToken=currentToken;
+				return true;
+			}
 		}
 	}
-
+	return false;
 }
 
 void Parser(struct Token * token, int tokenQuantity)
@@ -54,11 +62,12 @@ void Parser(struct Token * token, int tokenQuantity)
 	printf("\nSTART_PARSER\n");
 	if (Block())
 	{
+
 		printf("\nSuccessfully (A good program without errors well done)\n");
 	}
 	else
 	{
-		printf("\nSyntax error on the line: %d\n",tokens[currentToken].line+1);
+		printf("\nVery bad needs to be redone\n");
 	}
 	Print2D(&root);
 	printf("\nEND_PARSER\n");
@@ -102,6 +111,8 @@ bool Block()
 				{
 					printf("\nError - incorrect number of tabs(small number of tabs)\n");
 				}
+				ErrorRecovery();
+				Block();
 				return false;
 			}
 			needTabCount = 0;
@@ -146,10 +157,15 @@ bool Block()
 				return true;
 			}
 		}
+		ErrorRecovery();
+		Block();
 		return false;
 
 	}
-	printf("\nerror Block\n");
+	if(ErrorRecovery())
+	{
+		Block();
+	}
 	return false;
 }
 
