@@ -1,0 +1,1663 @@
+Terminals unused in grammar
+
+   ErrorY
+
+
+State 5 conflicts: 3 shift/reduce
+State 7 conflicts: 3 shift/reduce
+State 32 conflicts: 4 shift/reduce
+State 45 conflicts: 3 shift/reduce
+State 95 conflicts: 2 shift/reduce
+State 96 conflicts: 2 shift/reduce
+State 100 conflicts: 1 shift/reduce
+State 101 conflicts: 1 shift/reduce
+State 106 conflicts: 1 shift/reduce
+State 115 conflicts: 1 shift/reduce
+State 116 conflicts: 1 shift/reduce
+State 125 conflicts: 1 shift/reduce
+State 127 conflicts: 1 shift/reduce
+State 129 conflicts: 1 shift/reduce
+State 130 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: Statements ENDY
+
+    2 Statements: /* empty */
+    3           | Statements Statement
+
+    4 Statement: IfStatement
+    5          | WhileStatement
+    6          | ForStatement
+    7          | AssignmentStatement
+    8          | InputStatement
+    9          | OutputStatement
+   10          | ClassDeclaration
+   11          | Function
+   12          | FunctionCall
+   13          | ReturnStatement
+   14          | DelimiterY
+
+   15 Block: /* empty */
+   16      | Block TabOneOrMore Statement
+
+   17 IfStatement: IfY Logic DoubleDotY DelimiterY Block Else
+   18            | IfY Value DoubleDotY DelimiterY Block Else
+
+   19 Else: /* empty */
+   20     | ElseY DoubleDotY DelimiterY Block
+
+   21 WhileStatement: WhileY Logic DoubleDotY DelimiterY Block
+   22               | WhileY Value DoubleDotY DelimiterY Block
+
+   23 ForStatement: ForY Value InY Value DoubleDotY DelimiterY Block
+
+   24 Value: Identificator
+   25      | NumberY
+   26      | BoolY
+
+   27 Identificator: VariableY DotY VariableY
+   28              | VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | VariableY
+
+   30 ReturnStatement: ReturnY DelimiterY
+   31                | ReturnY Value DelimiterY
+
+   32 AssignmentStatement: Identificator AssignmentY Value DelimiterY
+   33                    | Identificator AssignmentY Logic DelimiterY
+   34                    | Identificator AssignmentY Arithmetic DelimiterY
+   35                    | Identificator AssignmentY InputStatement DelimiterY
+   36                    | Identificator AssignmentY FunctionCall DelimiterY
+   37                    | Identificator AssignmentY ArrayDeclaration DelimiterY
+
+   38 ArrayDeclaration: OpenBracesY Arguments CloseBracesY
+
+   39 ClassDeclaration: ClassY VariableY OpenBracketY CloseBracketY DoubleDotY DelimiterY Block
+
+   40 Function: DefY Identificator OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY Block
+
+   41 FunctionCall: Identificator OpenBracketY Arguments CloseBracketY DelimiterY
+
+   42 Arguments: /* empty */
+   43          | Value CommaValue
+
+   44 CommaValue: /* empty */
+   45           | CommaValue CommaY Value
+
+   46 Logic: OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore
+   47      | OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore
+
+   48 OpenBracketZeroOrMore: /* empty */
+   49                      | OpenBracketZeroOrMore OpenBracketY
+
+   50 CloseBracketZeroOrMore: /* empty */
+   51                       | CloseBracketZeroOrMore CloseBracketY
+
+   52 Arithmetic: Value MathSignY Value
+   53           | Arithmetic MathSignY Arithmetic
+
+   54 InputStatement: InputY OpenBracketY CloseBracketY DelimiterY
+
+   55 OutputStatement: OutputY OpenBracketY Value CloseBracketY DelimiterY
+
+   56 TabOneOrMore: TabY
+   57             | TabOneOrMore TabY
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+DelimiterY (258) 14 17 18 20 21 22 23 30 31 32 33 34 35 36 37 39 40
+    41 54 55
+TabY (259) 56 57
+CommaY (260) 45
+DotY (261) 27
+DoubleDotY (262) 17 18 20 21 22 23 39 40
+BoolY (263) 26
+OpenBracesY (264) 28 38
+CloseBracesY (265) 28 38
+OpenBracketY (266) 39 40 41 49 54 55
+CloseBracketY (267) 39 40 41 51 54 55
+ComparisonY (268) 46
+LogicalY (269) 47
+AssignmentY (270) 32 33 34 35 36 37
+MathSignY (271) 52 53
+IfY (272) 17 18
+ElseY (273) 20
+ForY (274) 23
+InY (275) 23
+WhileY (276) 21 22
+InputY (277) 54
+OutputY (278) 55
+DefY (279) 40
+ClassY (280) 39
+VariableY (281) 27 28 29 39
+NumberY (282) 25
+ReturnY (283) 30 31
+ENDY (284) 1
+ErrorY (285)
+
+
+Nonterminals, with rules where they appear
+
+$accept (31)
+    on left: 0
+Program (32)
+    on left: 1, on right: 0
+Statements (33)
+    on left: 2 3, on right: 1 3
+Statement (34)
+    on left: 4 5 6 7 8 9 10 11 12 13 14, on right: 3 16
+Block (35)
+    on left: 15 16, on right: 16 17 18 20 21 22 23 39 40
+IfStatement (36)
+    on left: 17 18, on right: 4
+Else (37)
+    on left: 19 20, on right: 17 18
+WhileStatement (38)
+    on left: 21 22, on right: 5
+ForStatement (39)
+    on left: 23, on right: 6
+Value (40)
+    on left: 24 25 26, on right: 18 22 23 31 32 43 45 46 52 55
+Identificator (41)
+    on left: 27 28 29, on right: 24 32 33 34 35 36 37 40 41
+ReturnStatement (42)
+    on left: 30 31, on right: 13
+AssignmentStatement (43)
+    on left: 32 33 34 35 36 37, on right: 7
+ArrayDeclaration (44)
+    on left: 38, on right: 37
+ClassDeclaration (45)
+    on left: 39, on right: 10
+Function (46)
+    on left: 40, on right: 11
+FunctionCall (47)
+    on left: 41, on right: 12 36
+Arguments (48)
+    on left: 42 43, on right: 38 40 41
+CommaValue (49)
+    on left: 44 45, on right: 43 45
+Logic (50)
+    on left: 46 47, on right: 17 21 33 47
+OpenBracketZeroOrMore (51)
+    on left: 48 49, on right: 46 47 49
+CloseBracketZeroOrMore (52)
+    on left: 50 51, on right: 46 47 51
+Arithmetic (53)
+    on left: 52 53, on right: 28 34 53
+InputStatement (54)
+    on left: 54, on right: 8 35
+OutputStatement (55)
+    on left: 55, on right: 9
+TabOneOrMore (56)
+    on left: 56 57, on right: 16 57
+
+
+state 0
+
+    0 $accept: . Program $end
+    1 Program: . Statements ENDY
+    2 Statements: .
+    3           | . Statements Statement
+
+    $default  reduce using rule 2 (Statements)
+
+    Program     go to state 1
+    Statements  go to state 2
+
+
+state 1
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 3
+
+
+state 2
+
+    1 Program: Statements . ENDY
+    3 Statements: Statements . Statement
+    4 Statement: . IfStatement
+    5          | . WhileStatement
+    6          | . ForStatement
+    7          | . AssignmentStatement
+    8          | . InputStatement
+    9          | . OutputStatement
+   10          | . ClassDeclaration
+   11          | . Function
+   12          | . FunctionCall
+   13          | . ReturnStatement
+   14          | . DelimiterY
+   17 IfStatement: . IfY Logic DoubleDotY DelimiterY Block Else
+   18            | . IfY Value DoubleDotY DelimiterY Block Else
+   21 WhileStatement: . WhileY Logic DoubleDotY DelimiterY Block
+   22               | . WhileY Value DoubleDotY DelimiterY Block
+   23 ForStatement: . ForY Value InY Value DoubleDotY DelimiterY Block
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   30 ReturnStatement: . ReturnY DelimiterY
+   31                | . ReturnY Value DelimiterY
+   32 AssignmentStatement: . Identificator AssignmentY Value DelimiterY
+   33                    | . Identificator AssignmentY Logic DelimiterY
+   34                    | . Identificator AssignmentY Arithmetic DelimiterY
+   35                    | . Identificator AssignmentY InputStatement DelimiterY
+   36                    | . Identificator AssignmentY FunctionCall DelimiterY
+   37                    | . Identificator AssignmentY ArrayDeclaration DelimiterY
+   39 ClassDeclaration: . ClassY VariableY OpenBracketY CloseBracketY DoubleDotY DelimiterY Block
+   40 Function: . DefY Identificator OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY Block
+   41 FunctionCall: . Identificator OpenBracketY Arguments CloseBracketY DelimiterY
+   54 InputStatement: . InputY OpenBracketY CloseBracketY DelimiterY
+   55 OutputStatement: . OutputY OpenBracketY Value CloseBracketY DelimiterY
+
+    DelimiterY  shift, and go to state 4
+    IfY         shift, and go to state 5
+    ForY        shift, and go to state 6
+    WhileY      shift, and go to state 7
+    InputY      shift, and go to state 8
+    OutputY     shift, and go to state 9
+    DefY        shift, and go to state 10
+    ClassY      shift, and go to state 11
+    VariableY   shift, and go to state 12
+    ReturnY     shift, and go to state 13
+    ENDY        shift, and go to state 14
+
+    Statement            go to state 15
+    IfStatement          go to state 16
+    WhileStatement       go to state 17
+    ForStatement         go to state 18
+    Identificator        go to state 19
+    ReturnStatement      go to state 20
+    AssignmentStatement  go to state 21
+    ClassDeclaration     go to state 22
+    Function             go to state 23
+    FunctionCall         go to state 24
+    InputStatement       go to state 25
+    OutputStatement      go to state 26
+
+
+state 3
+
+    0 $accept: Program $end .
+
+    $default  accept
+
+
+state 4
+
+   14 Statement: DelimiterY .
+
+    $default  reduce using rule 14 (Statement)
+
+
+state 5
+
+   17 IfStatement: IfY . Logic DoubleDotY DelimiterY Block Else
+   18            | IfY . Value DoubleDotY DelimiterY Block Else
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   46 Logic: . OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore
+   47      | . OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore
+   48 OpenBracketZeroOrMore: .  [BoolY, OpenBracketY, VariableY, NumberY]
+   49                      | . OpenBracketZeroOrMore OpenBracketY
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    BoolY      [reduce using rule 48 (OpenBracketZeroOrMore)]
+    VariableY  [reduce using rule 48 (OpenBracketZeroOrMore)]
+    NumberY    [reduce using rule 48 (OpenBracketZeroOrMore)]
+    $default   reduce using rule 48 (OpenBracketZeroOrMore)
+
+    Value                  go to state 29
+    Identificator          go to state 30
+    Logic                  go to state 31
+    OpenBracketZeroOrMore  go to state 32
+
+
+state 6
+
+   23 ForStatement: ForY . Value InY Value DoubleDotY DelimiterY Block
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 33
+    Identificator  go to state 30
+
+
+state 7
+
+   21 WhileStatement: WhileY . Logic DoubleDotY DelimiterY Block
+   22               | WhileY . Value DoubleDotY DelimiterY Block
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   46 Logic: . OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore
+   47      | . OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore
+   48 OpenBracketZeroOrMore: .  [BoolY, OpenBracketY, VariableY, NumberY]
+   49                      | . OpenBracketZeroOrMore OpenBracketY
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    BoolY      [reduce using rule 48 (OpenBracketZeroOrMore)]
+    VariableY  [reduce using rule 48 (OpenBracketZeroOrMore)]
+    NumberY    [reduce using rule 48 (OpenBracketZeroOrMore)]
+    $default   reduce using rule 48 (OpenBracketZeroOrMore)
+
+    Value                  go to state 34
+    Identificator          go to state 30
+    Logic                  go to state 35
+    OpenBracketZeroOrMore  go to state 32
+
+
+state 8
+
+   54 InputStatement: InputY . OpenBracketY CloseBracketY DelimiterY
+
+    OpenBracketY  shift, and go to state 36
+
+
+state 9
+
+   55 OutputStatement: OutputY . OpenBracketY Value CloseBracketY DelimiterY
+
+    OpenBracketY  shift, and go to state 37
+
+
+state 10
+
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   40 Function: DefY . Identificator OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY Block
+
+    VariableY  shift, and go to state 12
+
+    Identificator  go to state 38
+
+
+state 11
+
+   39 ClassDeclaration: ClassY . VariableY OpenBracketY CloseBracketY DoubleDotY DelimiterY Block
+
+    VariableY  shift, and go to state 39
+
+
+state 12
+
+   27 Identificator: VariableY . DotY VariableY
+   28              | VariableY . OpenBracesY Arithmetic CloseBracesY
+   29              | VariableY .  [DelimiterY, CommaY, DoubleDotY, CloseBracesY, OpenBracketY, CloseBracketY, ComparisonY, LogicalY, AssignmentY, MathSignY, InY]
+
+    DotY         shift, and go to state 40
+    OpenBracesY  shift, and go to state 41
+
+    $default  reduce using rule 29 (Identificator)
+
+
+state 13
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   30 ReturnStatement: ReturnY . DelimiterY
+   31                | ReturnY . Value DelimiterY
+
+    DelimiterY  shift, and go to state 42
+    BoolY       shift, and go to state 27
+    VariableY   shift, and go to state 12
+    NumberY     shift, and go to state 28
+
+    Value          go to state 43
+    Identificator  go to state 30
+
+
+state 14
+
+    1 Program: Statements ENDY .
+
+    $default  reduce using rule 1 (Program)
+
+
+state 15
+
+    3 Statements: Statements Statement .
+
+    $default  reduce using rule 3 (Statements)
+
+
+state 16
+
+    4 Statement: IfStatement .
+
+    $default  reduce using rule 4 (Statement)
+
+
+state 17
+
+    5 Statement: WhileStatement .
+
+    $default  reduce using rule 5 (Statement)
+
+
+state 18
+
+    6 Statement: ForStatement .
+
+    $default  reduce using rule 6 (Statement)
+
+
+state 19
+
+   32 AssignmentStatement: Identificator . AssignmentY Value DelimiterY
+   33                    | Identificator . AssignmentY Logic DelimiterY
+   34                    | Identificator . AssignmentY Arithmetic DelimiterY
+   35                    | Identificator . AssignmentY InputStatement DelimiterY
+   36                    | Identificator . AssignmentY FunctionCall DelimiterY
+   37                    | Identificator . AssignmentY ArrayDeclaration DelimiterY
+   41 FunctionCall: Identificator . OpenBracketY Arguments CloseBracketY DelimiterY
+
+    OpenBracketY  shift, and go to state 44
+    AssignmentY   shift, and go to state 45
+
+
+state 20
+
+   13 Statement: ReturnStatement .
+
+    $default  reduce using rule 13 (Statement)
+
+
+state 21
+
+    7 Statement: AssignmentStatement .
+
+    $default  reduce using rule 7 (Statement)
+
+
+state 22
+
+   10 Statement: ClassDeclaration .
+
+    $default  reduce using rule 10 (Statement)
+
+
+state 23
+
+   11 Statement: Function .
+
+    $default  reduce using rule 11 (Statement)
+
+
+state 24
+
+   12 Statement: FunctionCall .
+
+    $default  reduce using rule 12 (Statement)
+
+
+state 25
+
+    8 Statement: InputStatement .
+
+    $default  reduce using rule 8 (Statement)
+
+
+state 26
+
+    9 Statement: OutputStatement .
+
+    $default  reduce using rule 9 (Statement)
+
+
+state 27
+
+   26 Value: BoolY .
+
+    $default  reduce using rule 26 (Value)
+
+
+state 28
+
+   25 Value: NumberY .
+
+    $default  reduce using rule 25 (Value)
+
+
+state 29
+
+   18 IfStatement: IfY Value . DoubleDotY DelimiterY Block Else
+
+    DoubleDotY  shift, and go to state 46
+
+
+state 30
+
+   24 Value: Identificator .
+
+    $default  reduce using rule 24 (Value)
+
+
+state 31
+
+   17 IfStatement: IfY Logic . DoubleDotY DelimiterY Block Else
+
+    DoubleDotY  shift, and go to state 47
+
+
+state 32
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   46 Logic: . OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore
+   46      | OpenBracketZeroOrMore . Value ComparisonY Value CloseBracketZeroOrMore
+   47      | . OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore
+   47      | OpenBracketZeroOrMore . Logic LogicalY Logic CloseBracketZeroOrMore
+   48 OpenBracketZeroOrMore: .  [BoolY, OpenBracketY, VariableY, NumberY]
+   49                      | . OpenBracketZeroOrMore OpenBracketY
+   49                      | OpenBracketZeroOrMore . OpenBracketY
+
+    BoolY         shift, and go to state 27
+    OpenBracketY  shift, and go to state 48
+    VariableY     shift, and go to state 12
+    NumberY       shift, and go to state 28
+
+    BoolY         [reduce using rule 48 (OpenBracketZeroOrMore)]
+    OpenBracketY  [reduce using rule 48 (OpenBracketZeroOrMore)]
+    VariableY     [reduce using rule 48 (OpenBracketZeroOrMore)]
+    NumberY       [reduce using rule 48 (OpenBracketZeroOrMore)]
+
+    Value                  go to state 49
+    Identificator          go to state 30
+    Logic                  go to state 50
+    OpenBracketZeroOrMore  go to state 32
+
+
+state 33
+
+   23 ForStatement: ForY Value . InY Value DoubleDotY DelimiterY Block
+
+    InY  shift, and go to state 51
+
+
+state 34
+
+   22 WhileStatement: WhileY Value . DoubleDotY DelimiterY Block
+
+    DoubleDotY  shift, and go to state 52
+
+
+state 35
+
+   21 WhileStatement: WhileY Logic . DoubleDotY DelimiterY Block
+
+    DoubleDotY  shift, and go to state 53
+
+
+state 36
+
+   54 InputStatement: InputY OpenBracketY . CloseBracketY DelimiterY
+
+    CloseBracketY  shift, and go to state 54
+
+
+state 37
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   55 OutputStatement: OutputY OpenBracketY . Value CloseBracketY DelimiterY
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 55
+    Identificator  go to state 30
+
+
+state 38
+
+   40 Function: DefY Identificator . OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY Block
+
+    OpenBracketY  shift, and go to state 56
+
+
+state 39
+
+   39 ClassDeclaration: ClassY VariableY . OpenBracketY CloseBracketY DoubleDotY DelimiterY Block
+
+    OpenBracketY  shift, and go to state 57
+
+
+state 40
+
+   27 Identificator: VariableY DotY . VariableY
+
+    VariableY  shift, and go to state 58
+
+
+state 41
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   28              | VariableY OpenBracesY . Arithmetic CloseBracesY
+   29              | . VariableY
+   52 Arithmetic: . Value MathSignY Value
+   53           | . Arithmetic MathSignY Arithmetic
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 59
+    Identificator  go to state 30
+    Arithmetic     go to state 60
+
+
+state 42
+
+   30 ReturnStatement: ReturnY DelimiterY .
+
+    $default  reduce using rule 30 (ReturnStatement)
+
+
+state 43
+
+   31 ReturnStatement: ReturnY Value . DelimiterY
+
+    DelimiterY  shift, and go to state 61
+
+
+state 44
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   41 FunctionCall: Identificator OpenBracketY . Arguments CloseBracketY DelimiterY
+   42 Arguments: .  [CloseBracketY]
+   43          | . Value CommaValue
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    $default  reduce using rule 42 (Arguments)
+
+    Value          go to state 62
+    Identificator  go to state 30
+    Arguments      go to state 63
+
+
+state 45
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   32 AssignmentStatement: Identificator AssignmentY . Value DelimiterY
+   33                    | Identificator AssignmentY . Logic DelimiterY
+   34                    | Identificator AssignmentY . Arithmetic DelimiterY
+   35                    | Identificator AssignmentY . InputStatement DelimiterY
+   36                    | Identificator AssignmentY . FunctionCall DelimiterY
+   37                    | Identificator AssignmentY . ArrayDeclaration DelimiterY
+   38 ArrayDeclaration: . OpenBracesY Arguments CloseBracesY
+   41 FunctionCall: . Identificator OpenBracketY Arguments CloseBracketY DelimiterY
+   46 Logic: . OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore
+   47      | . OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore
+   48 OpenBracketZeroOrMore: .  [BoolY, OpenBracketY, VariableY, NumberY]
+   49                      | . OpenBracketZeroOrMore OpenBracketY
+   52 Arithmetic: . Value MathSignY Value
+   53           | . Arithmetic MathSignY Arithmetic
+   54 InputStatement: . InputY OpenBracketY CloseBracketY DelimiterY
+
+    BoolY        shift, and go to state 27
+    OpenBracesY  shift, and go to state 64
+    InputY       shift, and go to state 8
+    VariableY    shift, and go to state 12
+    NumberY      shift, and go to state 28
+
+    BoolY      [reduce using rule 48 (OpenBracketZeroOrMore)]
+    VariableY  [reduce using rule 48 (OpenBracketZeroOrMore)]
+    NumberY    [reduce using rule 48 (OpenBracketZeroOrMore)]
+    $default   reduce using rule 48 (OpenBracketZeroOrMore)
+
+    Value                  go to state 65
+    Identificator          go to state 66
+    ArrayDeclaration       go to state 67
+    FunctionCall           go to state 68
+    Logic                  go to state 69
+    OpenBracketZeroOrMore  go to state 32
+    Arithmetic             go to state 70
+    InputStatement         go to state 71
+
+
+state 46
+
+   18 IfStatement: IfY Value DoubleDotY . DelimiterY Block Else
+
+    DelimiterY  shift, and go to state 72
+
+
+state 47
+
+   17 IfStatement: IfY Logic DoubleDotY . DelimiterY Block Else
+
+    DelimiterY  shift, and go to state 73
+
+
+state 48
+
+   49 OpenBracketZeroOrMore: OpenBracketZeroOrMore OpenBracketY .
+
+    $default  reduce using rule 49 (OpenBracketZeroOrMore)
+
+
+state 49
+
+   46 Logic: OpenBracketZeroOrMore Value . ComparisonY Value CloseBracketZeroOrMore
+
+    ComparisonY  shift, and go to state 74
+
+
+state 50
+
+   47 Logic: OpenBracketZeroOrMore Logic . LogicalY Logic CloseBracketZeroOrMore
+
+    LogicalY  shift, and go to state 75
+
+
+state 51
+
+   23 ForStatement: ForY Value InY . Value DoubleDotY DelimiterY Block
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 76
+    Identificator  go to state 30
+
+
+state 52
+
+   22 WhileStatement: WhileY Value DoubleDotY . DelimiterY Block
+
+    DelimiterY  shift, and go to state 77
+
+
+state 53
+
+   21 WhileStatement: WhileY Logic DoubleDotY . DelimiterY Block
+
+    DelimiterY  shift, and go to state 78
+
+
+state 54
+
+   54 InputStatement: InputY OpenBracketY CloseBracketY . DelimiterY
+
+    DelimiterY  shift, and go to state 79
+
+
+state 55
+
+   55 OutputStatement: OutputY OpenBracketY Value . CloseBracketY DelimiterY
+
+    CloseBracketY  shift, and go to state 80
+
+
+state 56
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   40 Function: DefY Identificator OpenBracketY . Arguments CloseBracketY DoubleDotY DelimiterY Block
+   42 Arguments: .  [CloseBracketY]
+   43          | . Value CommaValue
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    $default  reduce using rule 42 (Arguments)
+
+    Value          go to state 62
+    Identificator  go to state 30
+    Arguments      go to state 81
+
+
+state 57
+
+   39 ClassDeclaration: ClassY VariableY OpenBracketY . CloseBracketY DoubleDotY DelimiterY Block
+
+    CloseBracketY  shift, and go to state 82
+
+
+state 58
+
+   27 Identificator: VariableY DotY VariableY .
+
+    $default  reduce using rule 27 (Identificator)
+
+
+state 59
+
+   52 Arithmetic: Value . MathSignY Value
+
+    MathSignY  shift, and go to state 83
+
+
+state 60
+
+   28 Identificator: VariableY OpenBracesY Arithmetic . CloseBracesY
+   53 Arithmetic: Arithmetic . MathSignY Arithmetic
+
+    CloseBracesY  shift, and go to state 84
+    MathSignY     shift, and go to state 85
+
+
+state 61
+
+   31 ReturnStatement: ReturnY Value DelimiterY .
+
+    $default  reduce using rule 31 (ReturnStatement)
+
+
+state 62
+
+   43 Arguments: Value . CommaValue
+   44 CommaValue: .
+   45           | . CommaValue CommaY Value
+
+    $default  reduce using rule 44 (CommaValue)
+
+    CommaValue  go to state 86
+
+
+state 63
+
+   41 FunctionCall: Identificator OpenBracketY Arguments . CloseBracketY DelimiterY
+
+    CloseBracketY  shift, and go to state 87
+
+
+state 64
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   38 ArrayDeclaration: OpenBracesY . Arguments CloseBracesY
+   42 Arguments: .  [CloseBracesY]
+   43          | . Value CommaValue
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    $default  reduce using rule 42 (Arguments)
+
+    Value          go to state 62
+    Identificator  go to state 30
+    Arguments      go to state 88
+
+
+state 65
+
+   32 AssignmentStatement: Identificator AssignmentY Value . DelimiterY
+   52 Arithmetic: Value . MathSignY Value
+
+    DelimiterY  shift, and go to state 89
+    MathSignY   shift, and go to state 83
+
+
+state 66
+
+   24 Value: Identificator .  [DelimiterY, MathSignY]
+   41 FunctionCall: Identificator . OpenBracketY Arguments CloseBracketY DelimiterY
+
+    OpenBracketY  shift, and go to state 44
+
+    $default  reduce using rule 24 (Value)
+
+
+state 67
+
+   37 AssignmentStatement: Identificator AssignmentY ArrayDeclaration . DelimiterY
+
+    DelimiterY  shift, and go to state 90
+
+
+state 68
+
+   36 AssignmentStatement: Identificator AssignmentY FunctionCall . DelimiterY
+
+    DelimiterY  shift, and go to state 91
+
+
+state 69
+
+   33 AssignmentStatement: Identificator AssignmentY Logic . DelimiterY
+
+    DelimiterY  shift, and go to state 92
+
+
+state 70
+
+   34 AssignmentStatement: Identificator AssignmentY Arithmetic . DelimiterY
+   53 Arithmetic: Arithmetic . MathSignY Arithmetic
+
+    DelimiterY  shift, and go to state 93
+    MathSignY   shift, and go to state 85
+
+
+state 71
+
+   35 AssignmentStatement: Identificator AssignmentY InputStatement . DelimiterY
+
+    DelimiterY  shift, and go to state 94
+
+
+state 72
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   18 IfStatement: IfY Value DoubleDotY DelimiterY . Block Else
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 95
+
+
+state 73
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   17 IfStatement: IfY Logic DoubleDotY DelimiterY . Block Else
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 96
+
+
+state 74
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   46 Logic: OpenBracketZeroOrMore Value ComparisonY . Value CloseBracketZeroOrMore
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 97
+    Identificator  go to state 30
+
+
+state 75
+
+   46 Logic: . OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore
+   47      | . OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore
+   47      | OpenBracketZeroOrMore Logic LogicalY . Logic CloseBracketZeroOrMore
+   48 OpenBracketZeroOrMore: .
+   49                      | . OpenBracketZeroOrMore OpenBracketY
+
+    $default  reduce using rule 48 (OpenBracketZeroOrMore)
+
+    Logic                  go to state 98
+    OpenBracketZeroOrMore  go to state 32
+
+
+state 76
+
+   23 ForStatement: ForY Value InY Value . DoubleDotY DelimiterY Block
+
+    DoubleDotY  shift, and go to state 99
+
+
+state 77
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   22 WhileStatement: WhileY Value DoubleDotY DelimiterY . Block
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 100
+
+
+state 78
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   21 WhileStatement: WhileY Logic DoubleDotY DelimiterY . Block
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 101
+
+
+state 79
+
+   54 InputStatement: InputY OpenBracketY CloseBracketY DelimiterY .
+
+    $default  reduce using rule 54 (InputStatement)
+
+
+state 80
+
+   55 OutputStatement: OutputY OpenBracketY Value CloseBracketY . DelimiterY
+
+    DelimiterY  shift, and go to state 102
+
+
+state 81
+
+   40 Function: DefY Identificator OpenBracketY Arguments . CloseBracketY DoubleDotY DelimiterY Block
+
+    CloseBracketY  shift, and go to state 103
+
+
+state 82
+
+   39 ClassDeclaration: ClassY VariableY OpenBracketY CloseBracketY . DoubleDotY DelimiterY Block
+
+    DoubleDotY  shift, and go to state 104
+
+
+state 83
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   52 Arithmetic: Value MathSignY . Value
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 105
+    Identificator  go to state 30
+
+
+state 84
+
+   28 Identificator: VariableY OpenBracesY Arithmetic CloseBracesY .
+
+    $default  reduce using rule 28 (Identificator)
+
+
+state 85
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   52 Arithmetic: . Value MathSignY Value
+   53           | . Arithmetic MathSignY Arithmetic
+   53           | Arithmetic MathSignY . Arithmetic
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 59
+    Identificator  go to state 30
+    Arithmetic     go to state 106
+
+
+state 86
+
+   43 Arguments: Value CommaValue .  [CloseBracesY, CloseBracketY]
+   45 CommaValue: CommaValue . CommaY Value
+
+    CommaY  shift, and go to state 107
+
+    $default  reduce using rule 43 (Arguments)
+
+
+state 87
+
+   41 FunctionCall: Identificator OpenBracketY Arguments CloseBracketY . DelimiterY
+
+    DelimiterY  shift, and go to state 108
+
+
+state 88
+
+   38 ArrayDeclaration: OpenBracesY Arguments . CloseBracesY
+
+    CloseBracesY  shift, and go to state 109
+
+
+state 89
+
+   32 AssignmentStatement: Identificator AssignmentY Value DelimiterY .
+
+    $default  reduce using rule 32 (AssignmentStatement)
+
+
+state 90
+
+   37 AssignmentStatement: Identificator AssignmentY ArrayDeclaration DelimiterY .
+
+    $default  reduce using rule 37 (AssignmentStatement)
+
+
+state 91
+
+   36 AssignmentStatement: Identificator AssignmentY FunctionCall DelimiterY .
+
+    $default  reduce using rule 36 (AssignmentStatement)
+
+
+state 92
+
+   33 AssignmentStatement: Identificator AssignmentY Logic DelimiterY .
+
+    $default  reduce using rule 33 (AssignmentStatement)
+
+
+state 93
+
+   34 AssignmentStatement: Identificator AssignmentY Arithmetic DelimiterY .
+
+    $default  reduce using rule 34 (AssignmentStatement)
+
+
+state 94
+
+   35 AssignmentStatement: Identificator AssignmentY InputStatement DelimiterY .
+
+    $default  reduce using rule 35 (AssignmentStatement)
+
+
+state 95
+
+   16 Block: Block . TabOneOrMore Statement
+   18 IfStatement: IfY Value DoubleDotY DelimiterY Block . Else
+   19 Else: .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   20     | . ElseY DoubleDotY DelimiterY Block
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY   shift, and go to state 110
+    ElseY  shift, and go to state 111
+
+    TabY      [reduce using rule 19 (Else)]
+    ElseY     [reduce using rule 19 (Else)]
+    $default  reduce using rule 19 (Else)
+
+    Else          go to state 112
+    TabOneOrMore  go to state 113
+
+
+state 96
+
+   16 Block: Block . TabOneOrMore Statement
+   17 IfStatement: IfY Logic DoubleDotY DelimiterY Block . Else
+   19 Else: .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   20     | . ElseY DoubleDotY DelimiterY Block
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY   shift, and go to state 110
+    ElseY  shift, and go to state 111
+
+    TabY      [reduce using rule 19 (Else)]
+    ElseY     [reduce using rule 19 (Else)]
+    $default  reduce using rule 19 (Else)
+
+    Else          go to state 114
+    TabOneOrMore  go to state 113
+
+
+state 97
+
+   46 Logic: OpenBracketZeroOrMore Value ComparisonY Value . CloseBracketZeroOrMore
+   50 CloseBracketZeroOrMore: .
+   51                       | . CloseBracketZeroOrMore CloseBracketY
+
+    $default  reduce using rule 50 (CloseBracketZeroOrMore)
+
+    CloseBracketZeroOrMore  go to state 115
+
+
+state 98
+
+   47 Logic: OpenBracketZeroOrMore Logic LogicalY Logic . CloseBracketZeroOrMore
+   50 CloseBracketZeroOrMore: .
+   51                       | . CloseBracketZeroOrMore CloseBracketY
+
+    $default  reduce using rule 50 (CloseBracketZeroOrMore)
+
+    CloseBracketZeroOrMore  go to state 116
+
+
+state 99
+
+   23 ForStatement: ForY Value InY Value DoubleDotY . DelimiterY Block
+
+    DelimiterY  shift, and go to state 117
+
+
+state 100
+
+   16 Block: Block . TabOneOrMore Statement
+   22 WhileStatement: WhileY Value DoubleDotY DelimiterY Block .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY  shift, and go to state 110
+
+    TabY      [reduce using rule 22 (WhileStatement)]
+    $default  reduce using rule 22 (WhileStatement)
+
+    TabOneOrMore  go to state 113
+
+
+state 101
+
+   16 Block: Block . TabOneOrMore Statement
+   21 WhileStatement: WhileY Logic DoubleDotY DelimiterY Block .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY  shift, and go to state 110
+
+    TabY      [reduce using rule 21 (WhileStatement)]
+    $default  reduce using rule 21 (WhileStatement)
+
+    TabOneOrMore  go to state 113
+
+
+state 102
+
+   55 OutputStatement: OutputY OpenBracketY Value CloseBracketY DelimiterY .
+
+    $default  reduce using rule 55 (OutputStatement)
+
+
+state 103
+
+   40 Function: DefY Identificator OpenBracketY Arguments CloseBracketY . DoubleDotY DelimiterY Block
+
+    DoubleDotY  shift, and go to state 118
+
+
+state 104
+
+   39 ClassDeclaration: ClassY VariableY OpenBracketY CloseBracketY DoubleDotY . DelimiterY Block
+
+    DelimiterY  shift, and go to state 119
+
+
+state 105
+
+   52 Arithmetic: Value MathSignY Value .
+
+    $default  reduce using rule 52 (Arithmetic)
+
+
+state 106
+
+   53 Arithmetic: Arithmetic . MathSignY Arithmetic
+   53           | Arithmetic MathSignY Arithmetic .  [DelimiterY, CloseBracesY, MathSignY]
+
+    MathSignY  shift, and go to state 85
+
+    MathSignY  [reduce using rule 53 (Arithmetic)]
+    $default   reduce using rule 53 (Arithmetic)
+
+
+state 107
+
+   24 Value: . Identificator
+   25      | . NumberY
+   26      | . BoolY
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   45 CommaValue: CommaValue CommaY . Value
+
+    BoolY      shift, and go to state 27
+    VariableY  shift, and go to state 12
+    NumberY    shift, and go to state 28
+
+    Value          go to state 120
+    Identificator  go to state 30
+
+
+state 108
+
+   41 FunctionCall: Identificator OpenBracketY Arguments CloseBracketY DelimiterY .
+
+    $default  reduce using rule 41 (FunctionCall)
+
+
+state 109
+
+   38 ArrayDeclaration: OpenBracesY Arguments CloseBracesY .
+
+    $default  reduce using rule 38 (ArrayDeclaration)
+
+
+state 110
+
+   56 TabOneOrMore: TabY .
+
+    $default  reduce using rule 56 (TabOneOrMore)
+
+
+state 111
+
+   20 Else: ElseY . DoubleDotY DelimiterY Block
+
+    DoubleDotY  shift, and go to state 121
+
+
+state 112
+
+   18 IfStatement: IfY Value DoubleDotY DelimiterY Block Else .
+
+    $default  reduce using rule 18 (IfStatement)
+
+
+state 113
+
+    4 Statement: . IfStatement
+    5          | . WhileStatement
+    6          | . ForStatement
+    7          | . AssignmentStatement
+    8          | . InputStatement
+    9          | . OutputStatement
+   10          | . ClassDeclaration
+   11          | . Function
+   12          | . FunctionCall
+   13          | . ReturnStatement
+   14          | . DelimiterY
+   16 Block: Block TabOneOrMore . Statement
+   17 IfStatement: . IfY Logic DoubleDotY DelimiterY Block Else
+   18            | . IfY Value DoubleDotY DelimiterY Block Else
+   21 WhileStatement: . WhileY Logic DoubleDotY DelimiterY Block
+   22               | . WhileY Value DoubleDotY DelimiterY Block
+   23 ForStatement: . ForY Value InY Value DoubleDotY DelimiterY Block
+   27 Identificator: . VariableY DotY VariableY
+   28              | . VariableY OpenBracesY Arithmetic CloseBracesY
+   29              | . VariableY
+   30 ReturnStatement: . ReturnY DelimiterY
+   31                | . ReturnY Value DelimiterY
+   32 AssignmentStatement: . Identificator AssignmentY Value DelimiterY
+   33                    | . Identificator AssignmentY Logic DelimiterY
+   34                    | . Identificator AssignmentY Arithmetic DelimiterY
+   35                    | . Identificator AssignmentY InputStatement DelimiterY
+   36                    | . Identificator AssignmentY FunctionCall DelimiterY
+   37                    | . Identificator AssignmentY ArrayDeclaration DelimiterY
+   39 ClassDeclaration: . ClassY VariableY OpenBracketY CloseBracketY DoubleDotY DelimiterY Block
+   40 Function: . DefY Identificator OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY Block
+   41 FunctionCall: . Identificator OpenBracketY Arguments CloseBracketY DelimiterY
+   54 InputStatement: . InputY OpenBracketY CloseBracketY DelimiterY
+   55 OutputStatement: . OutputY OpenBracketY Value CloseBracketY DelimiterY
+   57 TabOneOrMore: TabOneOrMore . TabY
+
+    DelimiterY  shift, and go to state 4
+    TabY        shift, and go to state 122
+    IfY         shift, and go to state 5
+    ForY        shift, and go to state 6
+    WhileY      shift, and go to state 7
+    InputY      shift, and go to state 8
+    OutputY     shift, and go to state 9
+    DefY        shift, and go to state 10
+    ClassY      shift, and go to state 11
+    VariableY   shift, and go to state 12
+    ReturnY     shift, and go to state 13
+
+    Statement            go to state 123
+    IfStatement          go to state 16
+    WhileStatement       go to state 17
+    ForStatement         go to state 18
+    Identificator        go to state 19
+    ReturnStatement      go to state 20
+    AssignmentStatement  go to state 21
+    ClassDeclaration     go to state 22
+    Function             go to state 23
+    FunctionCall         go to state 24
+    InputStatement       go to state 25
+    OutputStatement      go to state 26
+
+
+state 114
+
+   17 IfStatement: IfY Logic DoubleDotY DelimiterY Block Else .
+
+    $default  reduce using rule 17 (IfStatement)
+
+
+state 115
+
+   46 Logic: OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore .  [DelimiterY, DoubleDotY, CloseBracketY, LogicalY]
+   51 CloseBracketZeroOrMore: CloseBracketZeroOrMore . CloseBracketY
+
+    CloseBracketY  shift, and go to state 124
+
+    CloseBracketY  [reduce using rule 46 (Logic)]
+    $default       reduce using rule 46 (Logic)
+
+
+state 116
+
+   47 Logic: OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore .  [DelimiterY, DoubleDotY, CloseBracketY, LogicalY]
+   51 CloseBracketZeroOrMore: CloseBracketZeroOrMore . CloseBracketY
+
+    CloseBracketY  shift, and go to state 124
+
+    CloseBracketY  [reduce using rule 47 (Logic)]
+    $default       reduce using rule 47 (Logic)
+
+
+state 117
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   23 ForStatement: ForY Value InY Value DoubleDotY DelimiterY . Block
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 125
+
+
+state 118
+
+   40 Function: DefY Identificator OpenBracketY Arguments CloseBracketY DoubleDotY . DelimiterY Block
+
+    DelimiterY  shift, and go to state 126
+
+
+state 119
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   39 ClassDeclaration: ClassY VariableY OpenBracketY CloseBracketY DoubleDotY DelimiterY . Block
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 127
+
+
+state 120
+
+   45 CommaValue: CommaValue CommaY Value .
+
+    $default  reduce using rule 45 (CommaValue)
+
+
+state 121
+
+   20 Else: ElseY DoubleDotY . DelimiterY Block
+
+    DelimiterY  shift, and go to state 128
+
+
+state 122
+
+   57 TabOneOrMore: TabOneOrMore TabY .
+
+    $default  reduce using rule 57 (TabOneOrMore)
+
+
+state 123
+
+   16 Block: Block TabOneOrMore Statement .
+
+    $default  reduce using rule 16 (Block)
+
+
+state 124
+
+   51 CloseBracketZeroOrMore: CloseBracketZeroOrMore CloseBracketY .
+
+    $default  reduce using rule 51 (CloseBracketZeroOrMore)
+
+
+state 125
+
+   16 Block: Block . TabOneOrMore Statement
+   23 ForStatement: ForY Value InY Value DoubleDotY DelimiterY Block .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY  shift, and go to state 110
+
+    TabY      [reduce using rule 23 (ForStatement)]
+    $default  reduce using rule 23 (ForStatement)
+
+    TabOneOrMore  go to state 113
+
+
+state 126
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   40 Function: DefY Identificator OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY . Block
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 129
+
+
+state 127
+
+   16 Block: Block . TabOneOrMore Statement
+   39 ClassDeclaration: ClassY VariableY OpenBracketY CloseBracketY DoubleDotY DelimiterY Block .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY  shift, and go to state 110
+
+    TabY      [reduce using rule 39 (ClassDeclaration)]
+    $default  reduce using rule 39 (ClassDeclaration)
+
+    TabOneOrMore  go to state 113
+
+
+state 128
+
+   15 Block: .
+   16      | . Block TabOneOrMore Statement
+   20 Else: ElseY DoubleDotY DelimiterY . Block
+
+    $default  reduce using rule 15 (Block)
+
+    Block  go to state 130
+
+
+state 129
+
+   16 Block: Block . TabOneOrMore Statement
+   40 Function: DefY Identificator OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY Block .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY  shift, and go to state 110
+
+    TabY      [reduce using rule 40 (Function)]
+    $default  reduce using rule 40 (Function)
+
+    TabOneOrMore  go to state 113
+
+
+state 130
+
+   16 Block: Block . TabOneOrMore Statement
+   20 Else: ElseY DoubleDotY DelimiterY Block .  [DelimiterY, TabY, IfY, ElseY, ForY, WhileY, InputY, OutputY, DefY, ClassY, VariableY, ReturnY, ENDY]
+   56 TabOneOrMore: . TabY
+   57             | . TabOneOrMore TabY
+
+    TabY  shift, and go to state 110
+
+    TabY      [reduce using rule 20 (Else)]
+    $default  reduce using rule 20 (Else)
+
+    TabOneOrMore  go to state 113

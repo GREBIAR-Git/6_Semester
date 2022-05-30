@@ -2,37 +2,77 @@
 #include <stdio.h>
 #include <string.h>
 
+#define YYDEBUG 1
+
 int yyparse(void);
 int yylex(void);
-
-int yywrap()
-{
-    return 1;
-}
-
-void yyerror(const char *str)
-{
-    fprintf(stderr,"error: %s\n",str);
-}
-
-main()
-{
-    #ifdef YYDEBUG
-        yydebug = 1;
-    #endif
-    yyparse();
-}
+int yywrap();
+void yyerror(const char *str);
 
 %}
 
-%token DelimiterY TabY CommaY DotY DoubleDotY BoolY OpenBracesY CloseBracesY OpenBracketY CloseBracketY ComparisonY LogicalY AssignmentY MathSignY IfY ElseY ForY InY WhileY InputY OutputY DefY ClassY VariableY NumberY ReturnY ENDY ErrorY
+%token DelimiterY
+%token TabY
+%token CommaY
+%token DotY
+%token DoubleDotY
+%token BoolY
+%token OpenBracesY
+%token CloseBracesY
+%token OpenBracketY
+%token CloseBracketY
+%token ComparisonY
+%token LogicalY
+%token AssignmentY
+%token MathSignY
+%token IfY
+%token ElseY
+%token ForY
+%token InY
+%token WhileY
+%token InputY
+%token OutputY
+%token DefY
+%token ClassY
+%token VariableY
+%token NumberY
+%token ReturnY
+%token ENDY
+%token ErrorY
+
+%start Program
+
 
 %%
     Program:
-        Statement Block | ClassStatement Block | FunctionStatement Block | /* empty */;
+        Statements ENDY
+        {
+            printf("\n{No errors}");
+        };
+
+    Statements:
+        /* empty */ | Statements Statement;
+
+    Statement:
+        IfStatement | WhileStatement | ForStatement | AssignmentStatement | InputStatement | OutputStatement | ClassDeclaration | Function | FunctionCall | ReturnStatement | DelimiterY;
+
+    Block:
+        /* empty */ | Block TabOneOrMore Statement;
+
+    IfStatement:
+        IfY Logic DoubleDotY DelimiterY Block Else | IfY Value DoubleDotY DelimiterY Block Else;
+
+    Else:
+        /* empty */ | ElseY DoubleDotY DelimiterY Block;
+
+    WhileStatement:
+        WhileY Logic DoubleDotY DelimiterY Block | WhileY Value DoubleDotY DelimiterY Block;
+
+    ForStatement:
+        ForY Value InY Value DoubleDotY DelimiterY Block;
 
     Value:
-        VariableY DotY VariableY | VariableY OpenBracesY Arithmetic CloseBracesY | VariableY | NumberY | BoolY;
+        Identificator | NumberY | BoolY;
 
     Identificator:
         VariableY DotY VariableY | VariableY OpenBracesY Arithmetic CloseBracesY | VariableY;
@@ -41,61 +81,28 @@ main()
         ReturnY DelimiterY | ReturnY Value DelimiterY;
 
     AssignmentStatement:
-        Identificator AssignmentY Arithmetic DelimiterY | Identificator AssignmentY InputStatement DelimiterY | Identificator AssignmentY FunctionCall DelimiterY | Identificator AssignmentY ArrayDeclaration DelimiterY;
+        Identificator AssignmentY Value DelimiterY | Identificator AssignmentY Logic DelimiterY | Identificator AssignmentY Arithmetic DelimiterY | Identificator AssignmentY InputStatement DelimiterY | Identificator AssignmentY FunctionCall DelimiterY | Identificator AssignmentY ArrayDeclaration DelimiterY;
 
-    ArrayDeclaration: // "[" Arguments "]""
+    ArrayDeclaration:
         OpenBracesY Arguments CloseBracesY;
 
     ClassDeclaration:
         ClassY VariableY OpenBracketY CloseBracketY DoubleDotY DelimiterY Block;
 
     Function:
-        DefY VariableY OpenBracketY FunctionArguments CloseBracketY DoubleDotY DelimiterY Block;
-
-    FunctionArguments: // VariableY [CommaY FunctionArgument] | empty
-        VariableY FuncArgsZeroOrMore | /* empty */;
-
-    FuncArgsZeroOrMore: // [CommaY FunctionArgument]
-        /* empty */ | FuncArgsZeroOrMore CommaY FunctionArgument;
-
-    FunctionArgument: // VariableY [CommaY FunctionArgument]
-        VariableY FuncArgsZeroOrMore;
+        DefY Identificator OpenBracketY Arguments CloseBracketY DoubleDotY DelimiterY Block;
 
     FunctionCall:
-        VariableY OpenBracketY Arguments CloseBracketY DelimiterY;
+        Identificator OpenBracketY Arguments CloseBracketY DelimiterY;
 
-    Arguments: // Identificator ["," Argument] | empty
-        Identificator ArgsZeroOrMore | /* empty */;
+    Arguments:
+        /* empty */ | Value CommaValue;
 
-    ArgsZeroOrMore: // ["," Argument]
-        /* empty */ | ArgsZeroOrMore CommaY Argument;
-
-    Argument: // Identificator ["," Argument]
-        Identificator ArgsZeroOrMore;
-
-    IfStatement:
-        IfY Logic DoubleDotY DelimiterY Block IfZeroOrMore;
-
-    IfZeroOrMore: // [ElseY DoubleDotY DelimiterY Block]
-        /* empty */ | ElseY DoubleDotY DelimiterY Block;
-
-    WhileStatement:
-        WhileY Logic DoubleDotY DelimiterY Block;
-
-    ForStatement:
-        ForY Value InY Value DoubleDotY DelimiterY Block;
+    CommaValue:
+        /* empty */ | CommaValue CommaY Value;
 
     Logic:
-        OpenBracketZeroOrMore LogicExpression LogicZeroOrMore CloseBracketZeroOrMore;
-
-    LogicZeroOrMore: // [LogicalY Logic]
-        /* empty */ | LogicZeroOrMore LogicalY Logic;
-
-    LogicExpression:
-        OpenBracketZeroOrMore Arithmetic LogicExprZeroOrMore CloseBracketZeroOrMore;
-
-    LogicExprZeroOrMore: // [LogicalY LogicExpression]
-        /* empty */ | LogicExprZeroOrMore ComparisonY LogicExpression;
+        OpenBracketZeroOrMore Value ComparisonY Value CloseBracketZeroOrMore | OpenBracketZeroOrMore Logic LogicalY Logic CloseBracketZeroOrMore;
 
     OpenBracketZeroOrMore:
         /* empty */ | OpenBracketZeroOrMore OpenBracketY;
@@ -103,34 +110,36 @@ main()
     CloseBracketZeroOrMore:
         /* empty */ | CloseBracketZeroOrMore CloseBracketY;
 
-    Arithmetic: // ["("] Value [MathSignY Arithmetic] [")"]
-        OpenBracketZeroOrMore Value ArithmeticZeroOrMore CloseBracketZeroOrMore;
+    /*Arithmetic:
+        OpenBracketZeroOrMore Value MathSignY Value CloseBracketZeroOrMore | OpenBracketZeroOrMore Arithmetic MathSignY Arithmetic CloseBracketZeroOrMore;*/
 
-    ArithmeticZeroOrMore: // [MathSignY Arithmetic]
-        /* empty */ | ArithmeticZeroOrMore MathSignY Arithmetic;
+    Arithmetic:
+        Value MathSignY Value | Arithmetic MathSignY Arithmetic;
 
     InputStatement:
         InputY OpenBracketY CloseBracketY DelimiterY;
 
     OutputStatement:
-        OutputY OpenBracketY Arithmetic CloseBracketY DelimiterY;
-
-    Statement:
-        IfStatement | WhileStatement | ForStatement | AssignmentStatement | InputStatement | OutputStatement | ClassDeclaration | Function | FunctionCall | DelimiterY;
-
-    ClassStatement:
-        AssignmentStatement | Function | DelimiterY;
-
-    FunctionStatement:
-        Statement | ReturnStatement;
-
-    Block:
-        TabOneOrMore Statement Block | TabOneOrMore ClassStatement Block | TabOneOrMore FunctionStatement Block | /* empty */;
-
-    TabZeroOrMore:
-        /* empty */ | TabZeroOrMore TabY;
+        OutputY OpenBracketY Value CloseBracketY DelimiterY;
 
     TabOneOrMore:
-        TabY | TabZeroOrMore TabY;
+        TabY | TabOneOrMore TabY;
 
 %%
+
+int yywrap()
+{
+    return 1;
+}
+
+void yyerror(const char *str)
+{
+    fprintf(stderr,"\nERROR: %s",str);
+}
+
+main()
+{
+    yyparse();
+}
+
+int yydebug = 0;

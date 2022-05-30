@@ -1,14 +1,10 @@
-x = 3
-y = 4
-z = x + y
-f = 5.3
-test = true
-
-if (test):
-	c = input()
-	input()
-
-sd.width = 3
-f = tf(a[4],2)
-for rt in er:
-	input()
+_ = 2
+_f = 4
+class f():
+	width = 1;
+	h = 2;
+	def tf(dsf,d,f,printf):
+		dsf = 4+d.h+f+printf
+		return 1
+	c = input();
+d = [2,f]

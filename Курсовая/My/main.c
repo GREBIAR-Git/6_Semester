@@ -691,6 +691,6 @@ int yylex()
         tokenize();
     }
     ind++;
-    printf("%s - %s\n", NameType(tokens[ind].type), tokens[ind].value);
+    printf("\n%s - %s", NameType(tokens[ind].type), tokens[ind].value);
     return tokens[ind].type;
 }
