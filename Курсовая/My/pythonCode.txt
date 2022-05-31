@@ -1,5 +1,6 @@
-_ = 2
 _f = 4
+d[5] = 10
+print(f)
 class f():
 	width = 1;
 	h = 2;

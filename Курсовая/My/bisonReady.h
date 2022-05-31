@@ -72,6 +72,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define YYDEBUG 1
 
@@ -80,10 +81,75 @@ int yylex(void);
 int yywrap();
 void yyerror(const char *str);
 
+bool errors = false;
+
+void charCopy(char ** destination, char ** str)
+{
+	if (!(*destination))
+	{
+		free(*destination); // in case the function has already been called before
+	}
+	*destination = (char *)calloc(1, (strlen(*str) + 1) * sizeof(char));
+	memcpy(*destination, *str, strlen(*str) * sizeof(char));
+	return;
+}
+
+struct TreeNode
+{
+    char * text;
+    struct TreeNode * next;
+    struct TreeNode * child;
+};
+
+struct TreeNode * treeRoot;
+
+void setChild(struct TreeNode * branch, struct TreeNode * child1)
+{
+    struct TreeNode * current = branch->child;
+    while(current->next != NULL)
+    {
+        current = current->next;
+    }
+    current->next = child1;
+}
+
+void newNode(struct TreeNode * branch, char * text1)
+{
+    branch = malloc(sizeof(struct TreeNode));
+    charCopy(&(branch->text), &text1);
+    branch->next = NULL;
+    branch->child = NULL;
+}
+
+void setLeave(struct TreeNode * branch, char * child1)
+{
+    struct TreeNode * current = branch->child;
+    while(current->next != NULL)
+    {
+        current = current->next;
+    }
+    newNode(current->next, child1);
+}
+
+void displayBranch(struct TreeNode * branch, int depth)
+{
+    for (int i = 0; i < depth; i++)
+    {
+        printf("\t");
+    }
+    printf("%s", branch->text);
+    struct TreeNode * current = branch->child;
+    while (current->next != NULL)
+    {
+        displayBranch(current, depth + 1);
+        current = current->next;
+    }
+}
+
 
 
 /* Line 189 of yacc.c  */
-#line 87 "bisonReady.h"
+#line 153 "bisonReady.h"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -144,7 +210,20 @@ void yyerror(const char *str);
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 214 of yacc.c  */
+#line 80 "bisonSource.y"
+
+    char* str;
+    struct TreeNode* treeNode;
+
+
+
+/* Line 214 of yacc.c  */
+#line 226 "bisonReady.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -155,7 +234,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 159 "bisonReady.h"
+#line 238 "bisonReady.h"
 
 #ifdef short
 # undef short
@@ -370,16 +449,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   134
+#define YYLAST   176
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  31
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  26
+#define YYNNTS  24
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  58
+#define YYNRULES  63
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  131
+#define YYNSTATES  150
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -430,47 +509,52 @@ static const yytype_uint8 yyprhs[] =
        0,     0,     3,     6,     7,    10,    12,    14,    16,    18,
       20,    22,    24,    26,    28,    30,    32,    33,    37,    44,
       51,    52,    57,    63,    69,    77,    79,    81,    83,    87,
-      92,    94,    97,   101,   106,   111,   116,   121,   126,   131,
-     135,   143,   152,   158,   159,   162,   163,   167,   173,   179,
-     180,   183,   184,   187,   191,   195,   200,   206,   208
+      92,    97,    99,   102,   106,   111,   116,   121,   126,   131,
+     136,   140,   148,   157,   163,   164,   167,   168,   172,   176,
+     180,   186,   192,   196,   200,   204,   208,   214,   220,   226,
+     232,   236,   241,   243
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
       32,     0,    -1,    33,    29,    -1,    -1,    33,    34,    -1,
-      36,    -1,    38,    -1,    39,    -1,    43,    -1,    54,    -1,
-      55,    -1,    45,    -1,    46,    -1,    47,    -1,    42,    -1,
-       3,    -1,    -1,    35,    56,    34,    -1,    17,    50,     7,
+      36,    -1,    38,    -1,    39,    -1,    43,    -1,    52,    -1,
+      53,    -1,    45,    -1,    46,    -1,    47,    -1,    42,    -1,
+       3,    -1,    -1,    35,    54,    34,    -1,    17,    50,     7,
        3,    35,    37,    -1,    17,    40,     7,     3,    35,    37,
       -1,    -1,    18,     7,     3,    35,    -1,    21,    50,     7,
        3,    35,    -1,    21,    40,     7,     3,    35,    -1,    19,
       40,    20,    40,     7,     3,    35,    -1,    41,    -1,    27,
-      -1,     8,    -1,    26,     6,    26,    -1,    26,     9,    53,
-      10,    -1,    26,    -1,    28,     3,    -1,    28,    40,     3,
-      -1,    41,    15,    40,     3,    -1,    41,    15,    50,     3,
-      -1,    41,    15,    53,     3,    -1,    41,    15,    54,     3,
-      -1,    41,    15,    47,     3,    -1,    41,    15,    44,     3,
-      -1,     9,    48,    10,    -1,    25,    26,    11,    12,     7,
-       3,    35,    -1,    24,    41,    11,    48,    12,     7,     3,
-      35,    -1,    41,    11,    48,    12,     3,    -1,    -1,    40,
-      49,    -1,    -1,    49,     5,    40,    -1,    51,    40,    13,
-      40,    52,    -1,    51,    50,    14,    50,    52,    -1,    -1,
-      51,    11,    -1,    -1,    52,    12,    -1,    40,    16,    40,
-      -1,    53,    16,    53,    -1,    22,    11,    12,     3,    -1,
-      23,    11,    40,    12,     3,    -1,     4,    -1,    56,     4,
-      -1
+      -1,     8,    -1,    26,     6,    26,    -1,    26,     9,    51,
+      10,    -1,    26,     9,    40,    10,    -1,    26,    -1,    28,
+       3,    -1,    28,    40,     3,    -1,    41,    15,    40,     3,
+      -1,    41,    15,    50,     3,    -1,    41,    15,    51,     3,
+      -1,    41,    15,    52,     3,    -1,    41,    15,    47,     3,
+      -1,    41,    15,    44,     3,    -1,     9,    48,    10,    -1,
+      25,    26,    11,    12,     7,     3,    35,    -1,    24,    41,
+      11,    48,    12,     7,     3,    35,    -1,    41,    11,    48,
+      12,     3,    -1,    -1,    40,    49,    -1,    -1,    49,     5,
+      40,    -1,    40,    13,    40,    -1,    50,    14,    50,    -1,
+      11,    40,    13,    40,    12,    -1,    11,    50,    14,    50,
+      12,    -1,    40,    16,    40,    -1,    51,    16,    51,    -1,
+      51,    16,    40,    -1,    40,    16,    51,    -1,    11,    40,
+      16,    40,    12,    -1,    11,    51,    16,    51,    12,    -1,
+      11,    51,    16,    40,    12,    -1,    11,    40,    16,    51,
+      12,    -1,    22,    11,    12,    -1,    23,    11,    40,    12,
+      -1,     4,    -1,    54,     4,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    48,    48,    53,    54,    57,    57,    57,    57,    57,
-      57,    57,    57,    57,    57,    57,    59,    60,    63,    63,
-      65,    66,    69,    69,    72,    75,    75,    75,    78,    78,
-      78,    81,    81,    84,    84,    84,    84,    84,    84,    87,
-      90,    93,    96,    98,    99,   101,   102,   105,   105,   107,
-     108,   110,   111,   117,   117,   120,   123,   126,   126
+       0,   143,   143,   151,   152,   160,   165,   170,   175,   180,
+     185,   190,   195,   200,   205,   210,   216,   217,   226,   236,
+     247,   248,   258,   267,   278,   291,   296,   301,   308,   315,
+     323,   331,   338,   344,   353,   361,   369,   377,   385,   393,
+     403,   412,   425,   439,   449,   450,   457,   458,   467,   474,
+     481,   490,   501,   508,   515,   522,   529,   538,   547,   556,
+     567,   576,   586,   591
 };
 #endif
 
@@ -488,8 +572,7 @@ static const char *const yytname[] =
   "WhileStatement", "ForStatement", "Value", "Identificator",
   "ReturnStatement", "AssignmentStatement", "ArrayDeclaration",
   "ClassDeclaration", "Function", "FunctionCall", "Arguments",
-  "CommaValue", "Logic", "OpenBracketZeroOrMore", "CloseBracketZeroOrMore",
-  "Arithmetic", "InputStatement", "OutputStatement", "TabOneOrMore", 0
+  "CommaValue", "Logic", "Arithmetic", "Input", "Output", "TabOneOrMore", 0
 };
 #endif
 
@@ -511,9 +594,10 @@ static const yytype_uint8 yyr1[] =
        0,    31,    32,    33,    33,    34,    34,    34,    34,    34,
       34,    34,    34,    34,    34,    34,    35,    35,    36,    36,
       37,    37,    38,    38,    39,    40,    40,    40,    41,    41,
-      41,    42,    42,    43,    43,    43,    43,    43,    43,    44,
-      45,    46,    47,    48,    48,    49,    49,    50,    50,    51,
-      51,    52,    52,    53,    53,    54,    55,    56,    56
+      41,    41,    42,    42,    43,    43,    43,    43,    43,    43,
+      44,    45,    46,    47,    48,    48,    49,    49,    50,    50,
+      50,    50,    51,    51,    51,    51,    51,    51,    51,    51,
+      52,    53,    54,    54
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -522,9 +606,10 @@ static const yytype_uint8 yyr2[] =
        0,     2,     2,     0,     2,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     0,     3,     6,     6,
        0,     4,     5,     5,     7,     1,     1,     1,     3,     4,
-       1,     2,     3,     4,     4,     4,     4,     4,     4,     3,
-       7,     8,     5,     0,     2,     0,     3,     5,     5,     0,
-       2,     0,     2,     3,     3,     4,     5,     1,     2
+       4,     1,     2,     3,     4,     4,     4,     4,     4,     4,
+       3,     7,     8,     5,     0,     2,     0,     3,     3,     3,
+       5,     5,     3,     3,     3,     3,     5,     5,     5,     5,
+       3,     4,     1,     2
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -532,57 +617,59 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       3,     0,     0,     1,    15,    49,     0,    49,     0,     0,
-       0,     0,    30,     0,     2,     4,     5,     6,     7,     0,
-      14,     8,    11,    12,    13,     9,    10,    27,    26,     0,
-      25,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    31,     0,    43,    49,     0,     0,    50,     0,
-       0,     0,     0,     0,     0,     0,    43,     0,    28,     0,
-       0,    32,    45,     0,    43,     0,    25,     0,     0,     0,
-       0,     0,    16,    16,     0,    49,     0,    16,    16,    55,
-       0,     0,     0,     0,    29,     0,    44,     0,     0,    33,
-      38,    37,    34,    35,    36,    20,    20,    51,    51,     0,
-      23,    22,    56,     0,     0,    53,    54,     0,    42,    39,
-      57,     0,    19,     0,    18,    47,    48,    16,     0,    16,
-      46,     0,    58,    17,    52,    24,    16,    40,    16,    41,
-      21
+       3,     0,     0,     1,    15,     0,     0,     0,     0,     0,
+       0,     0,    31,     0,     2,     4,     5,     6,     7,     0,
+      14,     8,    11,    12,    13,     9,    10,    27,     0,    26,
+       0,    25,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,    32,     0,    44,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    60,     0,    44,     0,    28,
+       0,     0,     0,    33,    46,     0,    44,     0,     0,    25,
+       0,     0,     0,     0,     0,     0,     0,    16,    48,    16,
+       0,    49,     0,    16,    16,    61,     0,     0,     0,     0,
+      30,     0,    29,     0,    45,     0,     0,     0,    34,    39,
+      38,    35,    36,    37,    48,     0,    20,    20,     0,    23,
+      22,     0,     0,     0,     0,    52,    55,    54,    53,     0,
+      43,    40,    50,    51,    62,     0,    19,     0,    18,    16,
+       0,    16,     0,     0,     0,     0,    47,     0,    63,    17,
+      24,    16,    41,    56,    59,    58,    57,    16,    42,    21
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     2,    15,    95,    16,   112,    17,    18,    62,
-      30,    20,    21,    67,    22,    23,    24,    63,    86,    31,
-      32,   115,    60,    25,    26,   113
+      -1,     1,     2,    15,   106,    16,   126,    17,    18,    64,
+      31,    20,    21,    70,    22,    23,    24,    65,    94,    47,
+      89,    25,    26,   127
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -68
-static const yytype_int8 yypact[] =
+#define YYPACT_NINF -66
+static const yytype_int16 yypact[] =
 {
-     -68,    15,    61,   -68,   -68,    36,    36,    36,     5,    13,
-      -8,    -1,    62,     4,   -68,   -68,   -68,   -68,   -68,    54,
-     -68,   -68,   -68,   -68,   -68,   -68,   -68,   -68,   -68,    19,
-     -68,    33,    65,    26,    41,    59,    55,    36,    63,    66,
-      67,    36,   -68,    91,    36,    12,    92,    93,   -68,    84,
-      85,    36,    95,    97,    98,    90,    36,    94,   -68,    88,
-       7,   -68,   -68,    96,    36,    16,    99,   102,   104,   106,
-      72,   109,   -68,   -68,    36,   -68,   107,   -68,   -68,   -68,
-     110,   103,   111,    36,   -68,    36,   112,   113,   114,   -68,
-     -68,   -68,   -68,   -68,   -68,     9,     9,   -68,   -68,   116,
-     117,   117,   -68,   115,   120,   -68,   118,    36,   -68,   -68,
-     -68,   119,   -68,    32,   -68,   108,   108,   -68,   122,   -68,
-     -68,   124,   -68,   -68,   -68,   117,   -68,   117,   -68,   117,
-     117
+     -66,    27,    71,   -66,   -66,     9,    13,     9,    31,    47,
+      81,    82,    97,     2,   -66,   -66,   -66,   -66,   -66,    50,
+     -66,   -66,   -66,   -66,   -66,   -66,   -66,   -66,     9,   -66,
+      78,   -66,    46,   101,    91,    48,   105,    13,   112,   113,
+     110,    41,   -66,   135,    13,     4,   126,   127,   137,    13,
+     139,     9,    13,   140,   141,   -66,   133,    13,   134,   -66,
+      41,     6,    68,   -66,   -66,   136,    13,    43,    70,   138,
+     144,   147,    20,    22,   148,    13,     9,   -66,   -66,   -66,
+     142,   143,   145,   -66,   -66,   -66,   146,   149,   150,   151,
+     -66,    41,   -66,    41,   154,   157,   152,   106,   -66,   -66,
+     -66,   -66,   -66,   -66,   153,   115,    28,    28,   158,   159,
+     159,   161,   166,    41,    41,   155,   156,   155,   156,    13,
+     -66,   -66,   -66,   -66,   -66,   163,   -66,   109,   -66,   -66,
+     170,   -66,    65,    89,   102,   104,   -66,   171,   -66,   -66,
+     159,   -66,   159,   -66,   -66,   -66,   -66,   -66,   159,   159
 };
 
 /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-     -68,   -68,   -68,    17,   -67,   -68,    35,   -68,   -68,    -4,
-      -2,   -68,   -68,   -68,   -68,   -68,    83,   -42,   -68,    -3,
-     -68,    31,   -40,    87,   -68,   -68
+     -66,   -66,   -66,    26,   -65,   -66,    57,   -66,   -66,    -4,
+      -2,   -66,   -66,   -66,   -66,   -66,   130,    45,   -66,    -1,
+     -34,   131,   -66,   -66
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -592,38 +679,46 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      19,    29,    33,    34,    35,    70,    96,    42,    38,    43,
-     100,   101,    27,   110,    81,     3,    36,    84,    12,    89,
-      27,    64,    88,    85,    37,    39,    46,   111,    49,    50,
-      12,    28,    83,    55,     8,     4,   122,    59,    12,    28,
-      47,    65,    69,    66,    27,   106,    51,    76,    52,     5,
-     125,     6,   127,     7,     8,     9,    10,    11,    12,   129,
-      13,   130,    12,    28,     4,    44,    53,    54,    40,    45,
-      97,    41,    98,    27,    56,    93,    48,    57,     5,   105,
-       6,    59,     7,     8,     9,    10,    11,    12,    85,    13,
-      14,    12,    28,    58,    61,    72,    73,    74,    77,    75,
-      78,    79,    80,   120,    83,    90,    82,    91,    87,    92,
-      44,    19,    94,   102,    99,   103,   108,   107,   104,   117,
-     124,   110,   118,   119,   109,   126,   121,   128,    68,   116,
-     123,   114,    71,     0,    85
+      19,    30,    33,    34,    32,    42,    35,    62,    38,    43,
+      27,    73,    27,    66,   107,    67,    90,    27,   109,   110,
+      28,    27,    91,   101,    46,   102,     8,     3,    12,    29,
+      12,    29,   124,    56,    51,    12,    29,    61,    93,    12,
+      29,    68,    36,    69,    72,    78,   125,    80,    82,    27,
+      81,    27,    60,    50,    67,    54,    88,   116,    37,   118,
+      51,    44,    51,    97,   140,    45,   142,    12,    29,    12,
+      29,   104,    80,    98,     4,   105,   148,   143,    92,   133,
+     135,    91,   149,    49,    93,    48,    91,   115,     5,   117,
+       6,    49,     7,     8,     9,    10,    11,    12,    53,    13,
+      14,   144,    86,    40,    49,    93,    41,    12,    39,   132,
+     134,    96,     4,   138,   145,   136,   146,    55,    91,    75,
+      93,    52,   113,    57,    58,    19,     5,   123,     6,    51,
+       7,     8,     9,    10,    11,    12,    59,    13,    63,    75,
+      77,    76,    79,    83,    84,    85,    87,    99,    95,    44,
+     100,   103,   108,   139,     0,    49,   112,    51,   111,   119,
+     120,   129,   121,   124,   128,   122,   113,   114,   130,   131,
+     137,    91,    93,   141,   147,    71,    74
 };
 
 static const yytype_int16 yycheck[] =
 {
-       2,     5,     6,     7,     7,    45,    73,     3,    10,    13,
-      77,    78,     8,     4,    56,     0,    11,    10,    26,     3,
-       8,     9,    64,    16,    11,    26,     7,    18,    32,    32,
-      26,    27,    16,    37,    22,     3,     4,    41,    26,    27,
-       7,    45,    45,    45,     8,    85,    20,    51,     7,    17,
-     117,    19,   119,    21,    22,    23,    24,    25,    26,   126,
-      28,   128,    26,    27,     3,    11,     7,    12,     6,    15,
-      74,     9,    75,     8,    11,     3,    11,    11,    17,    83,
-      19,    85,    21,    22,    23,    24,    25,    26,    16,    28,
-      29,    26,    27,    26,     3,     3,     3,    13,     3,    14,
-       3,     3,    12,   107,    16,     3,    12,     3,    12,     3,
-      11,   113,     3,     3,     7,    12,     3,     5,     7,     3,
-      12,     4,     7,     3,    10,     3,     7,     3,    45,    98,
-     113,    96,    45,    -1,    16
+       2,     5,     6,     7,     5,     3,     7,    41,    10,    13,
+       8,    45,     8,     9,    79,    11,    10,     8,    83,    84,
+      11,     8,    16,     3,    28,     3,    22,     0,    26,    27,
+      26,    27,     4,    37,    14,    26,    27,    41,    16,    26,
+      27,    45,    11,    45,    45,    49,    18,    51,    52,     8,
+      51,     8,    11,     7,    11,     7,    60,    91,    11,    93,
+      14,    11,    14,    67,   129,    15,   131,    26,    27,    26,
+      27,    75,    76,     3,     3,    76,   141,    12,    10,   113,
+     114,    16,   147,    13,    16,     7,    16,    91,    17,    93,
+      19,    13,    21,    22,    23,    24,    25,    26,     7,    28,
+      29,    12,    57,     6,    13,    16,     9,    26,    26,   113,
+     114,    66,     3,     4,    12,   119,    12,    12,    16,    13,
+      16,    20,    16,    11,    11,   127,    17,    12,    19,    14,
+      21,    22,    23,    24,    25,    26,    26,    28,     3,    13,
+       3,    14,     3,     3,     3,    12,    12,     3,    12,    11,
+       3,     3,     7,   127,    -1,    13,     7,    14,    12,     5,
+       3,     3,    10,     4,   107,    12,    16,    16,     7,     3,
+       7,    16,    16,     3,     3,    45,    45
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -632,18 +727,19 @@ static const yytype_uint8 yystos[] =
 {
        0,    32,    33,     0,     3,    17,    19,    21,    22,    23,
       24,    25,    26,    28,    29,    34,    36,    38,    39,    41,
-      42,    43,    45,    46,    47,    54,    55,     8,    27,    40,
-      41,    50,    51,    40,    40,    50,    11,    11,    41,    26,
-       6,     9,     3,    40,    11,    15,     7,     7,    11,    40,
-      50,    20,     7,     7,    12,    40,    11,    11,    26,    40,
-      53,     3,    40,    48,     9,    40,    41,    44,    47,    50,
-      53,    54,     3,     3,    13,    14,    40,     3,     3,     3,
-      12,    48,    12,    16,    10,    16,    49,    12,    48,     3,
-       3,     3,     3,     3,     3,    35,    35,    40,    50,     7,
-      35,    35,     3,    12,     7,    40,    53,     5,     3,    10,
-       4,    18,    37,    56,    37,    52,    52,     3,     7,     3,
-      40,     7,     4,    34,    12,    35,     3,    35,     3,    35,
-      35
+      42,    43,    45,    46,    47,    52,    53,     8,    11,    27,
+      40,    41,    50,    40,    40,    50,    11,    11,    41,    26,
+       6,     9,     3,    40,    11,    15,    40,    50,     7,    13,
+       7,    14,    20,     7,     7,    12,    40,    11,    11,    26,
+      11,    40,    51,     3,    40,    48,     9,    11,    40,    41,
+      44,    47,    50,    51,    52,    13,    14,     3,    40,     3,
+      40,    50,    40,     3,     3,    12,    48,    12,    40,    51,
+      10,    16,    10,    16,    49,    12,    48,    40,     3,     3,
+       3,     3,     3,     3,    40,    50,    35,    35,     7,    35,
+      35,    12,     7,    16,    16,    40,    51,    40,    51,     5,
+       3,    10,    12,    12,     4,    18,    37,    54,    37,     3,
+       7,     3,    40,    51,    40,    51,    40,     7,     4,    34,
+      35,     3,    35,    12,    12,    12,    12,     3,    35,    35
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1457,16 +1553,702 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 49 "bisonSource.y"
+#line 144 "bisonSource.y"
     {
+            newNode(treeRoot, "Program");
+            setChild(treeRoot, (yyvsp[(1) - (2)].treeNode));
+            setLeave(treeRoot, (yyvsp[(2) - (2)].str));
             printf("\n{No errors}");
+        ;}
+    break;
+
+  case 4:
+
+/* Line 1455 of yacc.c  */
+#line 153 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statements");
+            setChild((yyval.treeNode), (yyvsp[(1) - (2)].treeNode));
+            setChild((yyval.treeNode), (yyvsp[(2) - (2)].treeNode));
+        ;}
+    break;
+
+  case 5:
+
+/* Line 1455 of yacc.c  */
+#line 161 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 6:
+
+/* Line 1455 of yacc.c  */
+#line 166 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 7:
+
+/* Line 1455 of yacc.c  */
+#line 171 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 8:
+
+/* Line 1455 of yacc.c  */
+#line 176 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 9:
+
+/* Line 1455 of yacc.c  */
+#line 181 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 10:
+
+/* Line 1455 of yacc.c  */
+#line 186 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 11:
+
+/* Line 1455 of yacc.c  */
+#line 191 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 12:
+
+/* Line 1455 of yacc.c  */
+#line 196 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 13:
+
+/* Line 1455 of yacc.c  */
+#line 201 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 14:
+
+/* Line 1455 of yacc.c  */
+#line 206 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 15:
+
+/* Line 1455 of yacc.c  */
+#line 211 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Statement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (1)].str));
+        ;}
+    break;
+
+  case 17:
+
+/* Line 1455 of yacc.c  */
+#line 218 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Block");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setChild((yyval.treeNode), (yyvsp[(2) - (3)].treeNode));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 18:
+
+/* Line 1455 of yacc.c  */
+#line 227 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "IfStatement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (6)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (6)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (6)].str));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (6)].str));
+            setChild((yyval.treeNode), (yyvsp[(5) - (6)].treeNode));
+            setChild((yyval.treeNode), (yyvsp[(6) - (6)].treeNode));
+        ;}
+    break;
+
+  case 19:
+
+/* Line 1455 of yacc.c  */
+#line 237 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "IfStatement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (6)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (6)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (6)].str));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (6)].str));
+            setChild((yyval.treeNode), (yyvsp[(5) - (6)].treeNode));
+            setChild((yyval.treeNode), (yyvsp[(6) - (6)].treeNode));
+        ;}
+    break;
+
+  case 21:
+
+/* Line 1455 of yacc.c  */
+#line 249 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Else");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (4)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (4)].treeNode));
+        ;}
+    break;
+
+  case 22:
+
+/* Line 1455 of yacc.c  */
+#line 259 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "WhileStatement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(5) - (5)].treeNode));
+        ;}
+    break;
+
+  case 23:
+
+/* Line 1455 of yacc.c  */
+#line 268 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "WhileStatement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(5) - (5)].treeNode));
+        ;}
+    break;
+
+  case 24:
+
+/* Line 1455 of yacc.c  */
+#line 279 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "ForStatement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (7)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (7)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (7)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (7)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (7)].str));
+            setLeave((yyval.treeNode), (yyvsp[(6) - (7)].str));
+            setChild((yyval.treeNode), (yyvsp[(7) - (7)].treeNode));
+        ;}
+    break;
+
+  case 25:
+
+/* Line 1455 of yacc.c  */
+#line 292 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Value");
+            setChild((yyval.treeNode), (yyvsp[(1) - (1)].treeNode));
+        ;}
+    break;
+
+  case 26:
+
+/* Line 1455 of yacc.c  */
+#line 297 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Value");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (1)].str));
+        ;}
+    break;
+
+  case 27:
+
+/* Line 1455 of yacc.c  */
+#line 302 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Value");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (1)].str));
+        ;}
+    break;
+
+  case 28:
+
+/* Line 1455 of yacc.c  */
+#line 309 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Identificator");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (3)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (3)].str));
+        ;}
+    break;
+
+  case 29:
+
+/* Line 1455 of yacc.c  */
+#line 316 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Identificator");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (4)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 30:
+
+/* Line 1455 of yacc.c  */
+#line 324 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Identificator");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (4)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 31:
+
+/* Line 1455 of yacc.c  */
+#line 332 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Identificator");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (1)].str));
+        ;}
+    break;
+
+  case 32:
+
+/* Line 1455 of yacc.c  */
+#line 339 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "ReturnStatement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (2)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (2)].str));
+        ;}
+    break;
+
+  case 33:
+
+/* Line 1455 of yacc.c  */
+#line 345 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "ReturnStatement");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (3)].str));
+        ;}
+    break;
+
+  case 34:
+
+/* Line 1455 of yacc.c  */
+#line 354 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "AssignmentStatement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 35:
+
+/* Line 1455 of yacc.c  */
+#line 362 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "AssignmentStatement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 36:
+
+/* Line 1455 of yacc.c  */
+#line 370 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "AssignmentStatement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 37:
+
+/* Line 1455 of yacc.c  */
+#line 378 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "AssignmentStatement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 38:
+
+/* Line 1455 of yacc.c  */
+#line 386 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "AssignmentStatement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 39:
+
+/* Line 1455 of yacc.c  */
+#line 394 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "AssignmentStatement");
+            setChild((yyval.treeNode), (yyvsp[(1) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 40:
+
+/* Line 1455 of yacc.c  */
+#line 404 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "ArrayDeclaration");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (3)].str));
+        ;}
+    break;
+
+  case 41:
+
+/* Line 1455 of yacc.c  */
+#line 413 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "ClassDeclaration");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (7)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (7)].str));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (7)].str));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (7)].str));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (7)].str));
+            setLeave((yyval.treeNode), (yyvsp[(6) - (7)].str));
+            setChild((yyval.treeNode), (yyvsp[(7) - (7)].treeNode));
+        ;}
+    break;
+
+  case 42:
+
+/* Line 1455 of yacc.c  */
+#line 426 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Function");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (8)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (8)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (8)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (8)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (8)].str));
+            setLeave((yyval.treeNode), (yyvsp[(6) - (8)].str));
+            setLeave((yyval.treeNode), (yyvsp[(7) - (8)].str));
+            setChild((yyval.treeNode), (yyvsp[(8) - (8)].treeNode));
+        ;}
+    break;
+
+  case 43:
+
+/* Line 1455 of yacc.c  */
+#line 440 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "FunctionCall");
+            setChild((yyval.treeNode), (yyvsp[(1) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (5)].str));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (5)].str));
+        ;}
+    break;
+
+  case 45:
+
+/* Line 1455 of yacc.c  */
+#line 451 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arguments");
+            setChild((yyval.treeNode), (yyvsp[(1) - (2)].treeNode));
+            setChild((yyval.treeNode), (yyvsp[(2) - (2)].treeNode));
+        ;}
+    break;
+
+  case 47:
+
+/* Line 1455 of yacc.c  */
+#line 459 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "CommaValue");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 48:
+
+/* Line 1455 of yacc.c  */
+#line 468 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Logic");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 49:
+
+/* Line 1455 of yacc.c  */
+#line 475 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Logic");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 50:
+
+/* Line 1455 of yacc.c  */
+#line 482 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Logic");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (5)].str));
+        ;}
+    break;
+
+  case 51:
+
+/* Line 1455 of yacc.c  */
+#line 491 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Logic");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (5)].str));
+        ;}
+    break;
+
+  case 52:
+
+/* Line 1455 of yacc.c  */
+#line 502 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 53:
+
+/* Line 1455 of yacc.c  */
+#line 509 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 54:
+
+/* Line 1455 of yacc.c  */
+#line 516 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 55:
+
+/* Line 1455 of yacc.c  */
+#line 523 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setChild((yyval.treeNode), (yyvsp[(1) - (3)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (3)].treeNode));
+        ;}
+    break;
+
+  case 56:
+
+/* Line 1455 of yacc.c  */
+#line 530 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (5)].str));
+        ;}
+    break;
+
+  case 57:
+
+/* Line 1455 of yacc.c  */
+#line 539 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (5)].str));
+        ;}
+    break;
+
+  case 58:
+
+/* Line 1455 of yacc.c  */
+#line 548 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (5)].str));
+        ;}
+    break;
+
+  case 59:
+
+/* Line 1455 of yacc.c  */
+#line 557 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Arithmetic");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(2) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (5)].str));
+            setChild((yyval.treeNode), (yyvsp[(4) - (5)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(5) - (5)].str));
+        ;}
+    break;
+
+  case 60:
+
+/* Line 1455 of yacc.c  */
+#line 568 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Input");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (3)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (3)].str));
+            setLeave((yyval.treeNode), (yyvsp[(3) - (3)].str));
+        ;}
+    break;
+
+  case 61:
+
+/* Line 1455 of yacc.c  */
+#line 577 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "Output");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (4)].str));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (4)].str));
+            setChild((yyval.treeNode), (yyvsp[(3) - (4)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(4) - (4)].str));
+        ;}
+    break;
+
+  case 62:
+
+/* Line 1455 of yacc.c  */
+#line 587 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "TabOneOrMore");
+            setLeave((yyval.treeNode), (yyvsp[(1) - (1)].str));
+        ;}
+    break;
+
+  case 63:
+
+/* Line 1455 of yacc.c  */
+#line 592 "bisonSource.y"
+    {
+            newNode((yyval.treeNode), "OuTabOneOrMoreput");
+            setChild((yyval.treeNode), (yyvsp[(1) - (2)].treeNode));
+            setLeave((yyval.treeNode), (yyvsp[(2) - (2)].str));
         ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1470 "bisonReady.h"
+#line 2252 "bisonReady.h"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1678,7 +2460,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 128 "bisonSource.y"
+#line 598 "bisonSource.y"
 
 
 int yywrap()
@@ -1688,12 +2470,17 @@ int yywrap()
 
 void yyerror(const char *str)
 {
+    errors = true;
     fprintf(stderr,"\nERROR: %s",str);
 }
 
 main()
 {
     yyparse();
+    if (!errors)
+    {
+        displayBranch(treeRoot, 0);
+    }
 }
 
 int yydebug = 0;

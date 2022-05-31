@@ -1,4 +1,4 @@
-bison -o bisonReady.h bisonSource.y --report=all
+bison -o bisonReady.h bisonSource.y
 
 gcc main.c
 
