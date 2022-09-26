@@ -1,7 +1,7 @@
 #include "House.h"
 #include "Movements.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "stb_image.h"
 const float w = 0.1;
 
 Room room;
@@ -520,7 +520,7 @@ void DrawPictures()
 	glEnd();
 	glPopMatrix();
 
-	//вверху
+	//пїЅпїЅпїЅпїЅпїЅпїЅ
 	glPushMatrix();
 	glTranslated(0, -20, 2);
 	glBindTexture(GL_TEXTURE_2D, texture[4]);
@@ -549,7 +549,7 @@ void DrawPictures()
 
 	glEnd();
 	glPopMatrix();
-	//внизу
+	//пїЅпїЅпїЅпїЅпїЅ
 	glPushMatrix();
 	glTranslated(0, 20, 2);
 	glBindTexture(GL_TEXTURE_2D, texture[4]);

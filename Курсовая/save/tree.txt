@@ -1,0 +1,57 @@
+/******************************************************************************
+
+                            Online C Compiler.
+                Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <stdio.h>
+
+int main()
+{
+    printf("Program\n");
+    printf("\tStatements\n");
+    printf("\t\tStatement\n");
+    printf("\t\t\tAssignmentStatement\n");
+    printf("\t\t\t\t=\n");
+    printf("\t\t\t\tIdentificator\n");
+    printf("\t\t\t\t\t_f\n");
+    printf("\t\t\t\tValue\n");
+    printf("\t\t\t\t\t4\n");
+    
+    printf("\t\tStatement\n");
+    printf("\t\t\tAssignmentStatement\n");
+    printf("\t\t\t\t=\n");
+    printf("\t\t\t\tIdentificator\n");
+    printf("\t\t\t\t\td\n");
+    printf("\t\t\t\t\tValue\n");
+    printf("\t\t\t\t\t\t5\n");
+    printf("\t\t\t\tValue\n");
+    printf("\t\t\t\t\t10\n");
+    
+    printf("\t\tStatement\n");
+    printf("\t\t\tOutput\n");
+    printf("\t\t\t\tprint\n");
+    printf("\t\t\t\tValue\n");
+    printf("\t\t\t\t\tIdentificator\n");
+    printf("\t\t\t\t\t\tf\n");
+    
+    printf("\t\tStatement\n");
+    printf("\t\t\tClassDeclaration\n");
+    printf("\t\t\t\tclass\n");
+    printf("\t\t\t\tf\n");
+    printf("\t\t\t\tBlock\n");
+    printf("\t\t\t\t\tStatement\n");
+    printf("\t\t\t\t\t\tInput\n");
+    printf("\t\t\t\t\t\t\tinput\n");
+    printf("\t\t\t\t\tStatement\n");
+    printf("\t\t\t\t\t\tAssignmentStatement\n");
+    printf("\t\t\t\t\t\t\t=\n");
+    printf("\t\t\t\t\t\t\tIdentificator\n");
+    printf("\t\t\t\t\t\t\t\ttest\n");
+    printf("\t\t\t\t\t\t\tValue\n");
+    printf("\t\t\t\t\t\t\t\t157\n");
+
+    return 0;
+}
