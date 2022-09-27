@@ -1,4 +1,0 @@
-Error - incorrect number of tabs(a lot of tabs) - слишком много табов
-Error - incorrect number of tabs(small number of tabs) - слишком мало табов
-Error - the difference in the number of opening brackets to the closing ones: - не хватает закрывающихся скобок
-Error - missing opening parenthesis before - отсутсвует открывающаяся скобка
